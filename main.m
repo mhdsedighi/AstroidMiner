@@ -17,6 +17,24 @@ au = 149597871; %km
 %Planets' name array
 planets = ['Mercury'; 'Venus  '; 'Earth  '; 'Mars   '; ...
            'Jupiter'; 'Saturn '; 'Uranus '; 'Neptune'; 'Pluto  '];
+       
+planet_id1=4;
+planet_id2=3;
+t_start= datetime(2020,1,1);
+a_parking=10000;
+r_capture=10000;
+
+start_hour_after_ref=1000;
+mission_time_hour=12*30*24;
+
+start_sec_after_ref=floor(start_hour_after_ref*3600);
+deci_sec1=start_hour_after_ref*3600-start_sec_after_ref;
+mission_time_sec=floor(mission_time_hour*3600);
+deci_sec2=mission_time_hour*3600-mission_time_sec;
+
+t_start.Second=t_start.Second+start_sec_after_ref;
+t_end=t_start;
+t_end.Second=t_end.Second+mission_time_sec;
 
 while(1)
 %% USER INPUTS
@@ -33,23 +51,21 @@ while(1)
 % [planet_id2, year2, month2, day2, hour2, min2, sec2,calendarDateStr2,...
 %     universalTimeStr2,r_capture] = user_inputs(2);
 
-planet_id1=4;
-year1=2000;
-month1=1;
-day1=1;
-hour1=1;
-min1=0;
-sec1=0;
-a_parking=10000;
 
-planet_id2=3;
-year2=2001;
-month2=1;
-day2=1;
-hour2=1;
-min2=0;
-sec2=0;
-r_capture=10000;
+year1=t_start.Year;
+month1=t_start.Month;
+day1=t_start.Day;
+hour1=t_start.Day;
+min1=t_start.Minute;
+sec1=t_start.Second+deci_sec1;
+
+year2=t_end.Year;
+month2=t_end.Month;
+day2=t_end.Day;
+hour2=t_end.Day;
+min2=t_end.Minute;
+sec2=t_end.Second+deci_sec1+deci_sec2;
+
 
 universalTimeStr1='12:00:00';
 calendarDateStr1='1/12/2009';
