@@ -21,16 +21,16 @@ planets = ['Mercury'; 'Venus  '; 'Earth  '; 'Mars   '; ...
 planet_id1=4;
 planet_id2=3;
 t_start= datetime(2020,1,1);
-a_parking=10000;
-r_capture=10000;
+alt_parking=10000;
+alt_capture=10000;
 
 start_hour_after_ref=1000;
-mission_time_hour=12*30*24;
+mission_duration_hour=12*30*24;
 
 start_sec_after_ref=floor(start_hour_after_ref*3600);
 deci_sec1=start_hour_after_ref*3600-start_sec_after_ref;
-mission_time_sec=floor(mission_time_hour*3600);
-deci_sec2=mission_time_hour*3600-mission_time_sec;
+mission_time_sec=floor(mission_duration_hour*3600);
+deci_sec2=mission_duration_hour*3600-mission_time_sec;
 
 t_start.Second=t_start.Second+start_sec_after_ref;
 t_end=t_start;
@@ -66,11 +66,6 @@ hour2=t_end.Day;
 min2=t_end.Minute;
 sec2=t_end.Second+deci_sec1+deci_sec2;
 
-
-universalTimeStr1='12:00:00';
-calendarDateStr1='1/12/2009';
-universalTimeStr2='12:00:00';
-calendarDateStr2='1/12/2009';
 
 %% CALCULATION OF MISSION PARAMETERS
 
@@ -140,7 +135,7 @@ r_planet1 = planet1_astronomical_data(1);
 %Gravitaional parameter of planet1
 mu_planet1 = planet1_astronomical_data(3);
 %Radius of the circular parking orbit
-rp1 = r_planet1 + a_parking;
+rp1 = r_planet1 + alt_parking;
 %Speed at the periapsis of the departure parabola
 vp1 = sqrt(norm(vinf1)^2 + 2*mu_planet1/rp1);
 %Speed of the circular parking orbit
@@ -160,7 +155,7 @@ rp2 = planet2_astronomical_data(1);
 %Gravitaional parameter of planet2
 mu_planet2 = planet2_astronomical_data(3);
 %Radius of the circular capture orbit
-r_p_arrival = rp2 + r_capture;
+r_p_arrival = rp2 + alt_capture;
 %Speed at the periapsis of the departure parabola
 vp2 = sqrt(norm(vinf2)^2+2*mu_planet2/r_p_arrival);
 %Speed of the circular capture orbit
@@ -196,17 +191,17 @@ fprintf('\n  < Results >\n');
 fprintf('\nDeparture planet             ');
 disp(planets(planet_id1,:));
 fprintf('Departure calendar date      ');
-disp(calendarDateStr1);
+disp([t_start.Year t_start.Month t_start.Day]);
 fprintf('Departure universal time     ');
-disp(universalTimeStr1);
+disp([t_start.Hour t_start.Minute sec1]);
 fprintf('\nDeparture julian date        %12.6f', jd1);
 
 fprintf('\n\nArrival planet               ');
 disp(planets(planet_id2,:));
 fprintf('Arrival calendar date        ');
-disp(calendarDateStr2);
+disp([t_end.Year t_end.Month t_end.Day]);
 fprintf('Arrival universal time       ');
-disp(universalTimeStr2);
+disp([t_end.Hour t_end.Minute sec2]);
 fprintf('\nArrival julian date          %12.6f', jd2');
 
 fprintf('\n\nTransfer time              %12.6f  days \n ', tof);
@@ -267,7 +262,7 @@ fprintf('\nhyperbolic excess velocity at arrival magnitude            %12.6f  km
 
 fprintf('\n\n<Planetary departure parameters>\n');
 
-fprintf('\nAltitude of the parking orbit                                             %12.6f  km', a_parking);
+fprintf('\nAltitude of the parking orbit                                             %12.6f  km', alt_parking);
 fprintf('\nPeriod of the parking orbit                                               %12.6f  min', T_parking);
 fprintf('\nSpeed of the space vehicle in its circular orbit                          %12.6f  km/s', vC1);
 fprintf('\nRadius to periapsis of the departure hyperbola                            %12.6f  km', rp1);
@@ -277,7 +272,7 @@ fprintf('\nDelta_v for departure                                                
 
 fprintf('\n\n<Planetary rendezvous parameters>\n');
 
-fprintf('\nAltitude of the capture orbit                                             %12.6f  km', r_capture);
+fprintf('\nAltitude of the capture orbit                                             %12.6f  km', alt_capture);
 fprintf('\nPeriod of the capture orbit                                               %12.6f  min', T_parking2);
 fprintf('\nSpeed of the space vehicle in its circular orbit                          %12.6f  km/s', vC2);
 fprintf('\nRadius to periapsis of the arrival hyperbola                              %12.6f  km', r_p_arrival);
