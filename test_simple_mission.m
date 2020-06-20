@@ -127,6 +127,8 @@ T2 = 2*pi/sqrt(mu)*oe2(7)^(3/2)/3600/24;
 %Transfer orbit period
 T3 = 2*pi/sqrt(mu)*oe(7)^(3/2)/3600/24;
 
+alt_parking=0;
+
 %...Planetary departure parameters 
 %Planet1 astronomical data
 planet1_astronomical_data = astronomical_data(planet_id1);
@@ -136,10 +138,12 @@ r_planet1 = planet1_astronomical_data(1);
 mu_planet1 = planet1_astronomical_data(3);
 %Radius of the circular parking orbit
 rp1 = r_planet1 + alt_parking;
+rp1=0;
 %Speed at the periapsis of the departure parabola
-vp1 = sqrt(norm(vinf1)^2 + 2*mu_planet1/rp1);
+vp1 = sqrt(norm(vinf1)^2);
 %Speed of the circular parking orbit
 vC1 = sqrt(mu_planet1/rp1);
+vC1=0;
 %Delta_v required for the maneuver
 delta_v_departure = vp1 - vC1;
 %Eccentricity of the hyperbola at departure
