@@ -21,17 +21,40 @@ planets = ['Mercury'; 'Venus  '; 'Earth  '; 'Mars   '; ...
 while(1)
 %% USER INPUTS
  
-fprintf('\n  < Interplanetary mission design program >\n');
-fprintf('\n  < Inputs >\n');
+% fprintf('\n  < Interplanetary mission design program >\n');
+% fprintf('\n  < Inputs >\n');
+% 
+% %...Request departure parameters 
+% fprintf(' \nDeparture parameters \n');
+% [planet_id1, year1, month1, day1, hour1, min1, sec1,calendarDateStr1,...
+%            universalTimeStr1, a_parking] = user_inputs(1);
+% %...Request arrival parameters 
+% fprintf(' \nDeparture parameters \n');
+% [planet_id2, year2, month2, day2, hour2, min2, sec2,calendarDateStr2,...
+%     universalTimeStr2,r_capture] = user_inputs(2);
 
-%...Request departure parameters 
-fprintf(' \nDeparture parameters \n');
-[planet_id1, year1, month1, day1, hour1, min1, sec1,calendarDateStr1,...
-           universalTimeStr1, a_parking] = user_inputs(1);
-%...Request arrival parameters 
-fprintf(' \nDeparture parameters \n');
-[planet_id2, year2, month2, day2, hour2, min2, sec2,calendarDateStr2,...
-    universalTimeStr2,r_capture] = user_inputs(2);
+planet_id1=4;
+year1=2000;
+month1=1;
+day1=1;
+hour1=1;
+min1=0;
+sec1=0;
+a_parking=10000;
+
+planet_id2=3;
+year2=2001;
+month2=1;
+day2=1;
+hour2=1;
+min2=0;
+sec2=0;
+r_capture=10000;
+
+universalTimeStr1='12:00:00';
+calendarDateStr1='1/12/2009';
+universalTimeStr2='12:00:00';
+calendarDateStr2='1/12/2009';
 
 %% CALCULATION OF MISSION PARAMETERS
 
