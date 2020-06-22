@@ -25,16 +25,19 @@ t_start= datetime(2020,1,1);
 alt_parking=10000;
 alt_capture=10000;
 
+aft_month_span=0:0.2:48;
+dure_month_span=10:1:100;
+
 
 counter1=0;
 counter2=0;
 samples=[];
-samples_2=[];
+samples_2=zeros(length(aft_month_span),2);
 
-for aft_month=0:1:24
+for aft_month=aft_month_span
     counter1=counter1+1;
     minim=1000000;
-    for dure_month=10:1:100
+    for dure_month=dure_month_span
         counter2=counter2+1;
         
         start_hour_after_ref=30*24*aft_month;
