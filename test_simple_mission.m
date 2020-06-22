@@ -20,6 +20,7 @@ planets = ['Mercury'; 'Venus  '; 'Earth  '; 'Mars   '; ...
        
 planet_id1=4;
 planet_id2=3;
+free_duration=true;
 t_start= datetime(2020,1,1);
 alt_parking=10000;
 alt_capture=10000;
@@ -28,9 +29,12 @@ alt_capture=10000;
 counter1=0;
 counter2=0;
 samples=[];
-for aft_month=0:0.5:45
+samples_2=[];
+
+for aft_month=0:1:24
     counter1=counter1+1;
-    for dure_month=10:0.5:45
+    minim=1000000;
+    for dure_month=10:1:100
         counter2=counter2+1;
         
         start_hour_after_ref=30*24*aft_month;
@@ -38,20 +42,34 @@ for aft_month=0:0.5:45
         
         
         [delta_v_total] = test_shoot(t_start,alt_capture,start_hour_after_ref,mission_duration_hour);
-        samples=[samples;aft_month,dure_month,delta_v_total];
-
-
+        
+        if free_duration
+            if delta_v_total<minim
+                minim=delta_v_total;
+                samples_2(counter1,:)=[aft_month,delta_v_total];
+            end
+            
+        else
+            samples=[samples;aft_month,dure_month,delta_v_total];
+        end
+        
     end
 end
 
-figure
-hold on
- plot3(samples(:,1),samples(:,2),samples(:,3),'b.')
- xlabel('launch after Jan1st(months)')
- ylabel('mission duration(months)')
- zlabel('fuel cost')
- 
- view(23,45)
+if free_duration
+    figure
+    plot(samples_2(:,1),samples_2(:,2))
+    xlabel('launch after Jan1st(months)')
+    ylabel('fuel cost')
+else
+    figure
+    hold on
+    plot3(samples(:,1),samples(:,2),samples(:,3),'b.')
+    xlabel('launch after Jan1st(months)')
+    ylabel('mission duration(months)')
+    zlabel('fuel cost')
+    view(23,45)
+end
 
 
 
