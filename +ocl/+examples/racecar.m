@@ -43,17 +43,17 @@ function [solution,times,ocp] = racecar
   ocp.setEndBounds( 'y',  0.0 );
   ocp.setEndBounds('vy',  0.0 );
 
-  initialGuess    = ocp.getInitialGuess();
-
-  % Initialize the middle lane
-  N        = length(initialGuess.states.x.value);
-  x_road   = linspace(0,2*pi,N);
-  y_center = sin(x_road);
-  initialGuess.states.x.set(x_road);
-  initialGuess.states.y.set(y_center);
+%   initialGuess    = ocp.getInitialGuess();
+% 
+%   % Initialize the middle lane
+%   N        = length(initialGuess.states.x.value);
+%   x_road   = linspace(0,2*pi,N);
+%   y_center = sin(x_road);
+%   initialGuess.states.x.set(x_road);
+%   initialGuess.states.y.set(y_center);
 
   % Solve OCP
-  [solution,times] = ocp.solve(initialGuess);
+  [solution,times] = ocp.solve;
 
   % Plot solution
   figure('units','normalized')
