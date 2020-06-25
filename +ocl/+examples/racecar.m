@@ -7,12 +7,12 @@ function [solution,times,ocp] = racecar
   % Title: Race Car Problem Example
   %  Authors: Jonas Koenneman & Giovanni Licitra
 
-  MAX_TIME = 1000;
+  MAX_TIME = 10000;
 
   ocp = ocl.Problem([], @varsfun, @daefun, ...
     'gridcosts', @gridcosts, ...
     'gridconstraints', @gridconstraints, ...
-    'N', 100);
+    'N', 50);
 
   % parameters
   m    = 1;         % mass [kg]
@@ -23,6 +23,7 @@ function [solution,times,ocp] = racecar
   Fmax   = 100;       % [N]
   road_bound = 0.4; % [m]
   mu=3.986005*10^5;
+  Re=6378.14;
 
   ocp.setParameter('m'   , m);
   ocp.setParameter('A'   , A);
@@ -32,6 +33,7 @@ function [solution,times,ocp] = racecar
   ocp.setParameter('Fmax', Fmax);
   ocp.setParameter('road_bound', road_bound);
   ocp.setParameter('mu', mu);
+  ocp.setParameter('Re', Re);
   
   ocp.setBounds('time', 0, MAX_TIME);
 
@@ -50,14 +52,19 @@ function [solution,times,ocp] = racecar
 %   ocp.setEndBounds( 'y',  0.0 );
 %   ocp.setEndBounds('vy',  0.0 );
 
-  ocp.setEndBounds( 'x',   5.7403e+04);
-  ocp.setEndBounds( 'y',   0);
+  ocp.setEndBounds( 'x',   4.7022e+04);
+  ocp.setEndBounds( 'y',   3.2925);
   ocp.setEndBounds( 'z',   0);
-  ocp.setEndBounds( 'xdot',   0);
-  ocp.setEndBounds( 'ydot',   2.6351);
+  ocp.setEndBounds( 'xdot',   -1.5114);
+  ocp.setEndBounds( 'ydot',   2.1586);
   ocp.setEndBounds( 'zdot',   0);
 
-  initialGuess    = ocp.getInitialGuess()
+  initialGuess    = ocp.getInitialGuess();
+  
+%   initialGuess.states.y.value
+% initialGuess.controls.dFy.set(0);
+% initialGuess.controls.dFx.set(0);
+% initialGuess.controls.dFz.set(0);
 % 
 %   % Initialize the middle lane
 %   N        = length(initialGuess.states.x.value);
@@ -69,14 +76,28 @@ function [solution,times,ocp] = racecar
   % Solve OCP
   [solution,times] = ocp.solve;
   
-figure
-hold on
-% axis equal
-% grid minor
-%   plot(times.states.value,solution.states.x.value)
-  plot3(0,0,0,'ro')
-  plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'k*')
+    
+  figure
+  hold on
+  axis equal
+  grid minor
+  %   plot(times.states.value,solution.states.x.value)
+%   plot3(0,0,0,'ro')
+  plot_earth
+  plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'k.')
   view(25,45)
+  figure
+  subplot(3,1,1)
+  grid minor
+  plot(times.controls.value,solution.controls.dFx.value)
+  subplot(3,1,2)
+  grid minor
+  plot(times.controls.value,solution.controls.dFy.value)
+  subplot(3,1,3)
+  grid minor
+  plot(times.controls.value,solution.controls.dFz.value)
+  
+
 
 % %   % Plot solution
 % %   figure('units','normalized')
@@ -140,7 +161,7 @@ function varsfun(sh)
   sh.addState('Fy');  % Force y[N]
   sh.addState('Fz');  % Force y[N]
   
-  sh.addState('time', 'lb', 0, 'ub', 1000);  % time [s]
+  sh.addState('time', 'lb', 0, 'ub', 10000);  % time [s]
 
   sh.addControl('dFx', 'lb', -10, 'ub', 10);  % Force x[N]
   sh.addControl('dFy', 'lb', -10, 'ub', 10);  % Force y[N]
@@ -154,6 +175,7 @@ function varsfun(sh)
   sh.addParameter('road_bound');  % lane road relative to the middle lane [m]
   sh.addParameter('Fmax');        % maximal force on the car [N]
   sh.addParameter('mu');        % mu
+  sh.addParameter('Re');
   
 end
 
@@ -174,10 +196,13 @@ end
 
 function gridcosts(ch,k,K,x,~)
 if k==K
-    %     ch.add((sqrt(x.x^2+x.y^2+x.z^2)-1.0843e+04)^2);
-    %     ch.add(((sqrt(x.xdot^2+x.ydot^2+x.zdot^2))-sqrt(3.986005*10^5/sqrt(x.x^2+x.y^2+x.z^2)))^2);
-    ch.add(x.time);
+%     ch.add((sqrt(x.x^2+x.y^2+x.z^2)-5.7403e+04)^2);
+%     ch.add(((sqrt(x.xdot^2+x.ydot^2+x.zdot^2))-2.6351)^2);
+    
+    ch.add(x.Fx^2+x.Fy^2+x.Fz^2);
+%         ch.add(x.time);
 end
+
 end
 
 function gridconstraints(ch,~,~,x,p)
@@ -193,6 +218,8 @@ function gridconstraints(ch,~,~,x,p)
 %   y_min = y_center - 0.5*p.road_bound;
 %   ch.add(x.y,'<=',y_max);
 %   ch.add(x.y,'>=',y_min);
+
+  ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+100);
 end
 
 function animate(time,solution,x_road,y_center,y_min,y_max)

@@ -13,4 +13,4 @@ close all
 % theta0=0;
 % 
 % [r0,r_dot0]=rv_from_oe(a,e,RA,incl,omega,theta0,mu)
-ocl.examples.racecar
+myoc=ocl.examples.racecar;
