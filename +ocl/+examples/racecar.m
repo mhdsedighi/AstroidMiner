@@ -22,6 +22,7 @@ function [solution,times,ocp] = racecar
   Vmax = 1;         % max velocity [m/s]
   Fmax   = 1;       % [N]
   road_bound = 0.4; % [m]
+  mu=0.1;
 
   ocp.setParameter('m'   , m);
   ocp.setParameter('A'   , A);
@@ -30,6 +31,7 @@ function [solution,times,ocp] = racecar
   ocp.setParameter('Vmax', Vmax);
   ocp.setParameter('Fmax', Fmax);
   ocp.setParameter('road_bound', road_bound);
+  ocp.setParameter('mu', mu);
   
   ocp.setBounds('time', 0, MAX_TIME);
 
@@ -123,11 +125,12 @@ function varsfun(sh)
   sh.addParameter('Vmax');        % max speed [m/s]
   sh.addParameter('road_bound');  % lane road relative to the middle lane [m]
   sh.addParameter('Fmax');        % maximal force on the car [N]
+  sh.addParameter('mu');        % mu
 end
 
 function daefun(sh,x,~,u,p)
   sh.setODE( 'x', x.vx);
-  sh.setODE('vx', 1/p.m*x.Fx - 0.5*p.rho*p.cd*p.A*x.vx^2);
+  sh.setODE('vx', 1/p.m*x.Fx - 0.5*p.rho*p.cd*p.A*x.vx^2*p.mu);
   sh.setODE( 'y', x.vy);
   sh.setODE('vy', 1/p.m*x.Fy - 0.5*p.rho*p.cd*p.A*x.vx^2);
   sh.setODE('Fx', u.dFx);
