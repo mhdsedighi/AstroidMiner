@@ -12,7 +12,7 @@ function [solution,times,ocp] = racecar
   ocp = ocl.Problem([], @varsfun, @daefun, ...
     'gridcosts', @gridcosts, ...
     'gridconstraints', @gridconstraints, ...
-    'N', 50);
+    'N', 100);
 
   % parameters
   m    = 1;         % mass [kg]
@@ -35,11 +35,11 @@ function [solution,times,ocp] = racecar
   
   ocp.setBounds('time', 0, MAX_TIME);
 
-  ocp.setInitialBounds( 'x',   1.2756e+04);
+  ocp.setInitialBounds( 'x',   6.3781e+04);
   ocp.setInitialBounds( 'y',   0);
-  ocp.setInitialBounds( 'z',   100);
+  ocp.setInitialBounds( 'z',   0);
   ocp.setInitialBounds( 'xdot',   0);
-  ocp.setInitialBounds( 'ydot',   5.5899);
+  ocp.setInitialBounds( 'ydot',   2.4999);
   ocp.setInitialBounds( 'zdot',   0);
 %   ocp.setInitialBounds('vx',   0.0);
 %   ocp.setInitialBounds( 'y',   0.0);
@@ -50,7 +50,14 @@ function [solution,times,ocp] = racecar
 %   ocp.setEndBounds( 'y',  0.0 );
 %   ocp.setEndBounds('vy',  0.0 );
 
-%   initialGuess    = ocp.getInitialGuess();
+  ocp.setEndBounds( 'x',   5.7403e+04);
+  ocp.setEndBounds( 'y',   0);
+  ocp.setEndBounds( 'z',   0);
+  ocp.setEndBounds( 'xdot',   0);
+  ocp.setEndBounds( 'ydot',   2.6351);
+  ocp.setEndBounds( 'zdot',   0);
+
+  initialGuess    = ocp.getInitialGuess()
 % 
 %   % Initialize the middle lane
 %   N        = length(initialGuess.states.x.value);
@@ -64,6 +71,8 @@ function [solution,times,ocp] = racecar
   
 figure
 hold on
+% axis equal
+% grid minor
 %   plot(times.states.value,solution.states.x.value)
   plot3(0,0,0,'ro')
   plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'k*')
@@ -131,7 +140,7 @@ function varsfun(sh)
   sh.addState('Fy');  % Force y[N]
   sh.addState('Fz');  % Force y[N]
   
-  sh.addState('time', 'lb', 0, 'ub', 10);  % time [s]
+  sh.addState('time', 'lb', 0, 'ub', 1000);  % time [s]
 
   sh.addControl('dFx', 'lb', -10, 'ub', 10);  % Force x[N]
   sh.addControl('dFy', 'lb', -10, 'ub', 10);  % Force y[N]
@@ -152,10 +161,10 @@ function daefun(sh,x,~,u,p)
   sh.setODE( 'x', x.xdot);
   sh.setODE( 'y', x.ydot);
   sh.setODE( 'z', x.zdot);
-  c1=-p.mu/(sqrt(x.x^2+x.y^2+x.z^2))^3;
-  sh.setODE('xdot', c1*x.x+u.dFx);
-  sh.setODE('ydot', c1*x.y+u.dFy);
-  sh.setODE('zdot', c1*x.z+u.dFz);  
+%   c1=p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3);
+  sh.setODE('xdot', p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3)*x.x+u.dFx);
+  sh.setODE('ydot', p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3)*x.y+u.dFy);
+  sh.setODE('zdot', p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3)*x.z+u.dFz);  
   
   sh.setODE('Fx', u.dFx);
   sh.setODE('Fy', u.dFy);
@@ -164,9 +173,11 @@ function daefun(sh,x,~,u,p)
 end
 
 function gridcosts(ch,k,K,x,~)
-%   if k==K
-    ch.add((sqrt(x.x^2+x.y^2+x.z^2)-1.0843e+04)^2);
-%   end
+if k==K
+    %     ch.add((sqrt(x.x^2+x.y^2+x.z^2)-1.0843e+04)^2);
+    %     ch.add(((sqrt(x.xdot^2+x.ydot^2+x.zdot^2))-sqrt(3.986005*10^5/sqrt(x.x^2+x.y^2+x.z^2)))^2);
+    ch.add(x.time);
+end
 end
 
 function gridconstraints(ch,~,~,x,p)
@@ -174,7 +185,7 @@ function gridconstraints(ch,~,~,x,p)
 %   ch.add(x.vx^2+x.vy^2, '<=', p.Vmax^2);
 
   % force constraint
-  ch.add(x.Fx^2+x.Fy^2+x.Fz^2, '<=', p.Fmax^2);
+%   ch.add(x.Fx^2+x.Fy^2+x.Fz^2, '<=', p.Fmax^2);
 
 %   % road bounds
 %   y_center = sin(x.x);
