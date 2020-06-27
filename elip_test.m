@@ -59,7 +59,7 @@ axis equal
 view(25,45)
 
 res=6;
-vec_length=10;
+vec_length=3;
 points=[];
 for azimuth=0:res:360-res
     for elevation=-90:res:90-res
@@ -70,7 +70,8 @@ for azimuth=0:res:360-res
         points=[points; x y z];
         
         p1=[x y z];
-        dir=2*[x/a^2 y/b^2 z/c^2];
+        dir=[x/a^2 y/b^2 z/c^2];
+        dir=dir/norm(dir);
         p2=p1+vec_length*dir;
         n_vec=[p1;p2];
         %         plot3(p1(1),p1(2),p1(3),'b.');
