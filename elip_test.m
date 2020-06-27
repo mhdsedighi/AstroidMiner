@@ -50,8 +50,7 @@ c=5;
 % end
 
 
-%%% https://en.wikipedia.org/wiki/Ellipsoid
-%%%https://www.scielo.br/scielo.php?script=sci_arttext&pid=S1982-21702014000400970
+
 
 figure
 hold on
@@ -64,15 +63,11 @@ points=[];
 for azimuth=0:res:360-res
     for elevation=-90:res:90-res
         
-        x=a*cosd(elevation)*cosd(azimuth);
-        y=b*cosd(elevation)*sind(azimuth);
-        z=c*sind(elevation);
+[x,y,z,R,normal_vector]=ellip_deg(a,b,c,azimuth,elevation);
         points=[points; x y z];
         
         p1=[x y z];
-        dir=[x/a^2 y/b^2 z/c^2];
-        dir=dir/norm(dir);
-        p2=p1+vec_length*dir;
+        p2=p1+vec_length*normal_vector;
         n_vec=[p1;p2];
         %         plot3(p1(1),p1(2),p1(3),'b.');
         plot3(n_vec(:,1),n_vec(:,2),n_vec(:,3));
