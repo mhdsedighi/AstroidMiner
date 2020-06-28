@@ -14,8 +14,8 @@ for i=1:N_cube
     
     F=F+normal_vector*F_cube;
     M=M+cross([x y z],F);
-    F_array=[F_array;F];
-    M_array=[M_array;M];
+    F_array(i,:)=F;
+    M_array(i,:)=M;
     
 end
 
