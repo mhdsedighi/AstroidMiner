@@ -34,8 +34,8 @@ azi_ele=[azimuths elevations];
 % cost=positioning_cost(azi_ele,N_cube,a,b,c,F_cube)
 
 
-x0=(lb+ub)/2;
-% x0=rand*(ub-lb)+lb;
+% x0=(lb+ub)/2;
+x0=rand(1,2*N_cube).*(ub-lb)+lb;
 
 options = optimoptions('simulannealbnd');
 %%% Modify options setting
