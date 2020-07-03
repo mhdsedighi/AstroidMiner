@@ -68,7 +68,7 @@ function [solution,times,ocp] = sampleOCL
 %   initialGuess.states.y.value
 % initialGuess.controls.dFs.set(0);
 % initialGuess.controls.dFr.set(0);
-% initialGuess.controls.dFup.set(0);
+% initialGuess.controls.dFw.set(0);
 % 
 %   % Initialize the middle lane
 %   N        = length(initialGuess.states.x.value);
@@ -99,7 +99,7 @@ function [solution,times,ocp] = sampleOCL
   plot(times.controls.value,solution.controls.dFs.value)
   subplot(3,1,3)
   grid minor
-  plot(times.controls.value,solution.controls.dFup.value)
+  plot(times.controls.value,solution.controls.dFw.value)
   
 
 
@@ -163,13 +163,13 @@ function varsfun(sh)
 
   sh.addState('Fr');  % Force x[N]
   sh.addState('Fs');  % Force y[N]
-  sh.addState('Fup');  % Force y[N]
+  sh.addState('Fw');  % Force y[N]
   
   sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
 
   sh.addControl('dFr', 'lb', -0.1, 'ub', 0.1);  % Force x[N]
   sh.addControl('dFs', 'lb', -0.1, 'ub', 0.1);  % Force y[N]
-  sh.addControl('dFup', 'lb', -0.1, 'ub', 0.1);  % Force z[N]
+  sh.addControl('dFw', 'lb', -0.1, 'ub', 0.1);  % Force z[N]
 
   sh.addParameter('m');           % mass [kg]
   sh.addParameter('A');           % section area car [m^2]
@@ -192,23 +192,24 @@ c1=-p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3);
 
 % sh.setODE('xdot', c1*x.x+u.dFr);
 % sh.setODE('ydot', c1*x.y+u.dFs);
-% sh.setODE('zdot', c1*x.z+u.dFup);
+% sh.setODE('zdot', c1*x.z+u.dFw);
 
-force_vec_cart=spherical2cartesian([u.dFr;u.dFs;u.dFup],x.x,x.y,x.z);
+force_vec_cart=rsw2xyz([u.dFr;u.dFs;u.dFw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
+
 sh.setODE('xdot', c1*x.x+force_vec_cart(1));
 sh.setODE('ydot', c1*x.y+force_vec_cart(2));
 sh.setODE('zdot', c1*x.z+force_vec_cart(3));
 
 sh.setODE('Fr', u.dFr);
 sh.setODE('Fs', u.dFs);
-sh.setODE('Fup', u.dFup);
+sh.setODE('Fw', u.dFw);
 sh.setODE('time', 1);
 end
 
 function gridcosts(ch,k,K,x,~)
 R=[x.x x.y x.z];
 V=[x.xdot x.ydot x.zdot];
-fuel_cost=norm([x.Fr x.Fs x.Fup]);
+fuel_cost=norm([x.Fr x.Fs x.Fw]);
 % mu=3.986005*10^5;
 % Re=6378.14;
 
@@ -220,7 +221,7 @@ if k==K
 %     %     ch.add((sqrt(x.x^2+x.y^2+x.z^2)-5.7403e+04)^2);
 %     %     ch.add(((sqrt(x.xdot^2+x.ydot^2+x.zdot^2))-2.6351)^2);
 %     
-%     ch.add(x.Fr^2+x.Fs^2+x.Fup^2);
+%     ch.add(x.Fr^2+x.Fs^2+x.Fw^2);
 %     %         ch.add(x.time);
 
 
@@ -244,7 +245,7 @@ function gridconstraints(ch,~,~,x,p)
 %   ch.add(x.vx^2+x.vy^2, '<=', p.Vmax^2);
 
   % force constraint
-%   ch.add(x.Fr^2+x.Fs^2+x.Fup^2, '<=', p.Fmax^2);
+%   ch.add(x.Fr^2+x.Fs^2+x.Fw^2, '<=', p.Fmax^2);
 
 %   % road bounds
 %   y_center = sin(x.x);
