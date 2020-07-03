@@ -6,6 +6,7 @@ jit_tmp.c
 *.mex*
 *.lib
 .autosave
+*.mldatx
 ocl/Workspace
 ocl/octave-workspace
 ocl/Lib/casadi
