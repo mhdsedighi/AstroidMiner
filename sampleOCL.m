@@ -200,9 +200,9 @@ sh.setODE('xdot', c1*x.x+force_vec_cart(1));
 sh.setODE('ydot', c1*x.y+force_vec_cart(2));
 sh.setODE('zdot', c1*x.z+force_vec_cart(3));
 
-sh.setODE('Fr', u.dFr);
-sh.setODE('Fs', u.dFs);
-sh.setODE('Fw', u.dFw);
+sh.setODE('Fr', abs(u.dFr));
+sh.setODE('Fs', abs(u.dFs));
+sh.setODE('Fw', abs(u.dFw));
 sh.setODE('time', 1);
 end
 
