@@ -4,11 +4,11 @@ function [solution,times,ocp] = sampleOCL
   clear
   close all
 
-  MAX_TIME = 10000;
+  MAX_TIME = 100000;
   
     ocp = ocl.Problem([], @varsfun, @daefun, ...
     'gridcosts', @gridcosts,...
-    'N', 50);
+    'N', 200);
 
 %   ocp = ocl.Problem([], @varsfun, @daefun, ...
 %     'gridcosts', @gridcosts, ...
@@ -54,9 +54,9 @@ function [solution,times,ocp] = sampleOCL
 %   ocp.setEndBounds('vy',  0.0 );
 
   ocp.setEndBounds( 'x',   0);
-  ocp.setEndBounds( 'y',   6.3781e+04);
+  ocp.setEndBounds( 'y',   5.740326e+04);
   ocp.setEndBounds( 'z',   0);
-  ocp.setEndBounds( 'xdot',   -2.4999);
+  ocp.setEndBounds( 'xdot',   -2.6351);
   ocp.setEndBounds( 'ydot',   0);
   ocp.setEndBounds( 'zdot',   0);
 
@@ -165,11 +165,11 @@ function varsfun(sh)
   sh.addState('Fs');  % Force y[N]
   sh.addState('Fup');  % Force y[N]
   
-  sh.addState('time', 'lb', 0, 'ub', 10000);  % time [s]
+  sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
 
-  sh.addControl('dFr', 'lb', -1, 'ub', 1);  % Force x[N]
-  sh.addControl('dFs', 'lb', -1, 'ub', 1);  % Force y[N]
-  sh.addControl('dFup', 'lb', -1, 'ub', 1);  % Force z[N]
+  sh.addControl('dFr', 'lb', -0.1, 'ub', 0.1);  % Force x[N]
+  sh.addControl('dFs', 'lb', -0.1, 'ub', 0.1);  % Force y[N]
+  sh.addControl('dFup', 'lb', -0.1, 'ub', 0.1);  % Force z[N]
 
   sh.addParameter('m');           % mass [kg]
   sh.addParameter('A');           % section area car [m^2]
@@ -227,7 +227,7 @@ if k==K
 % % % oe = [h e RA inclination w TA a];
 % ch.add((oe(2)-0.5)^2);
 % ch.add((R_-5.740326e+04)^2*(V_-2.6351)^2);
-ch.add((R_-6.3781e+04)^2*(V_-2.4999)^2*fuel_cost^2);
+ch.add(fuel_cost^2);
 % 
 end
 % ch.add((oe(3)-0)^2);
