@@ -14,7 +14,7 @@ orbit1.omega=deg2rad(0);
 theta_pre_op=deg2rad(0);
 
 
-orbit2.a=16*Re;
+orbit2.a=15*Re;
 % orbit2.e=0.7;
 % orbit2.incl=deg2rad(20);
 % orbit2.RA=deg2rad(0);

@@ -8,14 +8,14 @@ saved_ig=load('ig.mat');
 
 MAX_TIME = 100000;
 
-% ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts,...
-%     'N', 50);
-
-  ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts, ...
-    'gridconstraints', @gridconstraints, ...
+ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts,...
     'N', 50);
+
+%   ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts, ...
+%     'gridconstraints', @gridconstraints, ...
+%     'N', 20);
 
 
 mu=3.986005*10^5;
@@ -60,20 +60,20 @@ initialGuess.states.xdot.set(saved_ig.X_trajectory(4,:));
 initialGuess.states.ydot.set(saved_ig.X_trajectory(5,:));
 initialGuess.states.zdot.set(saved_ig.X_trajectory(6,:));
 
-cvec=initialGuess.controls.dFr.value;
-cvec(1)=saved_ig.impulse1(1);
-cvec(end-1)=saved_ig.impulse2(1);
-initialGuess.controls.dFr.set(cvec);
-
-cvec=initialGuess.controls.dFs.value;
-cvec(1)=saved_ig.impulse1(2);
-cvec(end-1)=saved_ig.impulse2(2);
-initialGuess.controls.dFs.set(cvec);
-
-cvec=initialGuess.controls.dFw.value;
-cvec(1)=saved_ig.impulse1(3);
-cvec(end-1)=saved_ig.impulse2(3);
-initialGuess.controls.dFw.set(cvec);
+% cvec=initialGuess.controls.dFr.value;
+% cvec(1)=saved_ig.impulse1(1);
+% cvec(end-1)=saved_ig.impulse2(1);
+% initialGuess.controls.dFr.set(cvec);
+% 
+% cvec=initialGuess.controls.dFs.value;
+% cvec(1)=saved_ig.impulse1(2);
+% cvec(end-1)=saved_ig.impulse2(2);
+% initialGuess.controls.dFs.set(cvec);
+% 
+% cvec=initialGuess.controls.dFw.value;
+% cvec(1)=saved_ig.impulse1(3);
+% cvec(end-1)=saved_ig.impulse2(3);
+% initialGuess.controls.dFw.set(cvec);
 
 
 
@@ -128,9 +128,9 @@ sh.addState('Fw');  % Force y[N]
 
 sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
 
-sh.addControl('dFr', 'lb', -0.5, 'ub', 0.5);  % Force x[N]
-sh.addControl('dFs', 'lb', -0.5, 'ub', 0.5);  % Force y[N]
-sh.addControl('dFw', 'lb', -0.5, 'ub', 0.5);  % Force z[N]
+sh.addControl('dFr', 'lb', -0.001, 'ub', 0.001);  % Force x[N]
+sh.addControl('dFs', 'lb', -0.001, 'ub', 0.001);  % Force y[N]
+sh.addControl('dFw', 'lb', -0.001, 'ub', 0.001);  % Force z[N]
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -159,18 +159,36 @@ end
 
 function gridcosts(ch,k,K,x,~)
 
+R=[x.x x.y x.z];
+% V=[x.xdot x.ydot x.zdot];
+% 
+% 
+% 
+% oe = oe_from_sv(R,V,mu)
+
+R_=norm(R);
+% V_=norm(V);
+
+Re=6378.14;
+cc=0;
+
+if R_<7*Re
+    cc=1000000;
+end
+ch.add(cc);
+
 if k==K
-    
-%     R=[x.x x.y x.z];
-%     R_=norm(R);
+    R=[x.x x.y x.z];
+    R_=norm(R);
 %     ch.add((R_-102050.24)^2)
 %     V=[x.xdot x.ydot x.zdot];
 %     V_=norm(V);
 %     ch.add((V_-1.97634110924459)^2);
 
-    fuel_cost=norm([x.Fr x.Fs x.Fw]);
+    fuel_cost=x.Fr^2+x.Fs^2+x.Fw^2;
+%     ch.add((10+fuel_cost)*(R_-15*Re)^2);
     ch.add(fuel_cost);
-    
+%     ch.add((R_-14*Re)^2);
 end
 
 
@@ -178,15 +196,15 @@ end
 
 function gridconstraints(ch,~,~,x,p)
 
-R=[x.x x.y x.z];
-V=[x.xdot x.ydot x.zdot];
-oe = oe_from_sv(R,V,p.mu);
-e=oe(2);
-
-ch.add(e,'<=',0.99);
-ch.add(e,'>=',0);
-
-ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
+% R=[x.x x.y x.z];
+% V=[x.xdot x.ydot x.zdot];
+% oe = oe_from_sv(R,V,p.mu);
+% e=oe(2);
+% 
+% ch.add(e,'<=',0.99);
+% ch.add(e,'>=',0);
+% 
+% ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
   
   
   
