@@ -169,7 +169,7 @@ if k==K
 %     ch.add((V_-1.97634110924459)^2);
 
     fuel_cost=norm([x.Fr x.Fs x.Fw]);
-    ch.add(fuel_cost^2);
+    ch.add(fuel_cost);
     
 end
 
@@ -178,5 +178,16 @@ end
 
 function gridconstraints(ch,~,~,x,p)
 
-  ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
+R=[x.x x.y x.z];
+V=[x.xdot x.ydot x.zdot];
+oe = oe_from_sv(R,V,p.mu);
+e=oe(2);
+
+ch.add(e,'<=',0.99);
+ch.add(e,'>=',0);
+
+ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
+  
+  
+  
 end
