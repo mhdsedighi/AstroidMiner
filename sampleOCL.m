@@ -4,16 +4,18 @@ clc
 clear
 close all
 
+saved_ig=load('ig.mat');
+
 MAX_TIME = 100000;
 
-ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts,...
-    'N', 200);
-
-%   ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts, ...
-%     'gridconstraints', @gridconstraints, ...
+% ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts,...
 %     'N', 50);
+
+  ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts, ...
+    'gridconstraints', @gridconstraints, ...
+    'N', 50);
 
 
 mu=3.986005*10^5;
@@ -24,21 +26,57 @@ ocp.setParameter('Re', Re);
 
 ocp.setBounds('time', 0, MAX_TIME);
 
-ocp.setInitialBounds( 'x',   6.3781e+04);
-ocp.setInitialBounds( 'y',   0);
-ocp.setInitialBounds( 'z',   0);
-ocp.setInitialBounds( 'xdot',   0);
-ocp.setInitialBounds( 'ydot',   2.4999);
-ocp.setInitialBounds( 'zdot',   0);
+ocp.setInitialBounds( 'x',   saved_ig.X_trajectory(1,1));
+ocp.setInitialBounds( 'y',   saved_ig.X_trajectory(2,1));
+ocp.setInitialBounds( 'z',   saved_ig.X_trajectory(3,1));
+ocp.setInitialBounds( 'xdot',   saved_ig.X_trajectory(4,1));
+ocp.setInitialBounds( 'ydot',   saved_ig.X_trajectory(5,1));
+ocp.setInitialBounds( 'zdot',   saved_ig.X_trajectory(6,1));
 
-ocp.setEndBounds( 'x',   0);
-ocp.setEndBounds( 'y',   5.740326e+04);
-ocp.setEndBounds( 'z',   0);
-ocp.setEndBounds( 'xdot',   -2.6351);
-ocp.setEndBounds( 'ydot',   0);
-ocp.setEndBounds( 'zdot',   0);
+ocp.setEndBounds( 'x',   saved_ig.X_trajectory(1,end));
+ocp.setEndBounds( 'y',   saved_ig.X_trajectory(2,end));
+ocp.setEndBounds( 'z',   saved_ig.X_trajectory(3,end));
+ocp.setEndBounds( 'xdot',   saved_ig.X_trajectory(4,end));
+ocp.setEndBounds( 'ydot',   saved_ig.X_trajectory(5,end));
+ocp.setEndBounds( 'zdot',   saved_ig.X_trajectory(6,end));
 
-%   initialGuess    = ocp.getInitialGuess();
+initialGuess    = ocp.getInitialGuess();
+% N_i=length(initialGuess.states.x.value)
+% N_c=length(initialGuess.controls.dFr.value)
+
+% initialGuess.states.x.set(-initialGuess.states.x.value*2);
+% initialGuess.states.y.set(-initialGuess.states.x.value*2);
+% initialGuess.states.time
+% initialGuess.states.x.value
+% cvec=initialGuess.controls.dFs.value;
+% cvec(1)=-1;
+% cvec(end-1)=1;
+% initialGuess.controls.dFw.set(cvec);
+
+initialGuess.states.x.set(saved_ig.X_trajectory(1,:));
+initialGuess.states.y.set(saved_ig.X_trajectory(2,:));
+initialGuess.states.z.set(saved_ig.X_trajectory(3,:));
+initialGuess.states.xdot.set(saved_ig.X_trajectory(4,:));
+initialGuess.states.ydot.set(saved_ig.X_trajectory(5,:));
+initialGuess.states.zdot.set(saved_ig.X_trajectory(6,:));
+
+cvec=initialGuess.controls.dFr.value;
+cvec(1)=saved_ig.impulse1(1);
+cvec(end-1)=saved_ig.impulse2(1);
+initialGuess.controls.dFr.set(cvec);
+
+cvec=initialGuess.controls.dFs.value;
+cvec(1)=saved_ig.impulse1(2);
+cvec(end-1)=saved_ig.impulse2(2);
+initialGuess.controls.dFs.set(cvec);
+
+cvec=initialGuess.controls.dFw.value;
+cvec(1)=saved_ig.impulse1(3);
+cvec(end-1)=saved_ig.impulse2(3);
+initialGuess.controls.dFw.set(cvec);
+
+
+
 %
 %
 %   initialGuess.states.x.set( [63781.4000000000,63649.0866925162,63507.3111579282,63356.1326308643,63195.6117380831,63025.8104837438,62846.7922344723,62658.6217042281,62461.3649389740,62255.0893011522,62039.8634539699,61815.7573454974,61582.8421925821,61341.1904645811,61090.8758669175,60831.9733244606,60564.5589647365,60288.7101009700,60004.5052149629,59712.0239398111,59411.3470424639,59102.5564061295,58785.7350125303,58460.9669240098,58128.3372654970,57787.9322063303,57439.8389419445,57084.1456754249,56720.9415989321,56350.3168750001,55972.3626177133,55587.1708737636,55194.8346033930,54795.4476612244,54389.1047769850,53975.9015361252,53555.9343603369,53129.3004879757,52696.0979543890,52256.4255721554,51810.3829112386,51358.0702790584,50899.5887004844,50435.0398977550,49964.5262703253,49488.1508746480,49006.0174038921,48518.2301676006,48024.8940712933,47526.1145960180,47021.9977778525]);
@@ -50,7 +88,7 @@ ocp.setEndBounds( 'zdot',   0);
 %
 
 % Solve OCP
-[solution,times] = ocp.solve;
+[solution,times] = ocp.solve(initialGuess);
 
 
 figure
@@ -60,7 +98,7 @@ grid minor
 %   plot(times.states.value,solution.states.x.value)
 %   plot3(0,0,0,'ro')
 plot_earth
-plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'k.')
+plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'b.')
 view(25,45)
 figure
 subplot(3,1,1)
@@ -90,19 +128,13 @@ sh.addState('Fw');  % Force y[N]
 
 sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
 
-sh.addControl('dFr', 'lb', -0.1, 'ub', 0.1);  % Force x[N]
-sh.addControl('dFs', 'lb', -0.1, 'ub', 0.1);  % Force y[N]
-sh.addControl('dFw', 'lb', -0.1, 'ub', 0.1);  % Force z[N]
+sh.addControl('dFr', 'lb', -0.5, 'ub', 0.5);  % Force x[N]
+sh.addControl('dFs', 'lb', -0.5, 'ub', 0.5);  % Force y[N]
+sh.addControl('dFw', 'lb', -0.5, 'ub', 0.5);  % Force z[N]
 
-sh.addParameter('m');           % mass [kg]
-sh.addParameter('A');           % section area car [m^2]
-sh.addParameter('cd');          % drag coefficient [mini cooper 2008
-sh.addParameter('rho');         % airdensity [kg/m^3]
-sh.addParameter('Vmax');        % max speed [m/s]
-sh.addParameter('road_bound');  % lane road relative to the middle lane [m]
-sh.addParameter('Fmax');        % maximal force on the car [N]
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
+
 
 end
 
@@ -129,9 +161,13 @@ function gridcosts(ch,k,K,x,~)
 
 if k==K
     
-    % R=[x.x x.y x.z];
-    % V=[x.xdot x.ydot x.zdot];
-    % ch.add((R_-5.740326e+04)^2*(V_-2.6351)^2);
+%     R=[x.x x.y x.z];
+%     R_=norm(R);
+%     ch.add((R_-102050.24)^2)
+%     V=[x.xdot x.ydot x.zdot];
+%     V_=norm(V);
+%     ch.add((V_-1.97634110924459)^2);
+
     fuel_cost=norm([x.Fr x.Fs x.Fw]);
     ch.add(fuel_cost^2);
     
@@ -142,5 +178,5 @@ end
 
 function gridconstraints(ch,~,~,x,p)
 
-%   ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+100);
+  ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
 end
