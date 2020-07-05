@@ -4,43 +4,77 @@ clc
 clear
 close all
 
-saved_ig=load('ig.mat');
+% saved_ig=load('ig.mat');
+
+
 
 MAX_TIME = 100000;
 
-% ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts,...
-%     'N', 50);
+ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts,...
+    'N', 20);
 
-  ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts, ...
-    'gridconstraints', @gridconstraints, ...
-    'N', 50);
+%   ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts, ...
+%     'gridconstraints', @gridconstraints, ...
+%     'N', 50);
 
 
 mu=3.986005*10^5;
 Re=6378.14;
+
+orbit1.a=20*Re;
+orbit1.e=0.4;
+orbit1.incl=deg2rad(20);
+orbit1.RA=deg2rad(2);
+orbit1.omega=deg2rad(2);
+orbit1.MA=deg2rad(10);
+
+
+orbit2.a=16*Re;
+orbit2.e=0.5;
+orbit2.incl=deg2rad(20);
+orbit2.RA=deg2rad(20);
+orbit2.omega=deg2rad(20);
+orbit2.MA=deg2rad(20);
 
 ocp.setParameter('mu', mu);
 ocp.setParameter('Re', Re);
 
 ocp.setBounds('time', 0, MAX_TIME);
 
-ocp.setInitialBounds( 'x',   saved_ig.X_trajectory(1,1));
-ocp.setInitialBounds( 'y',   saved_ig.X_trajectory(2,1));
-ocp.setInitialBounds( 'z',   saved_ig.X_trajectory(3,1));
-ocp.setInitialBounds( 'xdot',   saved_ig.X_trajectory(4,1));
-ocp.setInitialBounds( 'ydot',   saved_ig.X_trajectory(5,1));
-ocp.setInitialBounds( 'zdot',   saved_ig.X_trajectory(6,1));
+% ocp.setInitialBounds( 'x',   saved_ig.X_trajectory(1,1));
+% ocp.setInitialBounds( 'y',   saved_ig.X_trajectory(2,1));
+% ocp.setInitialBounds( 'z',   saved_ig.X_trajectory(3,1));
+% ocp.setInitialBounds( 'xdot',   saved_ig.X_trajectory(4,1));
+% ocp.setInitialBounds( 'ydot',   saved_ig.X_trajectory(5,1));
+% ocp.setInitialBounds( 'zdot',   saved_ig.X_trajectory(6,1));
+% 
+% ocp.setEndBounds( 'x',   saved_ig.X_trajectory(1,end));
+% ocp.setEndBounds( 'y',   saved_ig.X_trajectory(2,end));
+% ocp.setEndBounds( 'z',   saved_ig.X_trajectory(3,end));
+% ocp.setEndBounds( 'xdot',   saved_ig.X_trajectory(4,end));
+% ocp.setEndBounds( 'ydot',   saved_ig.X_trajectory(5,end));
+% ocp.setEndBounds( 'zdot',   saved_ig.X_trajectory(6,end));
 
-ocp.setEndBounds( 'x',   saved_ig.X_trajectory(1,end));
-ocp.setEndBounds( 'y',   saved_ig.X_trajectory(2,end));
-ocp.setEndBounds( 'z',   saved_ig.X_trajectory(3,end));
-ocp.setEndBounds( 'xdot',   saved_ig.X_trajectory(4,end));
-ocp.setEndBounds( 'ydot',   saved_ig.X_trajectory(5,end));
-ocp.setEndBounds( 'zdot',   saved_ig.X_trajectory(6,end));
 
-initialGuess    = ocp.getInitialGuess();
+ocp.setInitialBounds( 'a',orbit1.a);
+ocp.setInitialBounds( 'e',orbit1.e);
+ocp.setInitialBounds( 'incl',orbit1.incl);
+ocp.setInitialBounds( 'RA',orbit1.RA);
+ocp.setInitialBounds( 'omega',orbit1.omega);
+ocp.setInitialBounds( 'MA',orbit1.MA);
+
+
+
+ocp.setEndBounds( 'a',orbit2.a);
+ocp.setEndBounds( 'e',orbit2.e);
+ocp.setEndBounds( 'incl',orbit2.incl);
+ocp.setEndBounds( 'RA',orbit2.RA);
+ocp.setEndBounds( 'omega',orbit2.omega);
+% ocp.setEndBounds( 'MA',orbit2.MA);
+
+% initialGuess    = ocp.getInitialGuess();
 % N_i=length(initialGuess.states.x.value)
 % N_c=length(initialGuess.controls.dFr.value)
 
@@ -53,27 +87,27 @@ initialGuess    = ocp.getInitialGuess();
 % cvec(end-1)=1;
 % initialGuess.controls.dFw.set(cvec);
 
-initialGuess.states.x.set(saved_ig.X_trajectory(1,:));
-initialGuess.states.y.set(saved_ig.X_trajectory(2,:));
-initialGuess.states.z.set(saved_ig.X_trajectory(3,:));
-initialGuess.states.xdot.set(saved_ig.X_trajectory(4,:));
-initialGuess.states.ydot.set(saved_ig.X_trajectory(5,:));
-initialGuess.states.zdot.set(saved_ig.X_trajectory(6,:));
-
-cvec=initialGuess.controls.dFr.value;
-cvec(1)=saved_ig.impulse1(1);
-cvec(end-1)=saved_ig.impulse2(1);
-initialGuess.controls.dFr.set(cvec);
-
-cvec=initialGuess.controls.dFs.value;
-cvec(1)=saved_ig.impulse1(2);
-cvec(end-1)=saved_ig.impulse2(2);
-initialGuess.controls.dFs.set(cvec);
-
-cvec=initialGuess.controls.dFw.value;
-cvec(1)=saved_ig.impulse1(3);
-cvec(end-1)=saved_ig.impulse2(3);
-initialGuess.controls.dFw.set(cvec);
+% initialGuess.states.x.set(saved_ig.X_trajectory(1,:));
+% initialGuess.states.y.set(saved_ig.X_trajectory(2,:));
+% initialGuess.states.z.set(saved_ig.X_trajectory(3,:));
+% initialGuess.states.xdot.set(saved_ig.X_trajectory(4,:));
+% initialGuess.states.ydot.set(saved_ig.X_trajectory(5,:));
+% initialGuess.states.zdot.set(saved_ig.X_trajectory(6,:));
+% 
+% cvec=initialGuess.controls.dFr.value;
+% cvec(1)=saved_ig.impulse1(1);
+% cvec(end-1)=saved_ig.impulse2(1);
+% initialGuess.controls.dFr.set(cvec);
+% 
+% cvec=initialGuess.controls.dFs.value;
+% cvec(1)=saved_ig.impulse1(2);
+% cvec(end-1)=saved_ig.impulse2(2);
+% initialGuess.controls.dFs.set(cvec);
+% 
+% cvec=initialGuess.controls.dFw.value;
+% cvec(1)=saved_ig.impulse1(3);
+% cvec(end-1)=saved_ig.impulse2(3);
+% initialGuess.controls.dFw.set(cvec);
 
 
 
@@ -88,49 +122,66 @@ initialGuess.controls.dFw.set(cvec);
 %
 
 % Solve OCP
-[solution,times] = ocp.solve(initialGuess);
+[solution,times] = ocp.solve;
 
 
-figure
-hold on
-axis equal
-grid minor
-%   plot(times.states.value,solution.states.x.value)
-%   plot3(0,0,0,'ro')
-plot_earth
-plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'b.')
-view(25,45)
+% figure
+% hold on
+% axis equal
+% grid minor
+% %   plot(times.states.value,solution.states.x.value)
+% %   plot3(0,0,0,'ro')
+% plot_earth
+% plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'b.')
+% view(25,45)
+
 figure
 subplot(3,1,1)
 grid minor
-plot(times.controls.value,solution.controls.dFr.value)
+plot(times.states.value,solution.states.a.value/Re)
+
 subplot(3,1,2)
 grid minor
-plot(times.controls.value,solution.controls.dFs.value)
+plot(times.states.value,solution.states.e.value)
+
 subplot(3,1,3)
 grid minor
-plot(times.controls.value,solution.controls.dFw.value)
+plot(times.states.value,solution.states.incl.value)
+
+
+figure
+subplot(3,1,1)
+grid minor
+plot(times.controls.value,solution.controls.Fr.value)
+subplot(3,1,2)
+grid minor
+plot(times.controls.value,solution.controls.Fs.value)
+subplot(3,1,3)
+grid minor
+plot(times.controls.value,solution.controls.Fw.value)
 
 
 end
 
 function varsfun(sh)
-sh.addState('x');   % position x[m]
-sh.addState('xdot');   % position x[m]
-sh.addState('y');   % position x[m]
-sh.addState('ydot');   % position x[m]
-sh.addState('z');   % position x[m]
-sh.addState('zdot');   % position x[m]
 
-sh.addState('Fr');  % Force x[N]
-sh.addState('Fs');  % Force y[N]
-sh.addState('Fw');  % Force y[N]
+sh.addState('a');   
+sh.addState('e');   
+sh.addState('incl');  
+sh.addState('RA'); 
+sh.addState('omega');  
+sh.addState('MA');
+
+
+sh.addState('sFr');  % Force x[N]
+sh.addState('sFs');  % Force y[N]
+sh.addState('sFw');  % Force y[N]
 
 sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
 
-sh.addControl('dFr', 'lb', -0.5, 'ub', 0.5);  % Force x[N]
-sh.addControl('dFs', 'lb', -0.5, 'ub', 0.5);  % Force y[N]
-sh.addControl('dFw', 'lb', -0.5, 'ub', 0.5);  % Force z[N]
+sh.addControl('Fr', 'lb', -0.5, 'ub', 0.5);  % Force x[N]
+sh.addControl('Fs', 'lb', -0.5, 'ub', 0.5);  % Force y[N]
+sh.addControl('Fw', 'lb', -0.5, 'ub', 0.5);  % Force z[N]
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -139,21 +190,55 @@ sh.addParameter('Re');
 end
 
 function daefun(sh,x,~,u,p)
-sh.setODE( 'x', x.xdot);
-sh.setODE( 'y', x.ydot);
-sh.setODE( 'z', x.zdot);
-c1=-p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3);
 
 
-force_vec_cart=rsw2xyz([u.dFr;u.dFs;u.dFw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
 
-sh.setODE('xdot', c1*x.x+force_vec_cart(1));
-sh.setODE('ydot', c1*x.y+force_vec_cart(2));
-sh.setODE('zdot', c1*x.z+force_vec_cart(3));
+a=x.a;
+e=x.e;
+incl=x.incl;
+RA=x.RA;
+omega=x.omega;
+MA=x.MA;
+theta=MA2theta(MA,e);
 
-sh.setODE('Fr', abs(u.dFr));
-sh.setODE('Fs', abs(u.dFs));
-sh.setODE('Fw', abs(u.dFw));
+n=sqrt(p.mu/(a^3));
+c2=sqrt(1-e^2);
+u1=theta+omega;
+p1=a*(1-e^2);
+h=sqrt(p.mu*p1);
+
+r=p1/(1+e*cos(theta));
+
+% a_dot=2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs;
+% e_dot=c2*sin(theta)/(n*a)*u.Fr+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs;
+% i_dot=r*cos(u)/(n*a^2*c2)*u.Fw;
+% RA_dot=r*sin(u)/(n*a^2*c2*sin(inc))*u.Fw;
+% omega_dot=-c2*cos(theta)/(n*a*e)*u.Fr+(p/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*cot(inc)*sin(u)/(n*a^2*c2)*u.Fw;
+% M_dot=n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*u.Fr-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs;
+
+
+sh.setODE( 'a', 2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs);
+sh.setODE( 'e', c2*sin(theta)/(n*a)*u.Fr+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs);
+sh.setODE( 'incl', r*cos(u1)/(n*a^2*c2)*u.Fw);
+
+if incl==0
+    sh.setODE( 'RA', 0);
+else
+    sh.setODE( 'RA', r*sin(u1)/(n*a^2*c2*sin(incl))*u.Fw);
+end
+
+if incl==0
+    sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*u.Fr+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs);
+else
+    sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*u.Fr+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*(1/tan(incl))*sin(u1)/(n*a^2*c2)*u.Fw);
+end
+
+sh.setODE( 'MA', n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*u.Fr-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs);
+
+
+sh.setODE('sFr', abs(u.Fr));
+sh.setODE('sFs', abs(u.Fs));
+sh.setODE('sFw', abs(u.Fw));
 sh.setODE('time', 1);
 end
 
@@ -167,9 +252,11 @@ if k==K
 %     V=[x.xdot x.ydot x.zdot];
 %     V_=norm(V);
 %     ch.add((V_-1.97634110924459)^2);
+% 
+%     fuel_cost=;
+%     ch.add(norm([x.sFr x.sFs x.sFw]))
 
-    fuel_cost=norm([x.Fr x.Fs x.Fw]);
-    ch.add(fuel_cost);
+% ch.add(x.time)
     
 end
 
@@ -178,15 +265,15 @@ end
 
 function gridconstraints(ch,~,~,x,p)
 
-R=[x.x x.y x.z];
-V=[x.xdot x.ydot x.zdot];
-oe = oe_from_sv(R,V,p.mu);
-e=oe(2);
-
-ch.add(e,'<=',0.99);
-ch.add(e,'>=',0);
-
-ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
+% R=[x.x x.y x.z];
+% V=[x.xdot x.ydot x.zdot];
+% oe = oe_from_sv(R,V,p.mu);
+% e=oe(2);
+% 
+% ch.add(e,'<=',0.99);
+% ch.add(e,'>=',0);
+% 
+% ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
   
   
   
