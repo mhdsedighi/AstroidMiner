@@ -12,7 +12,7 @@ MAX_TIME = 100000;
 
 ocp = ocl.Problem([], @varsfun, @daefun, ...
     'gridcosts', @gridcosts,...
-    'N', 20);
+    'N', 30);
 
 %   ocp = ocl.Problem([], @varsfun, @daefun, ...
 %     'gridcosts', @gridcosts, ...
@@ -23,17 +23,17 @@ ocp = ocl.Problem([], @varsfun, @daefun, ...
 mu=3.986005*10^5;
 Re=6378.14;
 
-orbit1.a=20*Re;
-orbit1.e=0.4;
+orbit1.a=15*Re;
+orbit1.e=0.5;
 orbit1.incl=deg2rad(20);
 orbit1.RA=deg2rad(2);
-orbit1.omega=deg2rad(2);
+orbit1.omega=deg2rad(20);
 orbit1.MA=deg2rad(10);
 
 
-orbit2.a=16*Re;
+orbit2.a=17*Re;
 orbit2.e=0.5;
-orbit2.incl=deg2rad(20);
+orbit2.incl=deg2rad(10);
 orbit2.RA=deg2rad(20);
 orbit2.omega=deg2rad(20);
 orbit2.MA=deg2rad(20);
@@ -69,9 +69,9 @@ ocp.setInitialBounds( 'MA',orbit1.MA);
 
 ocp.setEndBounds( 'a',orbit2.a);
 ocp.setEndBounds( 'e',orbit2.e);
-ocp.setEndBounds( 'incl',orbit2.incl);
-ocp.setEndBounds( 'RA',orbit2.RA);
-ocp.setEndBounds( 'omega',orbit2.omega);
+% ocp.setEndBounds( 'incl',orbit2.incl);
+% ocp.setEndBounds( 'RA',orbit2.RA);
+% ocp.setEndBounds( 'omega',orbit2.omega);
 % ocp.setEndBounds( 'MA',orbit2.MA);
 
 % initialGuess    = ocp.getInitialGuess();
@@ -125,28 +125,65 @@ ocp.setEndBounds( 'omega',orbit2.omega);
 [solution,times] = ocp.solve;
 
 
-% figure
-% hold on
-% axis equal
-% grid minor
-% %   plot(times.states.value,solution.states.x.value)
-% %   plot3(0,0,0,'ro')
-% plot_earth
-% plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'b.')
-% view(25,45)
+
+
+
+N=length(solution.states.e.value);
+a_ar=solution.states.a.value;
+e_ar=solution.states.e.value;
+incl_ar=solution.states.incl.value;
+RA_ar=solution.states.RA.value;
+omega_ar=solution.states.omega.value;
+MA_ar=solution.states.MA.value;
+
+
+theta_ar=zeros(1,N);
+for i=1:N
+   theta_ar(i)=MA2theta(MA_ar(i),e_ar(i));
+end
+
+R=zeros(3,N);
+V=zeros(3,N);
+for i=1:N
+   [R(:,i), V(:,i)] = rv_from_oe(a_ar(i),e_ar(i),RA_ar(i),incl_ar(i),omega_ar(i),theta_ar(i),mu);
+end
+
 
 figure
-subplot(3,1,1)
+subplot(6,1,1)
 grid minor
 plot(times.states.value,solution.states.a.value/Re)
+ylabel('a')
 
-subplot(3,1,2)
+subplot(6,1,2)
 grid minor
 plot(times.states.value,solution.states.e.value)
+ylabel('e')
 
-subplot(3,1,3)
+subplot(6,1,3)
 grid minor
 plot(times.states.value,solution.states.incl.value)
+ylabel('i')
+
+subplot(6,1,4)
+grid minor
+plot(times.states.value,solution.states.RA.value)
+ylabel('\Omega')
+
+subplot(6,1,5)
+grid minor
+plot(times.states.value,solution.states.omega.value)
+ylabel('\omega')
+
+subplot(6,1,6)
+grid minor
+plot(times.states.value,solution.states.MA.value)
+ylabel('M')
+
+
+
+
+
 
 
 figure
@@ -161,13 +198,25 @@ grid minor
 plot(times.controls.value,solution.controls.Fw.value)
 
 
+figure
+hold on
+axis equal
+grid minor
+view(25,45)
+plot_earth
+plot3(R(1,:),R(2,:),R(3,:),'b')
+
+
+
+
+
 end
 
 function varsfun(sh)
 
 sh.addState('a');   
-sh.addState('e');   
-sh.addState('incl');  
+sh.addState('e','lb' ,0.0001, 'ub', 0.9999);   
+sh.addState('incl','lb',0.0001, 'ub', pi-0.1);  
 sh.addState('RA'); 
 sh.addState('omega');  
 sh.addState('MA');
@@ -179,9 +228,9 @@ sh.addState('sFw');  % Force y[N]
 
 sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
 
-sh.addControl('Fr', 'lb', -0.5, 'ub', 0.5);  % Force x[N]
-sh.addControl('Fs', 'lb', -0.5, 'ub', 0.5);  % Force y[N]
-sh.addControl('Fw', 'lb', -0.5, 'ub', 0.5);  % Force z[N]
+sh.addControl('Fr', 'lb', -0.0001, 'ub', 0.0001);  % Force x[N]
+sh.addControl('Fs', 'lb', -0.0001, 'ub', 0.0001);  % Force y[N]
+sh.addControl('Fw', 'lb', -0.0001, 'ub', 0.0001);  % Force z[N]
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -220,19 +269,8 @@ r=p1/(1+e*cos(theta));
 sh.setODE( 'a', 2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs);
 sh.setODE( 'e', c2*sin(theta)/(n*a)*u.Fr+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs);
 sh.setODE( 'incl', r*cos(u1)/(n*a^2*c2)*u.Fw);
-
-if incl==0
-    sh.setODE( 'RA', 0);
-else
-    sh.setODE( 'RA', r*sin(u1)/(n*a^2*c2*sin(incl))*u.Fw);
-end
-
-if incl==0
-    sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*u.Fr+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs);
-else
-    sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*u.Fr+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*(1/tan(incl))*sin(u1)/(n*a^2*c2)*u.Fw);
-end
-
+sh.setODE( 'RA', r*sin(u1)/(n*a^2*c2*sin(incl))*u.Fw);
+sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*u.Fr+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*(1/tan(incl))*sin(u1)/(n*a^2*c2)*u.Fw);
 sh.setODE( 'MA', n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*u.Fr-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs);
 
 
@@ -244,6 +282,8 @@ end
 
 function gridcosts(ch,k,K,x,~)
 
+
+
 if k==K
     
 %     R=[x.x x.y x.z];
@@ -254,9 +294,10 @@ if k==K
 %     ch.add((V_-1.97634110924459)^2);
 % 
 %     fuel_cost=;
-%     ch.add(norm([x.sFr x.sFs x.sFw]))
+    
 
 % ch.add(x.time)
+ch.add(x.sFr^2+x.sFs^2+x.sFw^2);
     
 end
 
