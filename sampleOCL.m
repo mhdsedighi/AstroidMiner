@@ -3,6 +3,7 @@ function [solution,times,ocp] = sampleOCL
 clc
 clear
 close all
+% global flag
 
 % saved_ig=load('ig.mat');
 
@@ -281,7 +282,42 @@ end
 
 function gridcosts(ch,k,K,x,~)
 
+% global flag
 
+
+% if k==1
+%     
+%     flag=0;
+% end
+
+
+
+% compute eci velocity vector
+
+% v(1) = - smovrp * (sinl + hsmks * sinl - 2 * hmee * kmee * cosl + gmee ...
+%        - 2 * fmee * hmee * kmee + hsmks * gmee) / ssqrd;
+% 
+% v(2) = - smovrp * (-cosl + hsmks * cosl + 2 * hmee * kmee * sinl - fmee ...
+%        + 2 * gmee * hmee * kmee + hsmks * fmee) / ssqrd;
+% 
+% v(3) = 2 * smovrp * (hmee * cosl + kmee * sinl + fmee * hmee ...
+%        + gmee * kmee) / ssqrd;
+% %%%%
+% r_=norm(r);
+
+% if flag==0
+
+% r_=sqrt(r_1^2+r_2^2+r_3^2);
+% if r_<Re+300
+%     ch.add(-sign(r_-6.67814e3)*(r_-6.67814e3)^2*1e-4);
+% end
+% if -sign(r_-6.67814e3)*(r_-6.67814e3)^2>0
+%    flag=1; 
+% end
+
+% end
+
+    
 
 if k==K
     
@@ -312,8 +348,47 @@ function gridconstraints(ch,~,~,x,p)
 % 
 % ch.add(e,'<=',0.99);
 % ch.add(e,'>=',0);
-% 
-% ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
+
+mu=3.986005*10^5;
+Re=6378.14;
+
+pmee = x.mee1.value;
+fmee = x.mee2.value;
+gmee = x.mee3.value;
+hmee = x.mee4.value;
+kmee = x.mee5.value;
+lmee = x.mee6.value;
+
+% this_mee=[pmee fmee gmee hmee kmee lmee];
+% [r,v]=mee2rv(this_mee,mu);
+%%%%%%
+smovrp = sqrt(mu / pmee);
+
+tani2s = hmee^2 + kmee^2;
+
+cosl = cos(lmee);
+
+sinl = sin(lmee);
+
+wmee = 1 + fmee * cosl + gmee * sinl;
+
+radius = pmee / wmee;
+
+hsmks = hmee^2 - kmee^2;
+
+ssqrd = 1 + tani2s;
+
+% compute eci position vector
+
+r_1 = radius * (cosl + hsmks * cosl + 2 * hmee * kmee * sinl) / ssqrd;
+
+r_2 = radius * (sinl - hsmks * sinl + 2 * hmee * kmee * cosl) / ssqrd;
+
+r_3 = 2 * radius * (hmee * sinl - kmee * cosl) / ssqrd;
+
+r_=sqrt(r_1^2+r_2^2+r_3^2);
+
+ch.add(r_,'>=',6.67814e3);
   
   
   
