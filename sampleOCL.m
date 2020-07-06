@@ -250,28 +250,36 @@ function daefun(sh,x,~,u,p)
 
 mu=3.986005*10^5;
 
-meevec=zeros(6,1);
 
-meevec(1)=x.mee1;
-meevec(2)=x.mee2;
-meevec(3)=x.mee3;
-meevec(4)=x.mee4;
-meevec(5)=x.mee5;
-meevec(6)=x.mee6;
-
-u_fr=u.Fr;
-u_fs=u.Fs;
-u_fw=u.Fw;
-
-x_dot = mee_ode(meevec,u_fr,u_fs,u_fw,mu);
+pmee = x.mee1;
+fmee = x.mee2;
+gmee = x.mee3;
+hmee = x.mee4;
+xkmee = x.mee5;
+xlmee = x.mee6;
 
 
-sh.setODE( 'mee1', x_dot(1));
-sh.setODE( 'mee2', x_dot(2));
-sh.setODE( 'mee3', x_dot(3));
-sh.setODE( 'mee4', x_dot(4));
-sh.setODE( 'mee5', x_dot(5));
-sh.setODE( 'mee6', x_dot(6));
+
+% compute modified equinoctial elements equations of motion
+
+sinl = sin(xlmee);
+
+cosl = cos(xlmee);
+
+wmee = 1.0 + fmee * cosl + gmee * sinl;
+
+sesqr = 1.0 + hmee * hmee + xkmee * xkmee;
+
+
+sh.setODE( 'mee1', (2.0 * pmee / wmee) * sqrt(pmee / mu) * u.Fs);
+sh.setODE( 'mee2', sqrt(pmee / mu) * (u.Fr*sinl+((wmee + 1.0) * cosl + fmee) * (u.Fs / wmee) ...
+    -(hmee * sinl - xkmee * cosl) * (gmee * u.Fw / wmee)));
+sh.setODE( 'mee3', sqrt(pmee / mu) * (-u.Fr*cosl+((wmee + 1.0) * sinl + gmee) * (u.Fs / wmee) ...
+    -(hmee * sinl - xkmee * cosl) * (fmee * u.Fw / wmee)));
+sh.setODE( 'mee4', sqrt(pmee / mu) * (sesqr * u.Fw / (2.0 * wmee)) * cosl);
+sh.setODE( 'mee5', sqrt(pmee / mu) * (sesqr * u.Fw / (2.0 * wmee)) * sinl);
+sh.setODE( 'mee6', sqrt(mu * pmee) * (wmee / pmee)^2 + (1.0 / wmee) * sqrt(pmee / mu) ...
+    * (hmee * sinl - xkmee * cosl) * u.Fw);
 
 
 sh.setODE('sFr', abs(u.Fr));
