@@ -7,15 +7,15 @@ close all
 saved_ig=load('ig.mat');
 
 MAX_TIME = 100000;
+% 
+% ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts,...
+%     'N', 50);
 
-ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts,...
+  ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts, ...
+    'gridconstraints', @gridconstraints, ...
     'N', 50);
-
-%   ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts, ...
-%     'gridconstraints', @gridconstraints, ...
-%     'N', 20);
 
 
 mu=3.986005*10^5;
@@ -166,20 +166,20 @@ R=[x.x x.y x.z];
 % 
 % oe = oe_from_sv(R,V,mu)
 
-R_=norm(R);
-% V_=norm(V);
-
-Re=6378.14;
-cc=0;
-
-if R_<7*Re
-    cc=1000000;
-end
-ch.add(cc);
+% R_=norm(R);
+% % V_=norm(V);
+% 
+% Re=6378.14;
+% cc=0;
+% 
+% if R_<7*Re
+%     cc=1000000;
+% end
+% ch.add(cc);
 
 if k==K
-    R=[x.x x.y x.z];
-    R_=norm(R);
+%     R=[x.x x.y x.z];
+%     R_=norm(R);
 %     ch.add((R_-102050.24)^2)
 %     V=[x.xdot x.ydot x.zdot];
 %     V_=norm(V);
@@ -195,7 +195,7 @@ end
 end
 
 function gridconstraints(ch,~,~,x,p)
-
+Re=6378.14;
 % R=[x.x x.y x.z];
 % V=[x.xdot x.ydot x.zdot];
 % oe = oe_from_sv(R,V,p.mu);
@@ -204,7 +204,7 @@ function gridconstraints(ch,~,~,x,p)
 % ch.add(e,'<=',0.99);
 % ch.add(e,'>=',0);
 % 
-% ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
+ch.add(sqrt(x.x^2+x.y^2+x.z^2),'>=',10*Re);
   
   
   
