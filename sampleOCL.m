@@ -10,14 +10,14 @@ close all
 
 MAX_TIME = 100000;
 
-ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts,...
-    'N', 30);
+% ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts,...
+%     'N', 30);
 
-%   ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts, ...
-%     'gridconstraints', @gridconstraints, ...
-%     'N', 50);
+  ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts, ...
+    'gridconstraints', @gridconstraints, ...
+    'N', 50);
 
 
 mu=3.986005*10^5;
@@ -62,6 +62,8 @@ ocp.setBounds('time', 0, MAX_TIME);
 
 oe1=[orbit1.a orbit1.e orbit1.incl orbit1.omega orbit1.RA orbit1.theta];
 oe2=[orbit2.a orbit2.e orbit2.incl orbit2.omega orbit2.RA orbit2.theta];
+[r1,v1]=oe2rv(oe1,mu);
+[r2,v2]=oe2rv(oe2,mu);
 
 mee1=oe2mee(oe1,mu);
 mee2=oe2mee(oe2,mu);
@@ -72,6 +74,12 @@ ocp.setInitialBounds( 'mee3',mee1(3));
 ocp.setInitialBounds( 'mee4',mee1(4));
 ocp.setInitialBounds( 'mee5',mee1(5));
 ocp.setInitialBounds( 'mee6',mee1(6));
+ocp.setInitialBounds( 'x',r1(1));
+ocp.setInitialBounds( 'y',r1(2));
+ocp.setInitialBounds( 'z',r1(3));
+ocp.setInitialBounds( 'xdot',v1(1));
+ocp.setInitialBounds( 'ydot',v1(2));
+ocp.setInitialBounds( 'zdot',v1(3));
 
 
 
@@ -80,7 +88,7 @@ ocp.setEndBounds( 'mee2',mee2(2));
 ocp.setEndBounds( 'mee3',mee2(3));
 ocp.setEndBounds( 'mee4',mee2(4));
 ocp.setEndBounds( 'mee5',mee2(5));
-% ocp.setEndBounds( 'mee6',mee2(6));
+ocp.setEndBounds( 'mee6',mee2(6));
 
 % initialGuess    = ocp.getInitialGuess()
 % N_i=length(initialGuess.states.x.value)
@@ -218,7 +226,14 @@ sh.addState('mee2');
 sh.addState('mee3'); 
 sh.addState('mee4'); 
 sh.addState('mee5'); 
-sh.addState('mee6'); 
+sh.addState('mee6');
+
+sh.addState('x');
+sh.addState('xdot');
+sh.addState('y');
+sh.addState('ydot');
+sh.addState('z');
+sh.addState('zdot');
 
 
 sh.addState('sFr');  % Force x[N]
@@ -273,9 +288,20 @@ sh.setODE( 'mee6', sqrt(mu * pmee) * (wmee / pmee)^2 + (1.0 / wmee) * sqrt(pmee 
     * (hmee * sinl - xkmee * cosl) * u.Fw);
 
 
+force_vec_cart=rsw2xyz([u.Fr;u.Fs;u.Fw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
+c1=-p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3);
+sh.setODE( 'x', x.xdot);
+sh.setODE( 'y', x.ydot);
+sh.setODE( 'z', x.zdot);
+sh.setODE('xdot', c1*x.x+force_vec_cart(1));
+sh.setODE('ydot', c1*x.y+force_vec_cart(2));
+sh.setODE('zdot', c1*x.z+force_vec_cart(3));
+
 sh.setODE('sFr', abs(u.Fr));
 sh.setODE('sFs', abs(u.Fs));
 sh.setODE('sFw', abs(u.Fw));
+
+
 sh.setODE('time', 1);
 end
 
@@ -305,7 +331,7 @@ end
 
 function gridconstraints(ch,~,~,x,p)
 
-% R=[x.x x.y x.z];
+
 % V=[x.xdot x.ydot x.zdot];
 % oe = oe_from_sv(R,V,p.mu);
 % e=oe(2);
@@ -313,8 +339,17 @@ function gridconstraints(ch,~,~,x,p)
 % ch.add(e,'<=',0.99);
 % ch.add(e,'>=',0);
 % 
-% ch.add(sqrt(x.x^2+x.y^2+x.z^2),'<=',p.Re+1000);
+
   
+
+% mee=[x.mee1.value x.mee2.value x.mee3.value x.mee4.value x.mee5.value x.mee6.value];
+% [r,v]=mee2rv(mee,p.mu);
+R=[x.x x.y x.z];
+r_=norm(R);
+% 
+% 
+ch.add(r_,'<=',p.Re+300);
+
   
   
 end
