@@ -26,9 +26,9 @@ Re=6378.14;
 orbit1.a=15*Re;
 orbit1.e=0.5;
 orbit1.incl=deg2rad(20);
-orbit1.RA=deg2rad(2);
 orbit1.omega=deg2rad(20);
-orbit1.MA=deg2rad(10);
+orbit1.RA=deg2rad(2);
+orbit1.theta=deg2rad(10);
 
 
 orbit2.a=17*Re;
@@ -36,7 +36,9 @@ orbit2.e=0.5;
 orbit2.incl=deg2rad(10);
 orbit2.RA=deg2rad(20);
 orbit2.omega=deg2rad(20);
-orbit2.MA=deg2rad(20);
+orbit2.theta=deg2rad(20);
+
+
 
 ocp.setParameter('mu', mu);
 ocp.setParameter('Re', Re);
@@ -58,23 +60,29 @@ ocp.setBounds('time', 0, MAX_TIME);
 % ocp.setEndBounds( 'zdot',   saved_ig.X_trajectory(6,end));
 
 
-ocp.setInitialBounds( 'a',orbit1.a);
-ocp.setInitialBounds( 'e',orbit1.e);
-ocp.setInitialBounds( 'incl',orbit1.incl);
-ocp.setInitialBounds( 'RA',orbit1.RA);
-ocp.setInitialBounds( 'omega',orbit1.omega);
-ocp.setInitialBounds( 'MA',orbit1.MA);
+oe1=[orbit1.a orbit1.e orbit1.incl orbit1.omega orbit1.RA orbit1.theta];
+oe2=[orbit2.a orbit2.e orbit2.incl orbit2.omega orbit2.RA orbit2.theta];
+
+mee1=oe2mee(oe1,mu);
+mee2=oe2mee(oe2,mu);
+
+ocp.setInitialBounds( 'mee1',mee1(1));
+ocp.setInitialBounds( 'mee2',mee1(2));
+ocp.setInitialBounds( 'mee3',mee1(3));
+ocp.setInitialBounds( 'mee4',mee1(4));
+ocp.setInitialBounds( 'mee5',mee1(5));
+ocp.setInitialBounds( 'mee6',mee1(6));
 
 
 
-ocp.setEndBounds( 'a',orbit2.a);
-ocp.setEndBounds( 'e',orbit2.e);
-% ocp.setEndBounds( 'incl',orbit2.incl);
-% ocp.setEndBounds( 'RA',orbit2.RA);
-% ocp.setEndBounds( 'omega',orbit2.omega);
-% ocp.setEndBounds( 'MA',orbit2.MA);
+ocp.setEndBounds( 'mee1',mee2(1));
+ocp.setEndBounds( 'mee2',mee2(2));
+ocp.setEndBounds( 'mee3',mee2(3));
+ocp.setEndBounds( 'mee4',mee2(4));
+ocp.setEndBounds( 'mee5',mee2(5));
+ocp.setEndBounds( 'mee6',mee1(6));
 
-% initialGuess    = ocp.getInitialGuess();
+% initialGuess    = ocp.getInitialGuess()
 % N_i=length(initialGuess.states.x.value)
 % N_c=length(initialGuess.controls.dFr.value)
 
@@ -127,84 +135,84 @@ ocp.setEndBounds( 'e',orbit2.e);
 
 
 
-
-N=length(solution.states.e.value);
-a_ar=solution.states.a.value;
-e_ar=solution.states.e.value;
-incl_ar=solution.states.incl.value;
-RA_ar=solution.states.RA.value;
-omega_ar=solution.states.omega.value;
-MA_ar=solution.states.MA.value;
-
-
-theta_ar=zeros(1,N);
-for i=1:N
-   theta_ar(i)=MA2theta(MA_ar(i),e_ar(i));
-end
-
-R=zeros(3,N);
-V=zeros(3,N);
-for i=1:N
-   [R(:,i), V(:,i)] = rv_from_oe(a_ar(i),e_ar(i),RA_ar(i),incl_ar(i),omega_ar(i),theta_ar(i),mu);
-end
-
-
-figure
-subplot(6,1,1)
-grid minor
-plot(times.states.value,solution.states.a.value/Re)
-ylabel('a')
-
-subplot(6,1,2)
-grid minor
-plot(times.states.value,solution.states.e.value)
-ylabel('e')
-
-subplot(6,1,3)
-grid minor
-plot(times.states.value,solution.states.incl.value)
-ylabel('i')
-
-subplot(6,1,4)
-grid minor
-plot(times.states.value,solution.states.RA.value)
-ylabel('\Omega')
-
-subplot(6,1,5)
-grid minor
-plot(times.states.value,solution.states.omega.value)
-ylabel('\omega')
-
-subplot(6,1,6)
-grid minor
-plot(times.states.value,solution.states.MA.value)
-ylabel('M')
-
-
-
-
-
-
-
-figure
-subplot(3,1,1)
-grid minor
-plot(times.controls.value,solution.controls.Fr.value)
-subplot(3,1,2)
-grid minor
-plot(times.controls.value,solution.controls.Fs.value)
-subplot(3,1,3)
-grid minor
-plot(times.controls.value,solution.controls.Fw.value)
-
-
-figure
-hold on
-axis equal
-grid minor
-view(25,45)
-plot_earth
-plot3(R(1,:),R(2,:),R(3,:),'b')
+% 
+% N=length(solution.states.e.value);
+% a_ar=solution.states.a.value;
+% e_ar=solution.states.e.value;
+% incl_ar=solution.states.incl.value;
+% RA_ar=solution.states.RA.value;
+% omega_ar=solution.states.omega.value;
+% MA_ar=solution.states.MA.value;
+% 
+% 
+% theta_ar=zeros(1,N);
+% for i=1:N
+%    theta_ar(i)=MA2theta(MA_ar(i),e_ar(i));
+% end
+% 
+% R=zeros(3,N);
+% V=zeros(3,N);
+% for i=1:N
+%    [R(:,i), V(:,i)] = rv_from_oe(a_ar(i),e_ar(i),RA_ar(i),incl_ar(i),omega_ar(i),theta_ar(i),mu);
+% end
+% 
+% 
+% figure
+% subplot(6,1,1)
+% grid minor
+% plot(times.states.value,solution.states.a.value/Re)
+% ylabel('a')
+% 
+% subplot(6,1,2)
+% grid minor
+% plot(times.states.value,solution.states.e.value)
+% ylabel('e')
+% 
+% subplot(6,1,3)
+% grid minor
+% plot(times.states.value,solution.states.incl.value)
+% ylabel('i')
+% 
+% subplot(6,1,4)
+% grid minor
+% plot(times.states.value,solution.states.RA.value)
+% ylabel('\Omega')
+% 
+% subplot(6,1,5)
+% grid minor
+% plot(times.states.value,solution.states.omega.value)
+% ylabel('\omega')
+% 
+% subplot(6,1,6)
+% grid minor
+% plot(times.states.value,solution.states.MA.value)
+% ylabel('M')
+% 
+% 
+% 
+% 
+% 
+% 
+% 
+% figure
+% subplot(3,1,1)
+% grid minor
+% plot(times.controls.value,solution.controls.Fr.value)
+% subplot(3,1,2)
+% grid minor
+% plot(times.controls.value,solution.controls.Fs.value)
+% subplot(3,1,3)
+% grid minor
+% plot(times.controls.value,solution.controls.Fw.value)
+% 
+% 
+% figure
+% hold on
+% axis equal
+% grid minor
+% view(25,45)
+% plot_earth
+% plot3(R(1,:),R(2,:),R(3,:),'b')
 
 
 
@@ -214,12 +222,12 @@ end
 
 function varsfun(sh)
 
-sh.addState('a');   
-sh.addState('e','lb' ,0.0001, 'ub', 0.9999);   
-sh.addState('incl','lb',0.0001, 'ub', pi-0.1);  
-sh.addState('RA'); 
-sh.addState('omega');  
-sh.addState('MA');
+sh.addState('mee1'); 
+sh.addState('mee2'); 
+sh.addState('mee3'); 
+sh.addState('mee4'); 
+sh.addState('mee5'); 
+sh.addState('mee6'); 
 
 
 sh.addState('sFr');  % Force x[N]
@@ -228,9 +236,9 @@ sh.addState('sFw');  % Force y[N]
 
 sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
 
-sh.addControl('Fr', 'lb', -0.0001, 'ub', 0.0001);  % Force x[N]
-sh.addControl('Fs', 'lb', -0.0001, 'ub', 0.0001);  % Force y[N]
-sh.addControl('Fw', 'lb', -0.0001, 'ub', 0.0001);  % Force z[N]
+sh.addControl('Fr', 'lb', -0.01, 'ub', 0.01);  % Force x[N]
+sh.addControl('Fs', 'lb', -0.01, 'ub', 0.01);  % Force y[N]
+sh.addControl('Fw', 'lb', -0.01, 'ub', 0.01);  % Force z[N]
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -240,38 +248,30 @@ end
 
 function daefun(sh,x,~,u,p)
 
+mu=3.986005*10^5;
+
+meevec=zeros(6,1);
+
+meevec(1)=x.mee1;
+meevec(2)=x.mee2;
+meevec(3)=x.mee3;
+meevec(4)=x.mee4;
+meevec(5)=x.mee5;
+meevec(6)=x.mee6;
+
+u_fr=u.Fr;
+u_fs=u.Fs;
+u_fw=u.Fw;
+
+x_dot = mee_ode(meevec,u_fr,u_fs,u_fw,mu);
 
 
-a=x.a;
-e=x.e;
-incl=x.incl;
-RA=x.RA;
-omega=x.omega;
-MA=x.MA;
-theta=MA2theta(MA,e);
-
-n=sqrt(p.mu/(a^3));
-c2=sqrt(1-e^2);
-u1=theta+omega;
-p1=a*(1-e^2);
-h=sqrt(p.mu*p1);
-
-r=p1/(1+e*cos(theta));
-
-% a_dot=2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs;
-% e_dot=c2*sin(theta)/(n*a)*u.Fr+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs;
-% i_dot=r*cos(u)/(n*a^2*c2)*u.Fw;
-% RA_dot=r*sin(u)/(n*a^2*c2*sin(inc))*u.Fw;
-% omega_dot=-c2*cos(theta)/(n*a*e)*u.Fr+(p/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*cot(inc)*sin(u)/(n*a^2*c2)*u.Fw;
-% M_dot=n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*u.Fr-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs;
-
-
-sh.setODE( 'a', 2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs);
-sh.setODE( 'e', c2*sin(theta)/(n*a)*u.Fr+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs);
-sh.setODE( 'incl', r*cos(u1)/(n*a^2*c2)*u.Fw);
-sh.setODE( 'RA', r*sin(u1)/(n*a^2*c2*sin(incl))*u.Fw);
-sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*u.Fr+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*(1/tan(incl))*sin(u1)/(n*a^2*c2)*u.Fw);
-sh.setODE( 'MA', n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*u.Fr-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs);
+sh.setODE( 'mee1', x_dot(1));
+sh.setODE( 'mee2', x_dot(2));
+sh.setODE( 'mee3', x_dot(3));
+sh.setODE( 'mee4', x_dot(4));
+sh.setODE( 'mee5', x_dot(5));
+sh.setODE( 'mee6', x_dot(6));
 
 
 sh.setODE('sFr', abs(u.Fr));

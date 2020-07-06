@@ -1,4 +1,4 @@
-function ydot = mee_ode(t, y)
+function ydot = mee_ode(y,f_r,f_s,f_w,mu)
 
 % first-order modified equinoctial equations of motion
 
@@ -20,8 +20,6 @@ function ydot = mee_ode(t, y)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ydot=zeros(6,1);
-
-global mu force_t force_n force_r
  
 % unload current modified equinoctial orbital elements
 
@@ -44,19 +42,19 @@ wmee = 1.0 + fmee * cosl + gmee * sinl;
 
 sesqr = 1.0 + hmee * hmee + xkmee * xkmee;
 
-ydot(1) = (2.0 * pmee / wmee) * sqrt(pmee / mu) * force_t;
+ydot(1) = (2.0 * pmee / wmee) * sqrt(pmee / mu) * f_s;
 
-ydot(2) = sqrt(pmee / mu) * (force_r*sinl+((wmee + 1.0) * cosl + fmee) * (force_t / wmee) ...
-    -(hmee * sinl - xkmee * cosl) * (gmee * force_n / wmee));
+ydot(2) = sqrt(pmee / mu) * (f_r*sinl+((wmee + 1.0) * cosl + fmee) * (f_s / wmee) ...
+    -(hmee * sinl - xkmee * cosl) * (gmee * f_w / wmee));
 
-ydot(3) = sqrt(pmee / mu) * (-force_r*cosl+((wmee + 1.0) * sinl + gmee) * (force_t / wmee) ...
-    -(hmee * sinl - xkmee * cosl) * (fmee * force_n / wmee));
+ydot(3) = sqrt(pmee / mu) * (-f_r*cosl+((wmee + 1.0) * sinl + gmee) * (f_s / wmee) ...
+    -(hmee * sinl - xkmee * cosl) * (fmee * f_w / wmee));
 
-ydot(4) = sqrt(pmee / mu) * (sesqr * force_n / (2.0 * wmee)) * cosl;
+ydot(4) = sqrt(pmee / mu) * (sesqr * f_w / (2.0 * wmee)) * cosl;
 
-ydot(5) = sqrt(pmee / mu) * (sesqr * force_n / (2.0 * wmee)) * sinl;
+ydot(5) = sqrt(pmee / mu) * (sesqr * f_w / (2.0 * wmee)) * sinl;
 
 ydot(6) = sqrt(mu * pmee) * (wmee / pmee)^2 + (1.0 / wmee) * sqrt(pmee / mu) ...
-    * (hmee * sinl - xkmee * cosl) * force_n;
+    * (hmee * sinl - xkmee * cosl) * f_w;
 
 end
