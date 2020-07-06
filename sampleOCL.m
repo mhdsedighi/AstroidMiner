@@ -26,17 +26,17 @@ Re=6378.14;
 orbit1.a=15*Re;
 orbit1.e=0.5;
 orbit1.incl=deg2rad(20);
-orbit1.omega=deg2rad(20);
-orbit1.RA=deg2rad(2);
-orbit1.theta=deg2rad(10);
+orbit1.omega=deg2rad(0);
+orbit1.RA=deg2rad(0);
+orbit1.theta=deg2rad(0);
 
 
-orbit2.a=17*Re;
-orbit2.e=0.5;
-orbit2.incl=deg2rad(10);
-orbit2.RA=deg2rad(20);
-orbit2.omega=deg2rad(20);
-orbit2.theta=deg2rad(20);
+orbit2.a=14*Re;
+orbit2.e=0.6;
+orbit2.incl=deg2rad(20);
+orbit2.omega=deg2rad(0);
+orbit2.RA=deg2rad(0);
+orbit2.theta=deg2rad(0);
 
 
 
@@ -80,7 +80,7 @@ ocp.setEndBounds( 'mee2',mee2(2));
 ocp.setEndBounds( 'mee3',mee2(3));
 ocp.setEndBounds( 'mee4',mee2(4));
 ocp.setEndBounds( 'mee5',mee2(5));
-ocp.setEndBounds( 'mee6',mee1(6));
+% ocp.setEndBounds( 'mee6',mee2(6));
 
 % initialGuess    = ocp.getInitialGuess()
 % N_i=length(initialGuess.states.x.value)
@@ -136,26 +136,17 @@ ocp.setEndBounds( 'mee6',mee1(6));
 
 
 % 
-% N=length(solution.states.e.value);
-% a_ar=solution.states.a.value;
-% e_ar=solution.states.e.value;
-% incl_ar=solution.states.incl.value;
-% RA_ar=solution.states.RA.value;
-% omega_ar=solution.states.omega.value;
-% MA_ar=solution.states.MA.value;
-% 
-% 
-% theta_ar=zeros(1,N);
-% for i=1:N
-%    theta_ar(i)=MA2theta(MA_ar(i),e_ar(i));
-% end
-% 
-% R=zeros(3,N);
-% V=zeros(3,N);
-% for i=1:N
-%    [R(:,i), V(:,i)] = rv_from_oe(a_ar(i),e_ar(i),RA_ar(i),incl_ar(i),omega_ar(i),theta_ar(i),mu);
-% end
-% 
+
+mee_ar=[solution.states.mee1.value;solution.states.mee2.value;solution.states.mee3.value;solution.states.mee4.value;solution.states.mee5.value;solution.states.mee6.value];
+N=length(solution.states.mee1.value);
+R_ar=zeros(3,N);
+for i=1:N
+   
+    [r,v]=mee2rv(mee_ar(:,i),mu);
+    R_ar(:,i)=r;
+    
+end
+
 % 
 % figure
 % subplot(6,1,1)
@@ -194,25 +185,25 @@ ocp.setEndBounds( 'mee6',mee1(6));
 % 
 % 
 % 
-% figure
-% subplot(3,1,1)
-% grid minor
-% plot(times.controls.value,solution.controls.Fr.value)
-% subplot(3,1,2)
-% grid minor
-% plot(times.controls.value,solution.controls.Fs.value)
-% subplot(3,1,3)
-% grid minor
-% plot(times.controls.value,solution.controls.Fw.value)
+figure
+subplot(3,1,1)
+grid minor
+plot(times.controls.value,solution.controls.Fr.value)
+subplot(3,1,2)
+grid minor
+plot(times.controls.value,solution.controls.Fs.value)
+subplot(3,1,3)
+grid minor
+plot(times.controls.value,solution.controls.Fw.value)
 % 
 % 
-% figure
-% hold on
-% axis equal
-% grid minor
-% view(25,45)
-% plot_earth
-% plot3(R(1,:),R(2,:),R(3,:),'b')
+figure
+hold on
+axis equal
+grid minor
+view(25,45)
+plot_earth
+plot3(R_ar(1,:),R_ar(2,:),R_ar(3,:),'b')
 
 
 
