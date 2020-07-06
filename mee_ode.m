@@ -20,8 +20,8 @@ function ydot = mee_ode(t, y)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-global mu v1 beta0 thracc
-
+global mu v1 beta0 thracc force_t force_n force_r
+ 
 % unload current modified equinoctial orbital elements
 
 pmee = y(1);
@@ -83,19 +83,19 @@ wmee = 1.0 + fmee * cosl + gmee * sinl;
 
 sesqr = 1.0 + hmee * hmee + xkmee * xkmee;
 
-ydot(1) = (2.0 * pmee / wmee) * sqrt(pmee / mu) * thracc * cos(beta_wrk);
+ydot(1) = (2.0 * pmee / wmee) * sqrt(pmee / mu) * force_t;
 
-ydot(2) = sqrt(pmee / mu) * (((wmee + 1.0) * cosl + fmee) * (thracc * cos(beta_wrk) / wmee) ...
-    -(hmee * sinl - xkmee * cosl) * (gmee * thracc * sin(beta_wrk) / wmee));
+ydot(2) = sqrt(pmee / mu) * (force_r*sinl+((wmee + 1.0) * cosl + fmee) * (force_t / wmee) ...
+    -(hmee * sinl - xkmee * cosl) * (gmee * force_n / wmee));
 
-ydot(3) = sqrt(pmee / mu) * (((wmee + 1.0) * sinl + gmee) * (thracc * cos(beta_wrk) / wmee) ...
-    -(hmee * sinl - xkmee * cosl) * (fmee * thracc * sin(beta_wrk) / wmee));
+ydot(3) = sqrt(pmee / mu) * (-force_r*cosl+((wmee + 1.0) * sinl + gmee) * (force_t / wmee) ...
+    -(hmee * sinl - xkmee * cosl) * (fmee * force_n / wmee));
 
-ydot(4) = sqrt(pmee / mu) * (sesqr * thracc * sin(beta_wrk) / (2.0 * wmee)) * cosl;
+ydot(4) = sqrt(pmee / mu) * (sesqr * force_n / (2.0 * wmee)) * cosl;
 
-ydot(5) = sqrt(pmee / mu) * (sesqr * thracc * sin(beta_wrk) / (2.0 * wmee)) * sinl;
+ydot(5) = sqrt(pmee / mu) * (sesqr * force_n / (2.0 * wmee)) * sinl;
 
 ydot(6) = sqrt(mu * pmee) * (wmee / pmee)^2 + (1.0 / wmee) * sqrt(pmee / mu) ...
-    * (hmee * sinl - xkmee * cosl) * thracc * sin(beta_wrk);
+    * (hmee * sinl - xkmee * cosl) * force_n;
 
 end
