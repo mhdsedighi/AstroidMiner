@@ -19,8 +19,9 @@ function ydot = mee_ode(t, y)
 % Orbital Mechanics with MATLAB
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ydot=zeros(6,1);
 
-global mu v1 beta0 thracc force_t force_n force_r
+global mu force_t force_n force_r
  
 % unload current modified equinoctial orbital elements
 
@@ -31,47 +32,7 @@ hmee = y(4);
 xkmee = y(5);
 xlmee = y(6);
 
-% compute current absolute value of yaw angle (radians)
 
-beta_tmp = atan3(v1 * sin(beta0), (v1 * cos(beta0) - thracc * t));
-
-% compute current eci state vector
-
-[reci, veci] = mee2eci(mu, y);
-
-% compute current classical orbital elements
-
-oev_wrk = eci2orb1 (mu, reci, veci);
-
-% current argument of latitude (radians)
-
-arglat = mod(oev_wrk(4) + oev_wrk(6), 2.0 * pi);
-
-% compute yaw angle based on current orbital position (radians)
-
-if (arglat >= 0.0 && arglat < 0.5 * pi)
-    
-    beta_wrk = -beta_tmp;
-    
-end
-
-if (arglat > 0.5 * pi && arglat < pi)
-    
-    beta_wrk = beta_tmp;
-    
-end
-
-if (arglat > pi && arglat < 1.5 * pi)
-    
-   beta_wrk = beta_tmp;
-   
-end
-
-if (arglat > 1.5 * pi && arglat < 2.0 * pi)
-    
-   beta_wrk = -beta_tmp;
-   
-end
 
 % compute modified equinoctial elements equations of motion
 
