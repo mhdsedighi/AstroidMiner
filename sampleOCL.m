@@ -10,15 +10,15 @@ close all
 
 
 MAX_TIME = 100000;
+% 
+% ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts,...
+%     'N', 30);
 
-ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts,...
-    'N', 30);
-
-%   ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts, ...
-%     'gridconstraints', @gridconstraints, ...
-%     'N', 50);
+  ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts, ...
+    'gridconstraints', @gridconstraints, ...
+    'N', 50);
 
 
 mu=3.986005*10^5;
@@ -81,7 +81,7 @@ ocp.setEndBounds( 'mee2',mee2(2));
 ocp.setEndBounds( 'mee3',mee2(3));
 ocp.setEndBounds( 'mee4',mee2(4));
 ocp.setEndBounds( 'mee5',mee2(5));
-% ocp.setEndBounds( 'mee6',mee2(6));
+ocp.setEndBounds( 'mee6',mee2(6));
 
 % initialGuess    = ocp.getInitialGuess()
 % N_i=length(initialGuess.states.x.value)
@@ -388,7 +388,8 @@ r_3 = 2 * radius * (hmee * sinl - kmee * cosl) / ssqrd;
 
 r_=sqrt(r_1^2+r_2^2+r_3^2);
 
-ch.add(r_,'>=',6.67814e3);
+ch.add(r_,'>=',63780.14);
+
   
   
   
