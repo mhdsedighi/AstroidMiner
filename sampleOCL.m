@@ -8,14 +8,14 @@ saved_ig=load('ig.mat');
 
 MAX_TIME = 100000;
 % 
-% ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts,...
-%     'N', 50);
-
-  ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts, ...
-    'gridconstraints', @gridconstraints, ...
+ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts,...
     'N', 50);
+
+%   ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts, ...
+%     'gridconstraints', @gridconstraints, ...
+%     'N', 50);
 
 
 mu=3.986005*10^5;
@@ -128,9 +128,9 @@ sh.addState('Fw');  % Force y[N]
 
 sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
 
-sh.addControl('dFr', 'lb', -0.001, 'ub', 0.001);  % Force x[N]
-sh.addControl('dFs', 'lb', -0.001, 'ub', 0.001);  % Force y[N]
-sh.addControl('dFw', 'lb', -0.001, 'ub', 0.001);  % Force z[N]
+sh.addControl('dFr', 'lb', -0.00001, 'ub', 0.00001);  % Force x[N]
+sh.addControl('dFs', 'lb', -0.00001, 'ub', 0.00001);  % Force y[N]
+sh.addControl('dFw', 'lb', -0.00001, 'ub', 0.00001);  % Force z[N]
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -144,8 +144,8 @@ sh.setODE( 'y', x.ydot);
 sh.setODE( 'z', x.zdot);
 c1=-p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3);
 
-
-force_vec_cart=rsw2xyz([u.dFr;u.dFs;u.dFw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
+%%%%
+force_vec_cart=rsw2xyz([u.dFr;0*u.dFs;0*u.dFw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
 
 sh.setODE('xdot', c1*x.x+force_vec_cart(1));
 sh.setODE('ydot', c1*x.y+force_vec_cart(2));
