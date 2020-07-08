@@ -204,8 +204,14 @@ Re=6378.14;
 % ch.add(e,'<=',0.99);
 % ch.add(e,'>=',0);
 % 
-ch.add(sqrt(x.x^2+x.y^2+x.z^2),'>=',10*Re);
+% ch.add(sqrt(x.x^2+x.y^2+x.z^2),'>=',10*Re);
+R=[x.x x.y x.z];
+V=[x.xdot x.ydot x.zdot];
+R_=sqrt(x.x^2+x.y^2+x.z^2);
+V_=sqrt(x.xdot^2+x.ydot^2+x.zdot^2);
+
+ang1=acos(dot(R,V)/R_/V_);
   
-  
+  ch.add(ang1,'<=',2.5);
   
 end
