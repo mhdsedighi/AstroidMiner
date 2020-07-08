@@ -12,7 +12,7 @@ MAX_TIME = 1e6;
 
 ocp = ocl.Problem([], @varsfun, @daefun, ...
     'gridcosts', @gridcosts,...
-    'N', 20);
+    'N', 40);
 
 %   ocp = ocl.Problem([], @varsfun, @daefun, ...
 %     'gridcosts', @gridcosts, ...
@@ -67,8 +67,8 @@ ocp.setInitialBounds( 'MA',orbit1.MA);
 
 
 
-ocp.setEndBounds( 'a',orbit2.a);
-ocp.setEndBounds( 'e',orbit2.e);
+% ocp.setEndBounds( 'a',orbit2.a);
+% ocp.setEndBounds( 'e',orbit2.e);
 % ocp.setEndBounds( 'incl',orbit2.incl);
 % ocp.setEndBounds( 'RA',orbit2.RA);
 % ocp.setEndBounds( 'omega',orbit2.omega);
@@ -290,19 +290,22 @@ function gridcosts(ch,k,K,x,~)
 
 
 if k==K
-    
-%     R=[x.x x.y x.z];
-%     R_=norm(R);
-%     ch.add((R_-102050.24)^2)
-%     V=[x.xdot x.ydot x.zdot];
-%     V_=norm(V);
-%     ch.add((V_-1.97634110924459)^2);
-% 
-%     fuel_cost=;
-    
 
-% ch.add(x.time)
-ch.add(x.sFr^2+x.sFs^2+x.sFw^2);
+    %     R=[x.x x.y x.z];
+    %     R_=norm(R);
+    %     ch.add((R_-102050.24)^2)
+    %     V=[x.xdot x.ydot x.zdot];
+    %     V_=norm(V);
+    %     ch.add((V_-1.97634110924459)^2);
+    %
+    %     fuel_cost=;
+    
+    
+    % ch.add(x.time)
+    Re=6378.14;
+    ch.add(x.sFr^2+x.sFs^2+x.sFw^2);
+    ch.add((x.a-10*Re)^2);
+    ch.add((x.e-0)^2);
     
 end
 
