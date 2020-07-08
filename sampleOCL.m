@@ -12,7 +12,7 @@ MAX_TIME = 1e6;
 
 ocp = ocl.Problem([], @varsfun, @daefun, ...
     'gridcosts', @gridcosts,...
-    'N', 40);
+    'N', 20);
 
 %   ocp = ocl.Problem([], @varsfun, @daefun, ...
 %     'gridcosts', @gridcosts, ...
@@ -23,16 +23,17 @@ ocp = ocl.Problem([], @varsfun, @daefun, ...
 mu=3.986005*10^5;
 Re=6378.14;
 
-orbit1.a=17*Re;
-orbit1.e=0.5;
+orbit1.a=50*Re;
+orbit1.e=0.7;
 orbit1.incl=deg2rad(20);
 orbit1.RA=deg2rad(2);
 orbit1.omega=deg2rad(20);
-orbit1.MA=deg2rad(10);
+orbit1.MA=deg2rad(0);
+oe1=[orbit1.a orbit1.e orbit1.incl orbit1.omega orbit1.RA orbit1.MA];
+[R1,V1]=oe2rv(oe1,mu);
 
-
-orbit2.a=12*Re;
-orbit2.e=0.5;
+orbit2.a=10*Re;
+orbit2.e=0.7;
 orbit2.incl=deg2rad(10);
 orbit2.RA=deg2rad(20);
 orbit2.omega=deg2rad(20);
@@ -43,12 +44,12 @@ ocp.setParameter('Re', Re);
 
 ocp.setBounds('time', 0, MAX_TIME);
 
-% ocp.setInitialBounds( 'x',   saved_ig.X_trajectory(1,1));
-% ocp.setInitialBounds( 'y',   saved_ig.X_trajectory(2,1));
-% ocp.setInitialBounds( 'z',   saved_ig.X_trajectory(3,1));
-% ocp.setInitialBounds( 'xdot',   saved_ig.X_trajectory(4,1));
-% ocp.setInitialBounds( 'ydot',   saved_ig.X_trajectory(5,1));
-% ocp.setInitialBounds( 'zdot',   saved_ig.X_trajectory(6,1));
+ocp.setInitialBounds( 'x',   R1(1));
+ocp.setInitialBounds( 'y',   R1(2));
+ocp.setInitialBounds( 'z',   R1(3));
+ocp.setInitialBounds( 'xdot',   V1(1));
+ocp.setInitialBounds( 'ydot',   V1(2));
+ocp.setInitialBounds( 'zdot',   V1(3));
 % 
 % ocp.setEndBounds( 'x',   saved_ig.X_trajectory(1,end));
 % ocp.setEndBounds( 'y',   saved_ig.X_trajectory(2,end));
@@ -205,6 +206,7 @@ grid minor
 view(25,45)
 plot_earth
 plot3(R(1,:),R(2,:),R(3,:),'b')
+plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'r.')
 
 
 
@@ -220,6 +222,15 @@ sh.addState('incl','lb',0.0001, 'ub', pi-0.1);
 sh.addState('RA'); 
 sh.addState('omega');  
 sh.addState('MA');
+
+sh.addState('x');  
+sh.addState('xdot');
+sh.addState('y'); 
+sh.addState('ydot');
+sh.addState('z'); 
+sh.addState('zdot'); 
+
+
 
 
 sh.addState('sFr');  % Force x[N]
@@ -258,9 +269,22 @@ h=sqrt(p.mu*p1);
 
 r=p1/(1+e*cos(theta));
 
-c5=0;
-if r<2*Re
-    c5=0.1;
+r_exact=sqrt(x.x^2+x.y^2+x.z^2);
+
+R=[x.x x.y x.z];
+V=[x.xdot x.ydot x.zdot];
+R_=norm(R);
+ang1=dot(R,V)/R_/norm(V);
+
+c4=0;
+% if ang1>2.356194
+%     c4=(2.356194-ang1)^2;
+% end
+
+
+if r_exact<9.5*Re
+%     u.Fr=1+u.Fr;
+c4=100*(2*Re-r_exact)^2;
 end
 
 % a_dot=2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs;
@@ -271,24 +295,55 @@ end
 % M_dot=n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*u.Fr-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs;
 
 
-sh.setODE( 'a', c5+2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs);
-sh.setODE( 'e', c2*sin(theta)/(n*a)*u.Fr+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs);
+sh.setODE( 'a', 2*e*sin(theta)/(n*c2)*(c4+u.Fr)+2*a*c2/(n*r)*u.Fs);
+sh.setODE( 'e', c2*sin(theta)/(n*a)*(c4+u.Fr)+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs);
 sh.setODE( 'incl', r*cos(u1)/(n*a^2*c2)*u.Fw);
 sh.setODE( 'RA', r*sin(u1)/(n*a^2*c2*sin(incl))*u.Fw);
-sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*u.Fr+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*(1/tan(incl))*sin(u1)/(n*a^2*c2)*u.Fw);
-sh.setODE( 'MA', n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*u.Fr-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs);
+sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*(c4+u.Fr)+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*(1/tan(incl))*sin(u1)/(n*a^2*c2)*u.Fw);
+sh.setODE( 'MA', n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*(c4+u.Fr)-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs);
 
 
-sh.setODE('sFr', abs(u.Fr));
+
+c1=-p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3);
+force_vec_cart=rsw2xyz([(c4+u.Fr);u.Fs;u.Fw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
+sh.setODE( 'x', x.xdot);
+sh.setODE( 'y', x.ydot);
+sh.setODE( 'z', x.zdot);
+sh.setODE('xdot', c1*x.x+force_vec_cart(1));
+sh.setODE('ydot', c1*x.y+force_vec_cart(2));
+sh.setODE('zdot', c1*x.z+force_vec_cart(3));
+
+
+sh.setODE('sFr', abs((c4+u.Fr)));
 sh.setODE('sFs', abs(u.Fs));
 sh.setODE('sFw', abs(u.Fw));
 sh.setODE('time', 1);
 end
 
 function gridcosts(ch,k,K,x,~)
+    Re=6378.14;
+%     cost1=0;
+%     cost2=0;
+% r_exact=sqrt(x.
+% 
+% if r_exact<2*Re
+%     cost1=2*Re-r_exact;
+% end
+%     ch.add(cost1);
 
-
-
+% R=[x.x x.y x.z];
+% V=[x.xdot x.ydot x.zdot];
+% R_=norm(R);
+% ang1=dot(-R,V)/R_/norm(V);
+% 
+% % if ang1<0.1745329
+% %     cost1=(0.1745329-ang1)^2;
+% % end
+% if R_<2*Re
+%     cost2=(R_-2*Re)^2;
+% end
+% ch.add(cost1);
+% ch.add(cost2);
 if k==K
 
     %     R=[x.x x.y x.z];
@@ -302,10 +357,11 @@ if k==K
     
     
     % ch.add(x.time)
-    Re=6378.14;
+
     ch.add(x.sFr^2+x.sFs^2+x.sFw^2);
+%     ch.add((1+(x.a-14*Re)^2)*(1+(x.e-0)^2)*(1+(x.sFr^2+x.sFs^2+x.sFw^2)));
+    ch.add((x.e-0.7)^2);
     ch.add((x.a-10*Re)^2);
-    ch.add((x.e-0)^2);
     
 end
 
