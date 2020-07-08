@@ -21,7 +21,7 @@ orbit2.a=15*Re;
 % orbit2.omega=deg2rad(45);
 
 e_span=[0 0];
-incl_span=[0 0];
+incl_span=[deg2rad(40) deg2rad(40)];
 RA_span=[0 0];
 omega_span=[0 0];
 
