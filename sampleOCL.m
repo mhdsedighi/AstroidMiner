@@ -10,7 +10,7 @@ MAX_TIME = 100000;
 % 
 ocp = ocl.Problem([], @varsfun, @daefun, ...
     'gridcosts', @gridcosts,...
-    'N', 50);
+    'N', 30);
 
 %   ocp = ocl.Problem([], @varsfun, @daefun, ...
 %     'gridcosts', @gridcosts, ...
@@ -88,7 +88,7 @@ ocp.setInitialBounds( 'zdot',   saved_ig.X_trajectory(6,1));
 %
 
 % Solve OCP
-[solution,times] = ocp.solve(initialGuess);
+[solution,times] = ocp.solve();
 
 
 figure
@@ -182,9 +182,6 @@ function gridcosts(ch,k,K,x,~)
 
 
 
-
-
-
 if k==K
     mu=3.986005*10^5;
 Re=6378.14;
@@ -199,57 +196,11 @@ rmag = sqrt(x.x^2+x.y^2+x.z^2);
 
 vmag = sqrt(x.xdot^2+x.ydot^2+x.zdot^2);
 
-% position unit vector
-
-rhat = r / rmag;
-
-% angular momentum vectors
-
-hv = cross(r, v);
-
-hhat = hv / norm(hv);
-
-% eccentricity vector
-
-vtmp = v / mu;
-
-ecc = cross(vtmp, hv);
-
-ecc = ecc - rhat;
-
-sma = 1.0 / (2.0 / rmag - vmag * vmag / mu);
-p = hhat(1) / (1.0 + hhat(3));
-
-q = -hhat(2) / (1.0 + hhat(3));
-
-const1 = 1.0 / (1.0 + p * p + q * q);
-fhat=zeros(3,1);
-ghat=zeros(3,1);
-
-fhat(1) = const1 * (1.0 - p * p + q * q);
-fhat(2) = const1 * 2.0 * p * q;
-fhat(3) = -const1 * 2.0 * p;
-
-ghat(1) = const1 * 2.0 * p * q;
-ghat(2) = const1 * (1.0 + p * p - q * q);
-ghat(3) = const1 * 2.0 * q;
-
-h = dot(ecc, ghat);
-
-xk = dot(ecc, fhat);
-
-x1 = dot(r, fhat);
-
-y1 = dot(r, ghat);
-
-% orbital eccentricity
-
-eccm = sqrt(h * h + xk * xk);
-
-ch.add(eccm^2);
-ch.add((sma-15*Re)^2);
     fuel_cost=x.Fr^2+x.Fs^2+x.Fw^2;
     ch.add(fuel_cost);
+    
+    ch.add((vmag-x.ydot)^2+(2.499895-x.ydot)^2);
+    ch.add((rmag-10*Re)^2);
 
 end
 
