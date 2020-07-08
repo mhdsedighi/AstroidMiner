@@ -8,11 +8,11 @@ close all
 
 
 
-MAX_TIME = 100000;
+MAX_TIME = 1e6;
 
 ocp = ocl.Problem([], @varsfun, @daefun, ...
     'gridcosts', @gridcosts,...
-    'N', 30);
+    'N', 20);
 
 %   ocp = ocl.Problem([], @varsfun, @daefun, ...
 %     'gridcosts', @gridcosts, ...
@@ -23,7 +23,7 @@ ocp = ocl.Problem([], @varsfun, @daefun, ...
 mu=3.986005*10^5;
 Re=6378.14;
 
-orbit1.a=15*Re;
+orbit1.a=17*Re;
 orbit1.e=0.5;
 orbit1.incl=deg2rad(20);
 orbit1.RA=deg2rad(2);
@@ -31,7 +31,7 @@ orbit1.omega=deg2rad(20);
 orbit1.MA=deg2rad(10);
 
 
-orbit2.a=17*Re;
+orbit2.a=12*Re;
 orbit2.e=0.5;
 orbit2.incl=deg2rad(10);
 orbit2.RA=deg2rad(20);
@@ -226,11 +226,11 @@ sh.addState('sFr');  % Force x[N]
 sh.addState('sFs');  % Force y[N]
 sh.addState('sFw');  % Force y[N]
 
-sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
+sh.addState('time', 'lb', 0, 'ub', 1e6);  % time [s]
 
-sh.addControl('Fr', 'lb', -0.0001, 'ub', 0.0001);  % Force x[N]
-sh.addControl('Fs', 'lb', -0.0001, 'ub', 0.0001);  % Force y[N]
-sh.addControl('Fw', 'lb', -0.0001, 'ub', 0.0001);  % Force z[N]
+sh.addControl('Fr', 'lb', -1e-5, 'ub', 1e-5);  % Force x[N]
+sh.addControl('Fs', 'lb', -1e-5, 'ub', 1e-5);  % Force y[N]
+sh.addControl('Fw', 'lb', -1e-5, 'ub', 1e-5);  % Force z[N]
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -240,7 +240,7 @@ end
 
 function daefun(sh,x,~,u,p)
 
-
+Re=6378.14;
 
 a=x.a;
 e=x.e;
@@ -258,6 +258,11 @@ h=sqrt(p.mu*p1);
 
 r=p1/(1+e*cos(theta));
 
+c5=0;
+if r<2*Re
+    c5=0.1;
+end
+
 % a_dot=2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs;
 % e_dot=c2*sin(theta)/(n*a)*u.Fr+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs;
 % i_dot=r*cos(u)/(n*a^2*c2)*u.Fw;
@@ -266,7 +271,7 @@ r=p1/(1+e*cos(theta));
 % M_dot=n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*u.Fr-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs;
 
 
-sh.setODE( 'a', 2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs);
+sh.setODE( 'a', c5+2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs);
 sh.setODE( 'e', c2*sin(theta)/(n*a)*u.Fr+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs);
 sh.setODE( 'incl', r*cos(u1)/(n*a^2*c2)*u.Fw);
 sh.setODE( 'RA', r*sin(u1)/(n*a^2*c2*sin(incl))*u.Fw);
