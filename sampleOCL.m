@@ -10,34 +10,34 @@ close all
 
 
 MAX_TIME = 100000;
+% % 
+ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts,...
+    'N', 10);
 % 
-% ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts,...
-%     'N', 30);
-
-  ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts, ...
-    'gridconstraints', @gridconstraints, ...
-    'N', 50);
+%   ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts, ...
+%     'gridconstraints', @gridconstraints, ...
+%     'N', 50);
 
 
 mu=3.986005*10^5;
 Re=6378.14;
 
 orbit1.a=15*Re;
-orbit1.e=0.5;
-orbit1.incl=deg2rad(20);
+orbit1.e=0;
+orbit1.incl=deg2rad(0);
 orbit1.omega=deg2rad(0);
 orbit1.RA=deg2rad(0);
 orbit1.theta=deg2rad(0);
 
 
-orbit2.a=14*Re;
+orbit2.a=11*Re;
 orbit2.e=0.6;
-orbit2.incl=deg2rad(20);
+orbit2.incl=deg2rad(25);
 orbit2.omega=deg2rad(0);
 orbit2.RA=deg2rad(0);
-orbit2.theta=deg2rad(0);
+orbit2.theta=deg2rad(180);
 
 
 
@@ -247,34 +247,78 @@ pmee = x.mee1;
 fmee = x.mee2;
 gmee = x.mee3;
 hmee = x.mee4;
-xkmee = x.mee5;
-xlmee = x.mee6;
+kmee = x.mee5;
+lmee = x.mee6;
 
 
 
 % compute modified equinoctial elements equations of motion
 
-sinl = sin(xlmee);
+sinl = sin(lmee);
 
-cosl = cos(xlmee);
+cosl = cos(lmee);
 
 wmee = 1.0 + fmee * cosl + gmee * sinl;
 
-sesqr = 1.0 + hmee * hmee + xkmee * xkmee;
+sesqr = 1.0 + hmee * hmee + kmee * kmee;
+
+
+
+
+
+mu=3.986005*10^5;
+Re=6378.14;
+
+%%%%%%
+smovrp = sqrt(mu / pmee);
+
+tani2s = hmee^2 + kmee^2;
+
+cosl = cos(lmee);
+
+sinl = sin(lmee);
+
+wmee = 1 + fmee * cosl + gmee * sinl;
+
+radius = pmee / wmee;
+
+hsmks = hmee^2 - kmee^2;
+
+ssqrd = 1 + tani2s;
+
+% compute eci position vector
+
+r_1 = radius * (cosl + hsmks * cosl + 2 * hmee * kmee * sinl) / ssqrd;
+
+r_2 = radius * (sinl - hsmks * sinl + 2 * hmee * kmee * cosl) / ssqrd;
+
+r_3 = 2 * radius * (hmee * sinl - kmee * cosl) / ssqrd;
+%%%%%%
+
+r=sqrt(r_1^2+r_2^2+r_3^2);
+
+c=1;
+c3=0;
+if r<10*Re
+    if u.Fr<0
+    c=-1;
+    c3=1000;
+    end
+end
 
 
 sh.setODE( 'mee1', (2.0 * pmee / wmee) * sqrt(pmee / mu) * u.Fs);
-sh.setODE( 'mee2', sqrt(pmee / mu) * (u.Fr*sinl+((wmee + 1.0) * cosl + fmee) * (u.Fs / wmee) ...
-    -(hmee * sinl - xkmee * cosl) * (gmee * u.Fw / wmee)));
-sh.setODE( 'mee3', sqrt(pmee / mu) * (-u.Fr*cosl+((wmee + 1.0) * sinl + gmee) * (u.Fs / wmee) ...
-    -(hmee * sinl - xkmee * cosl) * (fmee * u.Fw / wmee)));
+sh.setODE( 'mee2', sqrt(pmee / mu) * (c*u.Fr*sinl+((wmee + 1.0) * cosl + fmee) * (u.Fs / wmee) ...
+    -(hmee * sinl - kmee * cosl) * (gmee * u.Fw / wmee)));
+sh.setODE( 'mee3', sqrt(pmee / mu) * (-c*u.Fr*cosl+((wmee + 1.0) * sinl + gmee) * (u.Fs / wmee) ...
+    -(hmee * sinl - kmee * cosl) * (fmee * u.Fw / wmee)));
 sh.setODE( 'mee4', sqrt(pmee / mu) * (sesqr * u.Fw / (2.0 * wmee)) * cosl);
 sh.setODE( 'mee5', sqrt(pmee / mu) * (sesqr * u.Fw / (2.0 * wmee)) * sinl);
 sh.setODE( 'mee6', sqrt(mu * pmee) * (wmee / pmee)^2 + (1.0 / wmee) * sqrt(pmee / mu) ...
-    * (hmee * sinl - xkmee * cosl) * u.Fw);
+    * (hmee * sinl - kmee * cosl) * u.Fw);
 
 
-sh.setODE('sFr', abs(u.Fr));
+sh.setODE('sFr', abs(c3+u.Fr));
 sh.setODE('sFs', abs(u.Fs));
 sh.setODE('sFw', abs(u.Fw));
 sh.setODE('time', 1);
