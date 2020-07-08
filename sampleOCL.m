@@ -33,14 +33,14 @@ ocp.setInitialBounds( 'xdot',   saved_ig.X_trajectory(4,1));
 ocp.setInitialBounds( 'ydot',   saved_ig.X_trajectory(5,1));
 ocp.setInitialBounds( 'zdot',   saved_ig.X_trajectory(6,1));
 
-ocp.setEndBounds( 'x',   saved_ig.X_trajectory(1,end));
-ocp.setEndBounds( 'y',   saved_ig.X_trajectory(2,end));
-ocp.setEndBounds( 'z',   saved_ig.X_trajectory(3,end));
-ocp.setEndBounds( 'xdot',   saved_ig.X_trajectory(4,end));
-ocp.setEndBounds( 'ydot',   saved_ig.X_trajectory(5,end));
-ocp.setEndBounds( 'zdot',   saved_ig.X_trajectory(6,end));
+% ocp.setEndBounds( 'x',   saved_ig.X_trajectory(1,end));
+% ocp.setEndBounds( 'y',   saved_ig.X_trajectory(2,end));
+% ocp.setEndBounds( 'z',   saved_ig.X_trajectory(3,end));
+% ocp.setEndBounds( 'xdot',   saved_ig.X_trajectory(4,end));
+% ocp.setEndBounds( 'ydot',   saved_ig.X_trajectory(5,end));
+% ocp.setEndBounds( 'zdot',   saved_ig.X_trajectory(6,end));
 
-initialGuess    = ocp.getInitialGuess();
+% initialGuess    = ocp.getInitialGuess();
 % N_i=length(initialGuess.states.x.value)
 % N_c=length(initialGuess.controls.dFr.value)
 
@@ -53,12 +53,12 @@ initialGuess    = ocp.getInitialGuess();
 % cvec(end-1)=1;
 % initialGuess.controls.dFw.set(cvec);
 
-initialGuess.states.x.set(saved_ig.X_trajectory(1,:));
-initialGuess.states.y.set(saved_ig.X_trajectory(2,:));
-initialGuess.states.z.set(saved_ig.X_trajectory(3,:));
-initialGuess.states.xdot.set(saved_ig.X_trajectory(4,:));
-initialGuess.states.ydot.set(saved_ig.X_trajectory(5,:));
-initialGuess.states.zdot.set(saved_ig.X_trajectory(6,:));
+% initialGuess.states.x.set(saved_ig.X_trajectory(1,:));
+% initialGuess.states.y.set(saved_ig.X_trajectory(2,:));
+% initialGuess.states.z.set(saved_ig.X_trajectory(3,:));
+% initialGuess.states.xdot.set(saved_ig.X_trajectory(4,:));
+% initialGuess.states.ydot.set(saved_ig.X_trajectory(5,:));
+% initialGuess.states.zdot.set(saved_ig.X_trajectory(6,:));
 
 % cvec=initialGuess.controls.dFr.value;
 % cvec(1)=saved_ig.impulse1(1);
@@ -150,6 +150,17 @@ c=1;
 if r<p.Re+200
     c=-10;
 end
+
+% R_=sqrt(x.x^2+x.y^2+x.z^2);
+% V_=sqrt(x.xdot^2+x.ydot^2+x.zdot^2);
+% dot_RV=x.x*x.xdot+x.y*x.ydot+x.z*x.zdot;
+% ang1=acos(-dot_RV/R_/V_);
+% 
+% if ang1<0.78539
+%     c=-10;
+% end
+
+
 force_vec_cart=c*rsw2xyz([u.dFr;u.dFs;u.dFw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
 
 
@@ -159,44 +170,87 @@ sh.setODE('xdot', c1*x.x+force_vec_cart(1));
 sh.setODE('ydot', c1*x.y+force_vec_cart(2));
 sh.setODE('zdot', c1*x.z+force_vec_cart(3));
 
-sh.setODE('Fr', abs(u.dFr));
-sh.setODE('Fs', abs(u.dFs));
-sh.setODE('Fw', abs(u.dFw));
+sh.setODE('Fr', abs(c*u.dFr));
+sh.setODE('Fs', abs(c*u.dFs));
+sh.setODE('Fw', abs(c*u.dFw));
 sh.setODE('time', 1);
 end
 
 function gridcosts(ch,k,K,x,~)
 
-R=[x.x x.y x.z];
-% V=[x.xdot x.ydot x.zdot];
-% 
-% 
-% 
-% oe = oe_from_sv(R,V,mu)
 
-% R_=norm(R);
-% % V_=norm(V);
-% 
-% Re=6378.14;
-% cc=0;
-% 
-% if R_<7*Re
-%     cc=1000000;
-% end
-% ch.add(cc);
+
+
+
+
+
 
 if k==K
-%     R=[x.x x.y x.z];
-%     R_=norm(R);
-%     ch.add((R_-102050.24)^2)
-%     V=[x.xdot x.ydot x.zdot];
-%     V_=norm(V);
-%     ch.add((V_-1.97634110924459)^2);
+    mu=3.986005*10^5;
+Re=6378.14;
+    
+    r=[x.x x.y x.z];
+v=[x.xdot x.ydot x.zdot];
 
+
+
+
+rmag = sqrt(x.x^2+x.y^2+x.z^2);
+
+vmag = sqrt(x.xdot^2+x.ydot^2+x.zdot^2);
+
+% position unit vector
+
+rhat = r / rmag;
+
+% angular momentum vectors
+
+hv = cross(r, v);
+
+hhat = hv / norm(hv);
+
+% eccentricity vector
+
+vtmp = v / mu;
+
+ecc = cross(vtmp, hv);
+
+ecc = ecc - rhat;
+
+sma = 1.0 / (2.0 / rmag - vmag * vmag / mu);
+p = hhat(1) / (1.0 + hhat(3));
+
+q = -hhat(2) / (1.0 + hhat(3));
+
+const1 = 1.0 / (1.0 + p * p + q * q);
+fhat=zeros(3,1);
+ghat=zeros(3,1);
+
+fhat(1) = const1 * (1.0 - p * p + q * q);
+fhat(2) = const1 * 2.0 * p * q;
+fhat(3) = -const1 * 2.0 * p;
+
+ghat(1) = const1 * 2.0 * p * q;
+ghat(2) = const1 * (1.0 + p * p - q * q);
+ghat(3) = const1 * 2.0 * q;
+
+h = dot(ecc, ghat);
+
+xk = dot(ecc, fhat);
+
+x1 = dot(r, fhat);
+
+y1 = dot(r, ghat);
+
+% orbital eccentricity
+
+eccm = sqrt(h * h + xk * xk);
+
+ch.add(eccm^2);
+ch.add((sma-15*Re)^2);
     fuel_cost=x.Fr^2+x.Fs^2+x.Fw^2;
-%     ch.add((10+fuel_cost)*(R_-15*Re)^2);
     ch.add(fuel_cost);
-%     ch.add((R_-14*Re)^2);
+
 end
 
 
@@ -213,12 +267,13 @@ Re=6378.14;
 % ch.add(e,'>=',0);
 % 
 % ch.add(sqrt(x.x^2+x.y^2+x.z^2),'>=',10*Re);
+
 R=[x.x x.y x.z];
 V=[x.xdot x.ydot x.zdot];
 R_=sqrt(x.x^2+x.y^2+x.z^2);
 V_=sqrt(x.xdot^2+x.ydot^2+x.zdot^2);
-
-ang1=acos(dot(R,V)/R_/V_);
+dot_RV=x.x*x.xdot+x.y*x.ydot+x.z*x.zdot;
+ang1=acos(dot_RV/R_/V_);
   
   ch.add(ang1,'<=',2.5);
   
