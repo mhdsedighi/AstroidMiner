@@ -81,7 +81,7 @@ ocp.setEndBounds( 'mee2',mee2(2));
 ocp.setEndBounds( 'mee3',mee2(3));
 ocp.setEndBounds( 'mee4',mee2(4));
 ocp.setEndBounds( 'mee5',mee2(5));
-ocp.setEndBounds( 'mee6',mee2(6));
+% ocp.setEndBounds( 'mee6',mee2(6));
 
 % initialGuess    = ocp.getInitialGuess()
 % N_i=length(initialGuess.states.x.value)
@@ -386,9 +386,24 @@ r_2 = radius * (sinl - hsmks * sinl + 2 * hmee * kmee * cosl) / ssqrd;
 
 r_3 = 2 * radius * (hmee * sinl - kmee * cosl) / ssqrd;
 
-r_=sqrt(r_1^2+r_2^2+r_3^2);
+v_1 = - smovrp * (sinl + hsmks * sinl - 2 * hmee * kmee * cosl + gmee ...
+       - 2 * fmee * hmee * kmee + hsmks * gmee) / ssqrd;
 
-ch.add(r_,'>=',63780.14);
+v_2 = - smovrp * (-cosl + hsmks * cosl + 2 * hmee * kmee * sinl - fmee ...
+       + 2 * gmee * hmee * kmee + hsmks * fmee) / ssqrd;
+
+v_3 = 2 * smovrp * (hmee * cosl + kmee * sinl + fmee * hmee ...
+       + gmee * kmee) / ssqrd;
+
+R=[r_1 r_2 r_3];
+V=[v_1 v_2 v_3];
+R_=sqrt(r_1^2+r_2^2+r_3^2);
+V_=sqrt(v_1^2+v_2^2+v_3^2);
+
+ang1=acos(dot(R,V)/R_/V_);
+  
+  ch.add(ang1,'<=',2.5);
+  ch.add(R_,'>=',14*Re);
 
   
   
