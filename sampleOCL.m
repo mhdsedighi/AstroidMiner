@@ -1,4 +1,4 @@
-function [solution,times,ocp] = sampleOCL
+
 
 clc
 clear
@@ -9,32 +9,32 @@ close all
 
 
 
-MAX_TIME = 100000;
+MAX_TIME = 1e6;
 % % 
-ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts,...
-    'N', 10);
+% ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts,...
+%     'N', 10);
 % 
-%   ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts, ...
-%     'gridconstraints', @gridconstraints, ...
-%     'N', 50);
+  ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts, ...
+    'gridconstraints', @gridconstraints, ...
+    'N', 100);
 
 
 mu=3.986005*10^5;
 Re=6378.14;
 
 orbit1.a=15*Re;
-orbit1.e=0;
+orbit1.e=0.5;
 orbit1.incl=deg2rad(0);
 orbit1.omega=deg2rad(0);
 orbit1.RA=deg2rad(0);
 orbit1.theta=deg2rad(0);
 
 
-orbit2.a=11*Re;
-orbit2.e=0.6;
-orbit2.incl=deg2rad(25);
+orbit2.a=14*Re;
+orbit2.e=0.5;
+orbit2.incl=deg2rad(0);
 orbit2.omega=deg2rad(0);
 orbit2.RA=deg2rad(0);
 orbit2.theta=deg2rad(180);
@@ -141,10 +141,15 @@ ocp.setEndBounds( 'mee5',mee2(5));
 mee_ar=[solution.states.mee1.value;solution.states.mee2.value;solution.states.mee3.value;solution.states.mee4.value;solution.states.mee5.value;solution.states.mee6.value];
 N=length(solution.states.mee1.value);
 R_ar=zeros(3,N);
+V_ar=zeros(3,N);
+T=times.states.value;
 for i=1:N
    
     [r,v]=mee2rv(mee_ar(:,i),mu);
     R_ar(:,i)=r;
+    V_ar(:,i)=v;
+    r_(i)=norm(r);
+    indicator(i)=acosd(-dot(r,v)/norm(r)/norm(v));
     
 end
 
@@ -203,14 +208,23 @@ hold on
 axis equal
 grid minor
 view(25,45)
-plot_earth
+% plot_earth
+plot3(0,0,0,'ro')
 plot3(R_ar(1,:),R_ar(2,:),R_ar(3,:),'b')
+plot3(R_ar(1,:),R_ar(2,:),R_ar(3,:),'k.')
+
+figure
+subplot(2,1,1)
+plot(T,r_/Re,'k.')
+grid on
+subplot(2,1,2)
+plot(T,indicator,'k.')
+grid on
 
 
 
 
 
-end
 
 function varsfun(sh)
 
@@ -226,11 +240,11 @@ sh.addState('sFr');  % Force x[N]
 sh.addState('sFs');  % Force y[N]
 sh.addState('sFw');  % Force y[N]
 
-sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
+sh.addState('time', 'lb', 0, 'ub', 1e6);  % time [s]
 
-sh.addControl('Fr', 'lb', -0.01, 'ub', 0.01);  % Force x[N]
-sh.addControl('Fs', 'lb', -0.01, 'ub', 0.01);  % Force y[N]
-sh.addControl('Fw', 'lb', -0.01, 'ub', 0.01);  % Force z[N]
+sh.addControl('Fr', 'lb', -0.0001, 'ub', 0.0001);  % Force x[N]
+sh.addControl('Fs', 'lb', -0.0001, 'ub', 0.0001);  % Force y[N]
+sh.addControl('Fw', 'lb', -0.0001, 'ub', 0.0001);  % Force z[N]
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -297,30 +311,32 @@ r_3 = 2 * radius * (hmee * sinl - kmee * cosl) / ssqrd;
 
 r=sqrt(r_1^2+r_2^2+r_3^2);
 
-c=1;
-c3=0;
-if r<10*Re
-    if u.Fr<0
-    c=-1;
-    c3=1000;
-    end
-end
+
+% if r<10*Re
+%     u_Fr=u.Fr;
+%     u_Fs=u.Fs;
+%     u_Fw=u.Fw;
+% else
+    u_Fr=u.Fr;
+    u_Fs=u.Fs;
+    u_Fw=u.Fw;
+% end
 
 
-sh.setODE( 'mee1', (2.0 * pmee / wmee) * sqrt(pmee / mu) * u.Fs);
-sh.setODE( 'mee2', sqrt(pmee / mu) * (c*u.Fr*sinl+((wmee + 1.0) * cosl + fmee) * (u.Fs / wmee) ...
-    -(hmee * sinl - kmee * cosl) * (gmee * u.Fw / wmee)));
-sh.setODE( 'mee3', sqrt(pmee / mu) * (-c*u.Fr*cosl+((wmee + 1.0) * sinl + gmee) * (u.Fs / wmee) ...
-    -(hmee * sinl - kmee * cosl) * (fmee * u.Fw / wmee)));
-sh.setODE( 'mee4', sqrt(pmee / mu) * (sesqr * u.Fw / (2.0 * wmee)) * cosl);
-sh.setODE( 'mee5', sqrt(pmee / mu) * (sesqr * u.Fw / (2.0 * wmee)) * sinl);
+sh.setODE( 'mee1', (2.0 * pmee / wmee) * sqrt(pmee / mu) * u_Fs);
+sh.setODE( 'mee2', sqrt(pmee / mu) * (u_Fr*sinl+((wmee + 1.0) * cosl + fmee) * (u_Fs / wmee) ...
+    -(hmee * sinl - kmee * cosl) * (gmee * u_Fw / wmee)));
+sh.setODE( 'mee3', sqrt(pmee / mu) * (-u_Fr*cosl+((wmee + 1.0) * sinl + gmee) * (u_Fs / wmee) ...
+    -(hmee * sinl - kmee * cosl) * (fmee * u_Fw / wmee)));
+sh.setODE( 'mee4', sqrt(pmee / mu) * (sesqr * u_Fw / (2.0 * wmee)) * cosl);
+sh.setODE( 'mee5', sqrt(pmee / mu) * (sesqr * u_Fw / (2.0 * wmee)) * sinl);
 sh.setODE( 'mee6', sqrt(mu * pmee) * (wmee / pmee)^2 + (1.0 / wmee) * sqrt(pmee / mu) ...
-    * (hmee * sinl - kmee * cosl) * u.Fw);
+    * (hmee * sinl - kmee * cosl) * u_Fw);
 
 
-sh.setODE('sFr', abs(c3+u.Fr));
-sh.setODE('sFs', abs(u.Fs));
-sh.setODE('sFw', abs(u.Fw));
+sh.setODE('sFr', abs(u_Fr));
+sh.setODE('sFs', abs(u_Fs));
+sh.setODE('sFw', abs(u_Fw));
 sh.setODE('time', 1);
 end
 
@@ -444,10 +460,12 @@ V=[v_1 v_2 v_3];
 R_=sqrt(r_1^2+r_2^2+r_3^2);
 V_=sqrt(v_1^2+v_2^2+v_3^2);
 
-ang1=acos(dot(R,V)/R_/V_);
+ang1=acos(-dot(R,V)/R_/V_);
   
-  ch.add(ang1,'<=',2.5);
-  ch.add(R_,'>=',14*Re);
+%   ch.add(ang1,'>=',0.8727);
+% ch.add(ang1,'>=',100);
+
+  ch.add(R_,'>=',13.5*Re);
 
   
   
