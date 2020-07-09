@@ -81,7 +81,7 @@ ocp.setEndBounds( 'mee2',mee2(2));
 ocp.setEndBounds( 'mee3',mee2(3));
 ocp.setEndBounds( 'mee4',mee2(4));
 ocp.setEndBounds( 'mee5',mee2(5));
-ocp.setEndBounds( 'mee6',mee2(6));
+% ocp.setEndBounds( 'mee6',mee2(6));
 
 % initialGuess    = ocp.getInitialGuess()
 % N_i=length(initialGuess.states.x.value)
@@ -191,9 +191,14 @@ end
 % 
 % 
 % 
+
 figure
+subplot(2,1,1)
+plot(times.controls.value,solution.controls.psi.value*180/pi)
 grid minor
-plot(times.controls.value,solution.controls.psi.value)
+subplot(2,1,2)
+plot(times.controls.value,solution.controls.thrust.value)
+grid minor
 % 
 % 
 figure
@@ -231,7 +236,10 @@ sh.addState('mee6');
 
 sh.addState('time', 'lb', 0, 'ub', 1e6);  % time [s]
 
-sh.addControl('psi', 'lb', -0.1745, 'ub', 0.1745);  % Force x[N]
+sh.addControl('psi', 'lb', -0.1745, 'ub', 0.1745);
+sh.addControl('thrust', 'lb', 0, 'ub', 1e-4);
+
+sh.addState('cc');
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -299,9 +307,8 @@ r_3 = 2 * radius * (hmee * sinl - kmee * cosl) / ssqrd;
 r=sqrt(r_1^2+r_2^2+r_3^2);
 
 
-Thrust=0.0001;
-u_Fr=sin(u.psi)*Thrust;
-u_Fs=cos(u.psi)*Thrust;
+u_Fr=sin(u.psi)*u.thrust;
+u_Fs=cos(u.psi)*u.thrust;
 u_Fw=0;
 
 
@@ -315,6 +322,8 @@ sh.setODE( 'mee5', sqrt(pmee / mu) * (sesqr * u_Fw / (2.0 * wmee)) * sinl);
 sh.setODE( 'mee6', sqrt(mu * pmee) * (wmee / pmee)^2 + (1.0 / wmee) * sqrt(pmee / mu) ...
     * (hmee * sinl - kmee * cosl) * u_Fw);
 
+
+sh.setODE('cc', u.thrust^2);
 
 sh.setODE('time', 1);
 end
@@ -370,7 +379,8 @@ if k==K
 %     fuel_cost=;
     
 
-ch.add(x.time);
+% ch.add(x.time);
+ch.add(x.cc);
 % ch.add(x.sFr^2+x.sFs^2+x.sFw^2);
 
     
