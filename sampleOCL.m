@@ -11,29 +11,29 @@ close all
 
 MAX_TIME = 1e6;
 % % 
-% ocp = ocl.Problem([], @varsfun, @daefun, ...
-%     'gridcosts', @gridcosts,...
-%     'N', 10);
+ocp = ocl.Problem([], @varsfun, @daefun, ...
+    'gridcosts', @gridcosts,...
+    'N', 30);
 % 
-  ocp = ocl.Problem([], @varsfun, @daefun, ...
-    'gridcosts', @gridcosts, ...
-    'gridconstraints', @gridconstraints, ...
-    'N', 100);
+%   ocp = ocl.Problem([], @varsfun, @daefun, ...
+%     'gridcosts', @gridcosts, ...
+%     'gridconstraints', @gridconstraints, ...
+%     'N', 100);
 
 
 mu=3.986005*10^5;
 Re=6378.14;
 
-orbit1.a=15*Re;
-orbit1.e=0.5;
+orbit1.a=14*Re;
+orbit1.e=0;
 orbit1.incl=deg2rad(0);
 orbit1.omega=deg2rad(0);
 orbit1.RA=deg2rad(0);
 orbit1.theta=deg2rad(0);
 
 
-orbit2.a=14*Re;
-orbit2.e=0.5;
+orbit2.a=15*Re;
+orbit2.e=0;
 orbit2.incl=deg2rad(0);
 orbit2.omega=deg2rad(0);
 orbit2.RA=deg2rad(0);
@@ -81,7 +81,7 @@ ocp.setEndBounds( 'mee2',mee2(2));
 ocp.setEndBounds( 'mee3',mee2(3));
 ocp.setEndBounds( 'mee4',mee2(4));
 ocp.setEndBounds( 'mee5',mee2(5));
-% ocp.setEndBounds( 'mee6',mee2(6));
+ocp.setEndBounds( 'mee6',mee2(6));
 
 % initialGuess    = ocp.getInitialGuess()
 % N_i=length(initialGuess.states.x.value)
@@ -192,15 +192,8 @@ end
 % 
 % 
 figure
-subplot(3,1,1)
 grid minor
-plot(times.controls.value,solution.controls.Fr.value)
-subplot(3,1,2)
-grid minor
-plot(times.controls.value,solution.controls.Fs.value)
-subplot(3,1,3)
-grid minor
-plot(times.controls.value,solution.controls.Fw.value)
+plot(times.controls.value,solution.controls.psi.value)
 % 
 % 
 figure
@@ -236,15 +229,9 @@ sh.addState('mee5');
 sh.addState('mee6'); 
 
 
-sh.addState('sFr');  % Force x[N]
-sh.addState('sFs');  % Force y[N]
-sh.addState('sFw');  % Force y[N]
-
 sh.addState('time', 'lb', 0, 'ub', 1e6);  % time [s]
 
-sh.addControl('Fr', 'lb', -0.0001, 'ub', 0.0001);  % Force x[N]
-sh.addControl('Fs', 'lb', -0.0001, 'ub', 0.0001);  % Force y[N]
-sh.addControl('Fw', 'lb', -0.0001, 'ub', 0.0001);  % Force z[N]
+sh.addControl('psi', 'lb', -0.1745, 'ub', 0.1745);  % Force x[N]
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -312,15 +299,10 @@ r_3 = 2 * radius * (hmee * sinl - kmee * cosl) / ssqrd;
 r=sqrt(r_1^2+r_2^2+r_3^2);
 
 
-% if r<10*Re
-%     u_Fr=u.Fr;
-%     u_Fs=u.Fs;
-%     u_Fw=u.Fw;
-% else
-    u_Fr=u.Fr;
-    u_Fs=u.Fs;
-    u_Fw=u.Fw;
-% end
+Thrust=0.0001;
+u_Fr=sin(u.psi)*Thrust;
+u_Fs=cos(u.psi)*Thrust;
+u_Fw=0;
 
 
 sh.setODE( 'mee1', (2.0 * pmee / wmee) * sqrt(pmee / mu) * u_Fs);
@@ -334,9 +316,6 @@ sh.setODE( 'mee6', sqrt(mu * pmee) * (wmee / pmee)^2 + (1.0 / wmee) * sqrt(pmee 
     * (hmee * sinl - kmee * cosl) * u_Fw);
 
 
-sh.setODE('sFr', abs(u_Fr));
-sh.setODE('sFs', abs(u_Fs));
-sh.setODE('sFw', abs(u_Fw));
 sh.setODE('time', 1);
 end
 
@@ -391,8 +370,9 @@ if k==K
 %     fuel_cost=;
     
 
-% ch.add(x.time)
-ch.add(x.sFr^2+x.sFs^2+x.sFw^2);
+ch.add(x.time);
+% ch.add(x.sFr^2+x.sFs^2+x.sFw^2);
+
     
 end
 
