@@ -6,7 +6,7 @@ close all
 mu=3.986005*10^5;
 Re=6378.14;
 
-orbit1.a=20*Re;
+orbit1.a=12*Re;
 orbit1.e=0;
 orbit1.incl=deg2rad(0);
 orbit1.RA=deg2rad(0);
@@ -21,7 +21,7 @@ orbit2.a=10*Re;
 % orbit2.omega=deg2rad(45);
 
 e_span=[0 0];
-incl_span=[deg2rad(40) deg2rad(40)];
+incl_span=[deg2rad(0) deg2rad(0)];
 RA_span=[0 0];
 omega_span=[0 0];
 

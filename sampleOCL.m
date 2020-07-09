@@ -101,16 +101,21 @@ grid minor
 plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'b')
 plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'k.')
 view(25,45)
+% figure
+% subplot(3,1,1)
+% grid minor
+% plot(times.controls.value,solution.controls.dFr.value)
+% subplot(3,1,2)
+% grid minor
+% plot(times.controls.value,solution.controls.dFs.value)
+% subplot(3,1,3)
+% grid minor
+% plot(times.controls.value,solution.controls.dFw.value)
+
 figure
-subplot(3,1,1)
 grid minor
-plot(times.controls.value,solution.controls.dFr.value)
-subplot(3,1,2)
-grid minor
-plot(times.controls.value,solution.controls.dFs.value)
-subplot(3,1,3)
-grid minor
-plot(times.controls.value,solution.controls.dFw.value)
+plot(times.controls.value,solution.controls.psi.value)
+
 
 
 T=times.states.value;
@@ -155,15 +160,14 @@ sh.addState('ydot');   % position x[m]
 sh.addState('z');   % position x[m]
 sh.addState('zdot');   % position x[m]
 
-sh.addState('Fr');  % Force x[N]
-sh.addState('Fs');  % Force y[N]
-sh.addState('Fw');  % Force y[N]
+% sh.addState('Fr');  % Force x[N]
+% sh.addState('Fs');  % Force y[N]
+% sh.addState('Fw');  % Force y[N]
 
 sh.addState('time', 'lb', 0, 'ub', 100000);  % time [s]
 
-sh.addControl('dFr', 'lb', -0.0001, 'ub', 0.0001);  % Force x[N]
-sh.addControl('dFs', 'lb', -0.0001, 'ub', 0.0001);  % Force y[N]
-sh.addControl('dFw', 'lb', -0.0001, 'ub', 0.0001);  % Force z[N]
+sh.addControl('psi', 'lb', -0.1745, 'ub', 0.1745);  % Force x[N]
+
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -177,12 +181,9 @@ sh.setODE( 'y', x.ydot);
 sh.setODE( 'z', x.zdot);
 c1=-p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3);
 
-r=sqrt(x.x^2+x.y^2+x.z^2);
+% r=sqrt(x.x^2+x.y^2+x.z^2);
 
-c=1;
-if r<p.Re+200
-    c=-10;
-end
+
 
 % R_=sqrt(x.x^2+x.y^2+x.z^2);
 % V_=sqrt(x.xdot^2+x.ydot^2+x.zdot^2);
@@ -193,8 +194,12 @@ end
 %     c=-10;
 % end
 
+Thrust=0.01;
+u_Fr=sin(u.psi)*Thrust;
+u_Fs=cos(u.psi)*Thrust;
+u_Fw=0;
 
-force_vec_cart=c*rsw2xyz([u.dFr;u.dFs;u.dFw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
+force_vec_cart=rsw2xyz([u_Fr;u_Fs;u_Fw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
 
 
 
@@ -203,9 +208,9 @@ sh.setODE('xdot', c1*x.x+force_vec_cart(1));
 sh.setODE('ydot', c1*x.y+force_vec_cart(2));
 sh.setODE('zdot', c1*x.z+force_vec_cart(3));
 
-sh.setODE('Fr', abs(c*u.dFr));
-sh.setODE('Fs', abs(c*u.dFs));
-sh.setODE('Fw', abs(c*u.dFw));
+% sh.setODE('Fr', abs(u.dFr));
+% sh.setODE('Fs', abs(u.dFs));
+% sh.setODE('Fw', abs(u.dFw));
 sh.setODE('time', 1);
 end
 
@@ -216,24 +221,26 @@ function gridcosts(ch,k,K,x,~)
 
 
 if k==K
-    mu=3.986005*10^5;
+%     mu=3.986005*10^5;
 Re=6378.14;
-    
-    r=[x.x x.y x.z];
-v=[x.xdot x.ydot x.zdot];
-
-
-
-
+%     
+%     r=[x.x x.y x.z];
+% v=[x.xdot x.ydot x.zdot];
+% 
+% 
+% 
+% 
 rmag = sqrt(x.x^2+x.y^2+x.z^2);
-
-vmag = sqrt(x.xdot^2+x.ydot^2+x.zdot^2);
-
-    fuel_cost=x.Fr^2+x.Fs^2+x.Fw^2;
-    ch.add(fuel_cost);
-    
-    ch.add((vmag-x.ydot)^2+(2.499895-x.ydot)^2);
+% 
+% vmag = sqrt(x.xdot^2+x.ydot^2+x.zdot^2);
+% 
+%     fuel_cost=x.Fr^2+x.Fs^2+x.Fw^2;
+%     ch.add(fuel_cost);
+%     
+%     ch.add((vmag-x.ydot)^2+(2.499895-x.ydot)^2);
     ch.add((rmag-10*Re)^2);
+
+% ch.add(x.time)
 
 end
 
