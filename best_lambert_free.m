@@ -14,7 +14,7 @@ orbit1.omega=deg2rad(0);
 theta_pre_op=deg2rad(0);
 
 
-orbit2.a=15*Re;
+orbit2.a=10*Re;
 % orbit2.e=0.7;
 % orbit2.incl=deg2rad(20);
 % orbit2.RA=deg2rad(0);
@@ -108,7 +108,7 @@ plot3(sol_o2.y(1,:),sol_o2.y(2,:),sol_o2.y(3,:),'b')
 
 
 
-N=51;
+N=31;
 ar_time_travel=sol_trans.x-sol_trans.x(1);
 ar_X_trajectory=sol_trans.y;
 X_start=sol_trans.y(:,1);

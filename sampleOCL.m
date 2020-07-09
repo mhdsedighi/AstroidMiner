@@ -40,7 +40,7 @@ ocp.setInitialBounds( 'zdot',   saved_ig.X_trajectory(6,1));
 % ocp.setEndBounds( 'ydot',   saved_ig.X_trajectory(5,end));
 % ocp.setEndBounds( 'zdot',   saved_ig.X_trajectory(6,end));
 
-% initialGuess    = ocp.getInitialGuess();
+initialGuess    = ocp.getInitialGuess();
 % N_i=length(initialGuess.states.x.value)
 % N_c=length(initialGuess.controls.dFr.value)
 
@@ -53,12 +53,12 @@ ocp.setInitialBounds( 'zdot',   saved_ig.X_trajectory(6,1));
 % cvec(end-1)=1;
 % initialGuess.controls.dFw.set(cvec);
 
-% initialGuess.states.x.set(saved_ig.X_trajectory(1,:));
-% initialGuess.states.y.set(saved_ig.X_trajectory(2,:));
-% initialGuess.states.z.set(saved_ig.X_trajectory(3,:));
-% initialGuess.states.xdot.set(saved_ig.X_trajectory(4,:));
-% initialGuess.states.ydot.set(saved_ig.X_trajectory(5,:));
-% initialGuess.states.zdot.set(saved_ig.X_trajectory(6,:));
+initialGuess.states.x.set(saved_ig.X_trajectory(1,:));
+initialGuess.states.y.set(saved_ig.X_trajectory(2,:));
+initialGuess.states.z.set(saved_ig.X_trajectory(3,:));
+initialGuess.states.xdot.set(saved_ig.X_trajectory(4,:));
+initialGuess.states.ydot.set(saved_ig.X_trajectory(5,:));
+initialGuess.states.zdot.set(saved_ig.X_trajectory(6,:));
 
 % cvec=initialGuess.controls.dFr.value;
 % cvec(1)=saved_ig.impulse1(1);
@@ -88,7 +88,7 @@ ocp.setInitialBounds( 'zdot',   saved_ig.X_trajectory(6,1));
 %
 
 % Solve OCP
-[solution,times] = ocp.solve();
+[solution,times] = ocp.solve(initialGuess);
 
 
 figure
@@ -96,9 +96,10 @@ hold on
 axis equal
 grid minor
 %   plot(times.states.value,solution.states.x.value)
-%   plot3(0,0,0,'ro')
-plot_earth
-plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'b.')
+  plot3(0,0,0,'ro')
+% plot_earth
+plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'b')
+plot3(solution.states.x.value,solution.states.y.value,solution.states.z.value,'k.')
 view(25,45)
 figure
 subplot(3,1,1)
@@ -111,6 +112,38 @@ subplot(3,1,3)
 grid minor
 plot(times.controls.value,solution.controls.dFw.value)
 
+
+T=times.states.value;
+X=solution.states.x.value;
+Y=solution.states.y.value;
+Z=solution.states.z.value;
+Xdot=solution.states.xdot.value;
+Ydot=solution.states.ydot.value;
+Zdot=solution.states.ydot.value;
+N=length(X);
+
+for i=1:N
+   r=[X(i) Y(i) Z(i)];
+   v=[Xdot(i) Ydot(i) Zdot(i)];
+   r_(i)=norm(r);
+   v_(i)=norm(v);
+%    indicator(i)=norm(cross(r,v));
+indicator(i)=acosd(-dot(r,v)/(norm(r))/norm(v));
+end
+
+
+
+
+figure
+subplot(3,1,1)
+grid
+plot(T,r_/Re)
+subplot(3,1,2)
+grid
+plot(T,v_)
+subplot(3,1,3)
+grid
+plot(T,indicator)
 
 end
 
