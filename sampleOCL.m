@@ -25,7 +25,7 @@ Re=6378.14;
 
 orbit1.a=50*Re;
 orbit1.e=0.7;
-orbit1.incl=deg2rad(20);
+orbit1.incl=deg2rad(10);
 orbit1.RA=deg2rad(2);
 orbit1.omega=deg2rad(20);
 orbit1.MA=deg2rad(0);
@@ -68,8 +68,8 @@ ocp.setInitialBounds( 'MA',orbit1.MA);
 
 
 
-% ocp.setEndBounds( 'a',orbit2.a);
-% ocp.setEndBounds( 'e',orbit2.e);
+ocp.setEndBounds( 'a',orbit2.a);
+ocp.setEndBounds( 'e',orbit2.e);
 % ocp.setEndBounds( 'incl',orbit2.incl);
 % ocp.setEndBounds( 'RA',orbit2.RA);
 % ocp.setEndBounds( 'omega',orbit2.omega);
@@ -188,15 +188,12 @@ ylabel('M')
 
 
 figure
-subplot(3,1,1)
+subplot(2,1,1)
+plot(times.controls.value,solution.controls.psi.value)
 grid minor
-plot(times.controls.value,solution.controls.Fr.value)
-subplot(3,1,2)
+subplot(2,1,2)
+plot(times.controls.value,solution.controls.thrust.value)
 grid minor
-plot(times.controls.value,solution.controls.Fs.value)
-subplot(3,1,3)
-grid minor
-plot(times.controls.value,solution.controls.Fw.value)
 
 
 figure
@@ -230,18 +227,14 @@ sh.addState('ydot');
 sh.addState('z'); 
 sh.addState('zdot'); 
 
+sh.addState('cc');
 
-
-
-sh.addState('sFr');  % Force x[N]
-sh.addState('sFs');  % Force y[N]
-sh.addState('sFw');  % Force y[N]
 
 sh.addState('time', 'lb', 0, 'ub', 1e6);  % time [s]
 
-sh.addControl('Fr', 'lb', -1e-5, 'ub', 1e-5);  % Force x[N]
-sh.addControl('Fs', 'lb', -1e-5, 'ub', 1e-5);  % Force y[N]
-sh.addControl('Fw', 'lb', -1e-5, 'ub', 1e-5);  % Force z[N]
+sh.addControl('psi', 'lb', -0.1745, 'ub', 0.1745);
+sh.addControl('thrust', 'lb',0, 'ub', 0.1e-6);
+
 
 sh.addParameter('mu');        % mu
 sh.addParameter('Re');
@@ -282,10 +275,10 @@ c4=0;
 % end
 
 
-if r_exact<9.5*Re
-%     u.Fr=1+u.Fr;
-c4=100*(2*Re-r_exact)^2;
-end
+% if r_exact<9.5*Re
+% %     u.Fr=1+u.Fr;
+% c4=100*(2*Re-r_exact)^2;
+% end
 
 % a_dot=2*e*sin(theta)/(n*c2)*u.Fr+2*a*c2/(n*r)*u.Fs;
 % e_dot=c2*sin(theta)/(n*a)*u.Fr+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs;
@@ -293,19 +286,25 @@ end
 % RA_dot=r*sin(u)/(n*a^2*c2*sin(inc))*u.Fw;
 % omega_dot=-c2*cos(theta)/(n*a*e)*u.Fr+(p/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*cot(inc)*sin(u)/(n*a^2*c2)*u.Fw;
 % M_dot=n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*u.Fr-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs;
+u_Fr=sin(u.psi)*u.thrust;
+u_Fs=cos(u.psi)*u.thrust;
+u_Fw=0;
 
-
-sh.setODE( 'a', 2*e*sin(theta)/(n*c2)*(c4+u.Fr)+2*a*c2/(n*r)*u.Fs);
-sh.setODE( 'e', c2*sin(theta)/(n*a)*(c4+u.Fr)+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u.Fs);
-sh.setODE( 'incl', r*cos(u1)/(n*a^2*c2)*u.Fw);
-sh.setODE( 'RA', r*sin(u1)/(n*a^2*c2*sin(incl))*u.Fw);
-sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*(c4+u.Fr)+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u.Fs-r*(1/tan(incl))*sin(u1)/(n*a^2*c2)*u.Fw);
-sh.setODE( 'MA', n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*(c4+u.Fr)-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u.Fs);
+sh.setODE( 'a', 2*e*sin(theta)/(n*c2)*(c4+u_Fr)+2*a*c2/(n*r)*u_Fs);
+sh.setODE( 'e', c2*sin(theta)/(n*a)*(c4+u_Fr)+c2/(n*a^2*e)*((a^2*c2^2)/r-r)*u_Fs);
+sh.setODE( 'incl', r*cos(u1)/(n*a^2*c2)*u_Fw);
+sh.setODE( 'RA', r*sin(u1)/(n*a^2*c2*sin(incl))*u_Fw);
+sh.setODE( 'omega', -c2*cos(theta)/(n*a*e)*(c4+u_Fr)+(p1/(e*h))*(sin(theta)*(1+(1/(1+e*cos(theta)))))*u_Fs-r*(1/tan(incl))*sin(u1)/(n*a^2*c2)*u_Fw);
+sh.setODE( 'MA', n-1/(n*a)*(2*r/a-(c2^2)/e*cos(theta))*(c4+u_Fr)-c2^2/(n*a*e)*(1+r/(a*c2^2))*sin(theta)*u_Fs);
 
 
 
 c1=-p.mu/((sqrt(x.x^2+x.y^2+x.z^2))^3);
-force_vec_cart=rsw2xyz([(c4+u.Fr);u.Fs;u.Fw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
+
+
+
+force_vec_cart=rsw2xyz([u_Fr;u_Fs;u_Fw],[x.x;x.y;x.z],[x.xdot;x.ydot;x.zdot]);
+
 sh.setODE( 'x', x.xdot);
 sh.setODE( 'y', x.ydot);
 sh.setODE( 'z', x.zdot);
@@ -314,9 +313,8 @@ sh.setODE('ydot', c1*x.y+force_vec_cart(2));
 sh.setODE('zdot', c1*x.z+force_vec_cart(3));
 
 
-sh.setODE('sFr', abs((c4+u.Fr)));
-sh.setODE('sFs', abs(u.Fs));
-sh.setODE('sFw', abs(u.Fw));
+sh.setODE('cc', u.thrust^2);
+
 sh.setODE('time', 1);
 end
 
@@ -358,10 +356,11 @@ if k==K
     
     % ch.add(x.time)
 
-    ch.add(x.sFr^2+x.sFs^2+x.sFw^2);
+%     ch.add(x.sFr^2+x.sFs^2+x.sFw^2);
 %     ch.add((1+(x.a-14*Re)^2)*(1+(x.e-0)^2)*(1+(x.sFr^2+x.sFs^2+x.sFw^2)));
-    ch.add((x.e-0.7)^2);
-    ch.add((x.a-10*Re)^2);
+%     ch.add((x.e-0.7)^2);
+%     ch.add((x.a-10*Re)^2);
+ch.add(x.cc)
     
 end
 
