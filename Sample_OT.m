@@ -23,16 +23,16 @@ problem.bounds.finalTime.upp = 2.5;
 problem.bounds.state.low = [-2*pi; -inf];
 problem.bounds.state.upp = [2*pi; inf];
 problem.bounds.initialState.low = [0;0];
-problem.bounds.initialState.upp = [0;0];
+problem.bounds.initialState.upp = problem.bounds.initialState.low;
 problem.bounds.finalState.low = [pi;0];
-problem.bounds.finalState.upp = [pi;0];
+problem.bounds.finalState.upp = problem.bounds.finalState.low;
 
 problem.bounds.control.low = -5; %-inf;
 problem.bounds.control.upp = 5; %inf;
 
 % Guess at the initial trajectory
-problem.guess.time = [0,1];
-problem.guess.state = [0, pi; pi, pi];
+problem.guess.time = [0,(problem.bounds.finalTime.low+problem.bounds.finalTime.upp)/2];
+problem.guess.state = [problem.bounds.initialState.low problem.bounds.finalState.low];
 problem.guess.control = [0, 0];
 
 % Select a solver:
