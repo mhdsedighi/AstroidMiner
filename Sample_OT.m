@@ -8,14 +8,14 @@ Re=6378.14;
 %%%%%%%%%%%%%%%%%%%
 
 a_0=22*Re;
-e_0=0.2;
+e_0=0.1;
 incl_0=0;
 omega_0=0;
 RA_0=0;
 theta_0=0;
 
 a_f=20*Re;
-e_f=0.6;
+e_f=0.1;
 incl_f=deg2rad(0);
 omega_f=0;
 RA_f=0;
@@ -50,13 +50,17 @@ problem.bounds.finalTime.upp = 10000000;
 % problem.bounds.state.upp = upp_bound';
 problem.bounds.initialState.low = mee_0;
 problem.bounds.initialState.upp = problem.bounds.initialState.low;
+% 
+% problem.bounds.initialState.low(end)=0;
+% problem.bounds.initialState.upp(end)=2*pi;
+
 mee_f(end)=4*pi;
 problem.bounds.finalState.low = mee_f;
 mee_f(end)=6*pi;
 problem.bounds.finalState.upp = mee_f;
 
-problem.bounds.control.low = [-F_max;-pi;-pi] ;
-problem.bounds.control.upp = [F_max;pi;pi];
+problem.bounds.control.low = [-F_max;-pi/4;-pi/4] ;
+problem.bounds.control.upp = [F_max;pi/4;pi/4];
 
 % Guess at the initial trajectory
 problem.guess.time = [0,(problem.bounds.finalTime.low+problem.bounds.finalTime.upp)/2];
@@ -101,11 +105,17 @@ plot3(R(1,:),R(2,:),R(3,:),'k.')
 
 figure
 subplot(3,1,1)
+hold on
+plot(T,U(1,:),'g')
 plot(T,U(1,:),'k.')
 subplot(3,1,2)
-plot(T,U(2,:),'k.')
+hold on
+plot(T,rad2deg(U(2,:)),'g')
+plot(T,rad2deg(U(2,:)),'k.')
 subplot(3,1,3)
-plot(T,U(3,:),'k.')
+hold on
+plot(T,rad2deg(U(3,:)),'g')
+plot(T,rad2deg(U(3,:)),'k.')
 
 figure
 subplot(3,2,1)
