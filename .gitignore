@@ -1,1 +1,16 @@
 slprj/
+.DS_STORE
+jit_tmp.c
+*.asv
+*.m~
+*.mex*
+*.lib
+.autosave
+*.mldatx
+*.mat
+ocl/Workspace
+ocl/octave-workspace
+ocl/Lib/casadi
+ocl/Lib/acados
+ocl/doc/html
+ocl/build/
