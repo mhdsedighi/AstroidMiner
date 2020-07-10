@@ -10,9 +10,14 @@ hmee = x(4,:);
 xkmee = x(5,:);
 xlmee = x(6,:);
 
-pert_1=u(1,:);
-pert_2=u(2,:);
-pert_3=u(3,:);
+Thrust=u(1,:);
+azimuth=u(2,:);
+elevation=u(3,:);
+
+
+pert_1=Thrust.*cos(elevation).*sin(azimuth);
+pert_2=Thrust.*cos(elevation).*cos(azimuth);
+pert_3=Thrust.*sin(elevation);
 
 
 
