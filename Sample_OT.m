@@ -7,19 +7,19 @@ Re=6378.14;
 
 %%%%%%%%%%%%%%%%%%%
 
-a_0=15*Re;
+a_0=30*Re;
 e_0=0;
 incl_0=0;
 omega_0=0;
 RA_0=0;
 theta_0=0;
 
-a_f=30*Re;
-e_f=0;
-incl_f=0;
+a_f=15*Re;
+e_f=0.2;
+incl_f=deg2rad(20);
 omega_f=0;
 RA_f=0;
-theta_f=deg2rad(90);
+theta_f=deg2rad(180);
 
 
 mee_0=oe2mee([a_0 e_0 incl_0 omega_0 RA_0 theta_0],p.mu)';
@@ -29,7 +29,7 @@ mee_f=oe2mee([a_f e_f incl_f omega_f RA_f theta_f],p.mu)';
 low_bound=[5*Re 0 0 0 0 0];
 upp_bound=[20*Re 1 1 1 1 pi];
 
-F_max=1e-2;
+F_max=1e-3;
 
 
 
@@ -44,7 +44,7 @@ problem.func.pathObj = @(t,x,u)( dot(u,u) );
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = 1000;
-problem.bounds.finalTime.upp = 10000;
+problem.bounds.finalTime.upp = 100000;
 
 % problem.bounds.state.low = low_bound';
 % problem.bounds.state.upp = upp_bound';
@@ -52,7 +52,7 @@ problem.bounds.initialState.low = mee_0;
 problem.bounds.initialState.upp = problem.bounds.initialState.low;
 % mee_f(end)=pi;
 problem.bounds.finalState.low = mee_f;
-% mee_f(end)=pi;
+mee_f(end)=inf;
 problem.bounds.finalState.upp = mee_f;
 
 problem.bounds.control.low = -F_max*ones(3,1) ;
