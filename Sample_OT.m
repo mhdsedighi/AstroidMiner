@@ -29,7 +29,7 @@ mee_f(end)=3*pi;
 low_bound=[5*Re 0 0 0 0 0];
 upp_bound=[20*Re 1 1 1 1 pi];
 
-F_max=1e-4;
+F_max=1e-5;
 
 
 
@@ -50,9 +50,9 @@ problem.bounds.finalTime.upp = 10000000;
 % problem.bounds.state.upp = upp_bound';
 problem.bounds.initialState.low = mee_0;
 problem.bounds.initialState.upp = problem.bounds.initialState.low;
-mee_f(end)=6*pi;
+mee_f(end)=30*pi;
 problem.bounds.finalState.low = mee_f;
-mee_f(end)=12*pi;
+mee_f(end)=35*pi;
 problem.bounds.finalState.upp = mee_f;
 
 problem.bounds.control.low = -F_max*ones(3,1) ;
@@ -65,11 +65,12 @@ problem.guess.control = [0 0;0 0;0 0];
 
 % Select a solver:
 % problem.options.method = 'rungeKutta';
-problem.options.method = 'trapezoid';
+problem.options.method = 'chebyshev';
 problem.options.defaultAccuracy = 'low';
 
-problem.options.rungeKutta.nSegment=40;
-problem.options.trapezoid.nGrid=200;
+% problem.options.rungeKutta.nSegment=40;
+problem.options.trapezoid.nGrid=300;
+  problem.options.chebyshev.nColPts =50;
 
 % Solve the problem
 soln = optimTraj(problem);
