@@ -19,17 +19,17 @@ e_f=0.2;
 incl_f=deg2rad(20);
 omega_f=0;
 RA_f=0;
-theta_f=deg2rad(180);
+theta_f=deg2rad(360*3);
 
 
 mee_0=oe2mee([a_0 e_0 incl_0 omega_0 RA_0 theta_0],p.mu)';
 mee_f=oe2mee([a_f e_f incl_f omega_f RA_f theta_f],p.mu)';
 
-
+mee_f(end)=3*pi;
 low_bound=[5*Re 0 0 0 0 0];
 upp_bound=[20*Re 1 1 1 1 pi];
 
-F_max=1e-3;
+F_max=1e-4;
 
 
 
@@ -44,15 +44,15 @@ problem.func.pathObj = @(t,x,u)( dot(u,u) );
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = 1000;
-problem.bounds.finalTime.upp = 100000;
+problem.bounds.finalTime.upp = 1000000;
 
 % problem.bounds.state.low = low_bound';
 % problem.bounds.state.upp = upp_bound';
 problem.bounds.initialState.low = mee_0;
 problem.bounds.initialState.upp = problem.bounds.initialState.low;
-% mee_f(end)=pi;
+mee_f(end)=6*pi;
 problem.bounds.finalState.low = mee_f;
-mee_f(end)=inf;
+mee_f(end)=8*pi;
 problem.bounds.finalState.upp = mee_f;
 
 problem.bounds.control.low = -F_max*ones(3,1) ;
@@ -99,4 +99,36 @@ subplot(3,1,2)
 plot(T,U(2,:),'k.')
 subplot(3,1,3)
 plot(T,U(3,:),'k.')
+
+figure
+subplot(3,2,1)
+hold on
+plot(T(1),mee_0(1),'bo')
+plot(T(end),mee_f(1),'bo')
+plot(T,soln.grid.state(1,:),'r.')
+subplot(3,2,2)
+hold on
+plot(T(1),mee_0(2),'bo')
+plot(T(end),mee_f(2),'bo')
+plot(T,soln.grid.state(2,:),'r.')
+subplot(3,2,3)
+hold on
+plot(T(1),mee_0(3),'bo')
+plot(T(end),mee_f(3),'bo')
+plot(T,soln.grid.state(3,:),'r.')
+subplot(3,2,4)
+hold on
+plot(T(1),mee_0(4),'bo')
+plot(T(end),mee_f(4),'bo')
+plot(T,soln.grid.state(4,:),'r.')
+subplot(3,2,5)
+hold on
+plot(T(1),mee_0(5),'bo')
+plot(T(end),mee_f(5),'bo')
+plot(T,soln.grid.state(5,:),'r.')
+subplot(3,2,6)
+hold on
+plot(T(1),mee_0(6),'bo')
+plot(T(end),mee_f(6),'bo')
+plot(T,soln.grid.state(6,:),'r.')
 
