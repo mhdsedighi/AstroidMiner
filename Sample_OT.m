@@ -8,15 +8,15 @@ Re=6378.14;
 %%%%%%%%%%%%%%%%%%%
 
 a_0=30*Re;
-e_0=0;
+e_0=0.2;
 incl_0=0;
 omega_0=0;
 RA_0=0;
 theta_0=0;
 
 a_f=15*Re;
-e_f=0.2;
-incl_f=deg2rad(20);
+e_f=0.6;
+incl_f=deg2rad(90);
 omega_f=0;
 RA_f=0;
 theta_f=deg2rad(360*3);
@@ -44,7 +44,7 @@ problem.func.pathObj = @(t,x,u)( dot(u,u) );
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = 1000;
-problem.bounds.finalTime.upp = 1000000;
+problem.bounds.finalTime.upp = 10000000;
 
 % problem.bounds.state.low = low_bound';
 % problem.bounds.state.upp = upp_bound';
@@ -52,7 +52,7 @@ problem.bounds.initialState.low = mee_0;
 problem.bounds.initialState.upp = problem.bounds.initialState.low;
 mee_f(end)=6*pi;
 problem.bounds.finalState.low = mee_f;
-mee_f(end)=8*pi;
+mee_f(end)=12*pi;
 problem.bounds.finalState.upp = mee_f;
 
 problem.bounds.control.low = -F_max*ones(3,1) ;
@@ -64,8 +64,12 @@ problem.guess.state = [problem.bounds.initialState.low problem.bounds.finalState
 problem.guess.control = [0 0;0 0;0 0];
 
 % Select a solver:
-problem.options.method = 'rungeKutta';
-problem.options.defaultAccuracy = 'medium';
+% problem.options.method = 'rungeKutta';
+problem.options.method = 'trapezoid';
+problem.options.defaultAccuracy = 'low';
+
+problem.options.rungeKutta.nSegment=40;
+problem.options.trapezoid.nGrid=200;
 
 % Solve the problem
 soln = optimTraj(problem);
