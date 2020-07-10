@@ -10,33 +10,56 @@ hmee = x(4,:);
 xkmee = x(5,:);
 xlmee = x(6,:);
 
-force_r=u(1,:);
-force_t=u(2,:);
-force_n=u(3,:);
+pert_1=u(1,:);
+pert_2=u(2,:);
+pert_3=u(3,:);
 
 
-sinl = sin(xlmee);
+
+
+smovrp = sqrt(mu ./ pmee);
+
+tani2s = hmee.^2 + xkmee.^2;
 
 cosl = cos(xlmee);
 
+sinl = sin(xlmee);
+
 wmee = 1.0 + fmee .* cosl + gmee .* sinl;
 
-sesqr = 1.0 + hmee .* hmee + xkmee .* xkmee;
+% radius = pmee ./ wmee;
+% 
+% hsmks = hmee.^2 - xkmee.^2;
 
-meedot_1 = (2.0 .* pmee ./ wmee) .* sqrt(pmee ./ mu) .* force_r;
+ssqrd = 1.0 + tani2s;
 
-meedot_2 = sqrt(pmee ./ mu) .* (force_r.*sinl+((wmee + 1.0) .* cosl + fmee) .* (force_t ./ wmee) ...
-    -(hmee .* sinl - xkmee .* cosl) .* (gmee .* force_n ./ wmee));
 
-meedot_3 = sqrt(pmee ./ mu) .* (-force_r.*cosl+((wmee + 1.0) .* sinl + gmee) .* (force_t ./ wmee) ...
-    -(hmee .* sinl - xkmee .* cosl) .* (fmee .* force_n ./ wmee));
 
-meedot_4 = sqrt(pmee ./ mu) .* (sesqr .* force_n ./ (2.0 .* wmee)) .* cosl;
 
-meedot_5 = sqrt(pmee ./ mu) .* (sesqr .* force_n ./ (2.0 .* wmee)) .* sinl;
+meedot_1 = 2.0 .* pmee .* pert_2 ./ (wmee .* smovrp);
 
-meedot_6 = sqrt(mu .* pmee) .* (wmee ./ pmee).^2 + (1.0 ./ wmee) .* sqrt(pmee ./ mu) ...
-    .* (hmee .* sinl - xkmee .* cosl) .* force_n;
+term1 = ((wmee + 1.0) .* cosl + fmee) .* pert_2;
+
+term2 = (hmee .* sinl - xkmee .* cosl) .* gmee .* pert_3;
+
+meedot_2 = (pert_1 .* sinl + (term1 - term2) ./ wmee) ./ smovrp;
+
+term1 = ((wmee + 1.0) .* sinl + gmee) .* pert_2;
+
+term2 = (hmee .* sinl - xkmee .* cosl) .* fmee .* pert_3;
+
+meedot_3 = (-pert_1 .* cosl + (term1 + term2) ./ wmee) ./ smovrp;
+
+term1 = ssqrd .* pert_3 ./ (2.0 .* wmee .* smovrp);
+
+meedot_4 = term1 .* cosl;
+
+meedot_5 = term1 .* sinl;
+
+meedot_6 = sqrt(mu .* pmee) .* (wmee ./ pmee).^2 ...
+    + (hmee .* sinl - xkmee .* cosl) .* pert_3./(wmee .* smovrp);
+
+
 
 dx=[meedot_1;meedot_2;meedot_3;meedot_4;meedot_5;meedot_6];
 
