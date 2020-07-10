@@ -23,7 +23,7 @@ wmee = 1.0 + fmee .* cosl + gmee .* sinl;
 
 sesqr = 1.0 + hmee .* hmee + xkmee .* xkmee;
 
-meedot_1 = (2.0 .* pmee ./ wmee) .* sqrt(pmee ./ mu) .* force_t;
+meedot_1 = (2.0 .* pmee ./ wmee) .* sqrt(pmee ./ mu) .* force_r;
 
 meedot_2 = sqrt(pmee ./ mu) .* (force_r.*sinl+((wmee + 1.0) .* cosl + fmee) .* (force_t ./ wmee) ...
     -(hmee .* sinl - xkmee .* cosl) .* (gmee .* force_n ./ wmee));
