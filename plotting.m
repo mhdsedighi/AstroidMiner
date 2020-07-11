@@ -1,11 +1,21 @@
+close all
 figure
 hold on
 axis equal
 grid minor
 view(25,45)
 plot3(0,0,0,'ro')
+plot_earth
 plot3(R(1,:),R(2,:),R(3,:),'b')
-plot3(R(1,:),R(2,:),R(3,:),'k.')
+plot3(R(1,:),R(2,:),R(3,:),'r.')
+
+Force_history_xyz=zeros(3,N);
+Force_mag=zeros(1,N);
+for i=1:N
+    Force_history_xyz(:,i)=rsw2xyz(Force_history(:,i),R(:,i),V(:,i));
+    Force_mag(i)=norm(Force_history_xyz(:,i));
+end
+quiver3(R(1,:),R(2,:),R(3,:),Force_history_xyz(1,:),Force_history_xyz(2,:),Force_history_xyz(3,:),1.3,'k')
 
 figure
 subplot(3,1,1)

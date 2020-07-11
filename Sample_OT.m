@@ -92,13 +92,17 @@ U = soln.grid.control;
 
 N=length(T);
 R=zeros(3,N);
+V=zeros(3,N);
 
 for i=1:N
     
     [r,v]=mee2rv(soln.grid.state(:,i)',p.mu);
     R(:,i)=r;
+    V(:,i)=v;
     
 end
+
+Force_history=[U(1,:).*cos(U(2,:)).*sin(U(3,:)) ;U(1,:).*cos(U(2,:)).*cos(U(3,:)) ; U(1,:).*sin(U(2,:))  ];
 
 plotting
 
