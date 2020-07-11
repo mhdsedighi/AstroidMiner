@@ -1,5 +1,6 @@
 clc; clear; close all
 addpath OptimTraj
+addpath chebfun
 
 %parameters
 p.mu = 3.986005*10^5;
@@ -70,20 +71,19 @@ problem.guess.control = [0 0;0 0;0 0];
 
 % Select a solver:
 % problem.options.method = 'rungeKutta';
-% problem.options.method = 'chebyshev';
-problem.options.method = 'trapezoid';
+problem.options.method = 'chebyshev';
+% problem.options.method = 'trapezoid';
 
 problem.options.defaultAccuracy = 'low';
 
 % problem.options.rungeKutta.nSegment=40;
-problem.options.trapezoid.nGrid=200;
+% problem.options.trapezoid.nGrid=200;
 
-problem.options.nlpOpt.MaxFunEvals=5e4;
-problem.options.nlpOpt.MaxIter=1e5;
+problem.options.nlpOpt.MaxFunEvals=2e4;
+% problem.options.nlpOpt.MaxIter=1e5;
 
+problem.options.chebyshev.nColPts=200;
 
-
-%   problem.options.chebyshev.nColPts =50;
 
 % Solve the problem
 soln = optimTraj(problem);
