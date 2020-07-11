@@ -9,29 +9,29 @@ Re=6378.14;
 %%%%%%%%%%%%%%%%%%%
 
 a_0=30*Re;
-e_0=0.1;
+e_0=0.7;
 incl_0=0;
 omega_0=0;
 RA_0=0;
-theta_0=0;
+theta_0=deg2rad(180);
 
-a_f=20*Re;
-e_f=0.5;
-incl_f=deg2rad(20);
+a_f=10*Re;
+e_f=0;
+incl_f=deg2rad(0);
 omega_f=0;
 RA_f=0;
 
-min_revolution=5;
+min_revolution=1;
 max_revolution=20;
 
 
 mee_0=oe2mee([a_0 e_0 incl_0 omega_0 RA_0 theta_0],p.mu)';
 mee_f=oe2mee([a_f e_f incl_f omega_f RA_f theta_0],p.mu)';
 
-low_bound=[5*Re 0 0 0 0 0];
+low_bound=[5*Re -inf -inf -inf -inf -inf];
 upp_bound=[20*Re 1 1 1 1 pi];
 
-F_max=1e-3;
+F_max=1e-1;
 
 
 
@@ -48,7 +48,7 @@ problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = 1000;
 problem.bounds.finalTime.upp = 10000000;
 
-% problem.bounds.state.low = low_bound';
+problem.bounds.state.low = low_bound';
 % problem.bounds.state.upp = upp_bound';
 problem.bounds.initialState.low = mee_0;
 problem.bounds.initialState.upp = problem.bounds.initialState.low;
@@ -61,8 +61,8 @@ problem.bounds.finalState.low = mee_f;
 mee_f(end)=mee_f(end)+max_revolution*2*pi;
 problem.bounds.finalState.upp = mee_f;
 
-problem.bounds.control.low = [-F_max;-pi/4;-pi/4] ;
-problem.bounds.control.upp = [F_max;pi/4;pi/4];
+problem.bounds.control.low = [-F_max;-pi;-pi] ;
+problem.bounds.control.upp = [F_max;pi;pi];
 
 % Guess at the initial trajectory
 problem.guess.time = [0,(problem.bounds.finalTime.low+problem.bounds.finalTime.upp)/2];
@@ -79,10 +79,10 @@ problem.options.defaultAccuracy = 'low';
 % problem.options.rungeKutta.nSegment=40;
 % problem.options.trapezoid.nGrid=200;
 
-problem.options.nlpOpt.MaxFunEvals=2e4;
+problem.options.nlpOpt.MaxFunEvals=1e5;
 % problem.options.nlpOpt.MaxIter=1e5;
 
-problem.options.chebyshev.nColPts=200;
+problem.options.chebyshev.nColPts=100;
 
 
 % Solve the problem
