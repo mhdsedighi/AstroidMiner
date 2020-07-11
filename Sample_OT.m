@@ -7,7 +7,7 @@ Re=6378.14;
 
 %%%%%%%%%%%%%%%%%%%
 
-a_0=22*Re;
+a_0=30*Re;
 e_0=0.1;
 incl_0=0;
 omega_0=0;
@@ -15,17 +15,18 @@ RA_0=0;
 theta_0=0;
 
 a_f=20*Re;
-e_f=0.1;
-incl_f=deg2rad(0);
+e_f=0.5;
+incl_f=deg2rad(20);
 omega_f=0;
 RA_f=0;
-theta_f=deg2rad(360*3);
+
+min_revolution=5;
+max_revolution=20;
 
 
 mee_0=oe2mee([a_0 e_0 incl_0 omega_0 RA_0 theta_0],p.mu)';
-mee_f=oe2mee([a_f e_f incl_f omega_f RA_f theta_f],p.mu)';
+mee_f=oe2mee([a_f e_f incl_f omega_f RA_f theta_0],p.mu)';
 
-mee_f(end)=3*pi;
 low_bound=[5*Re 0 0 0 0 0];
 upp_bound=[20*Re 1 1 1 1 pi];
 
@@ -54,9 +55,9 @@ problem.bounds.initialState.upp = problem.bounds.initialState.low;
 % problem.bounds.initialState.low(end)=0;
 % problem.bounds.initialState.upp(end)=2*pi;
 
-mee_f(end)=4*pi;
+mee_f(end)=mee_0(end)+min_revolution*2*pi;
 problem.bounds.finalState.low = mee_f;
-mee_f(end)=6*pi;
+mee_f(end)=mee_f(end)+max_revolution*2*pi;
 problem.bounds.finalState.upp = mee_f;
 
 problem.bounds.control.low = [-F_max;-pi/4;-pi/4] ;
@@ -69,16 +70,16 @@ problem.guess.control = [0 0;0 0;0 0];
 
 % Select a solver:
 % problem.options.method = 'rungeKutta';
-problem.options.method = 'chebyshev';
-% problem.options.method = 'trapezoid';
+% problem.options.method = 'chebyshev';
+problem.options.method = 'trapezoid';
 
 problem.options.defaultAccuracy = 'low';
 
 % problem.options.rungeKutta.nSegment=40;
-problem.options.trapezoid.nGrid=100;
+problem.options.trapezoid.nGrid=200;
 
-problem.options.nlpOpt.MaxFunEvals=5e5;
-problem.options.nlpOpt.MaxIter=1e6;
+problem.options.nlpOpt.MaxFunEvals=5e4;
+problem.options.nlpOpt.MaxIter=1e5;
 
 
 
