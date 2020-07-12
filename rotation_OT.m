@@ -59,10 +59,9 @@ problem.bounds.initialState.upp = problem.bounds.initialState.low;
 % problem.bounds.initialState.upp(end)=2*pi;
 
 
-% pqr_f(4:7)=-10;
 problem.bounds.finalState.low = pqr_f;
-% pqr_f(4:7)=10;
 problem.bounds.finalState.upp = pqr_f;
+
 
 problem.bounds.control.low = [-torque_max;-torque_max;-torque_max] ;
 problem.bounds.control.upp = [torque_max;torque_max;torque_max];
@@ -72,12 +71,18 @@ problem.guess.time = [0,(problem.bounds.finalTime.low+problem.bounds.finalTime.u
 problem.guess.state = [problem.bounds.initialState.low problem.bounds.finalState.low];
 problem.guess.control = [0 0;0 0;0 0];
 
+
+pqr_f(4:7)=-1;
+problem.bounds.finalState.low = pqr_f;
+pqr_f(4:7)=1;
+problem.bounds.finalState.upp = pqr_f;
+
 % Select a solver:
 % problem.options.method = 'rungeKutta';
 problem.options.method = 'chebyshev';
 % problem.options.method = 'trapezoid';
 
-problem.options.defaultAccuracy = 'high';
+problem.options.defaultAccuracy = 'low';
 
 % problem.options.rungeKutta.nSegment=40;
 % problem.options.trapezoid.nGrid=200;
@@ -85,7 +90,7 @@ problem.options.defaultAccuracy = 'high';
 % problem.options.nlpOpt.MaxFunEvals=1e5;
 % problem.options.nlpOpt.MaxIter=1e5;
 
-problem.options.chebyshev.nColPts=100;
+problem.options.chebyshev.nColPts=50;
 
 
 % Solve the problem
