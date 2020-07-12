@@ -1,6 +1,7 @@
 clc; clear; close all
 addpath OptimTraj
 addpath chebfun
+load('params')
 
 %parameters
 p.mu = 3.986005*10^5;
@@ -24,10 +25,10 @@ Re=6378.14;
 % min_revolution=1;
 % max_revolution=20;
 
-quat_0=eul2quat(deg2rad([0 0 0]))
-quat_f=eul2quat(deg2rad([0 0 0]))
+quat_0=eul2quat(deg2rad([0 0 0]));
+quat_f=eul2quat(deg2rad([0 0 0]));
 
-pqr_0=[1;5;10;quat_0'];
+pqr_0=[0;0;1;quat_0'];
 pqr_f=[0;0;0;quat_f'];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
@@ -42,13 +43,13 @@ torque_max=10;
 
 % User-defined dynamics and objective functions
 problem.func.dynamics = @(t,x,u)( rotation_dynamics(x,u,p) );
-problem.func.pathObj = @(t,x,u)( sum(u.^2) );
+problem.func.pathObj = @(t,x,u)( dot(u,u) );
 
 % Problem bounds
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
-problem.bounds.finalTime.low = 1000;
-problem.bounds.finalTime.upp = 1e7;
+problem.bounds.finalTime.low = 100;
+problem.bounds.finalTime.upp = 1000;
 
 % problem.bounds.state.low = low_bound';
 % problem.bounds.state.upp = upp_bound';
@@ -63,34 +64,37 @@ problem.bounds.finalState.low = pqr_f;
 problem.bounds.finalState.upp = pqr_f;
 
 
-problem.bounds.control.low = [-torque_max;-torque_max;-torque_max] ;
-problem.bounds.control.upp = [torque_max;torque_max;torque_max];
+problem.bounds.control.low = 0*ones(p.N_sat,1);
+problem.bounds.control.upp = torque_max*ones(p.N_sat,1);
 
 % Guess at the initial trajectory
 problem.guess.time = [0,(problem.bounds.finalTime.low+problem.bounds.finalTime.upp)/2];
 problem.guess.state = [problem.bounds.initialState.low problem.bounds.finalState.low];
-problem.guess.control = [0 0;0 0;0 0];
+problem.guess.control = zeros(p.N_sat,2);
 
 
-pqr_f(4:7)=-1;
+pqr_f(4:7)=-inf;
 problem.bounds.finalState.low = pqr_f;
-pqr_f(4:7)=1;
+pqr_f(4:7)=inf;
 problem.bounds.finalState.upp = pqr_f;
 
 % Select a solver:
 % problem.options.method = 'rungeKutta';
 problem.options.method = 'chebyshev';
 % problem.options.method = 'trapezoid';
+% problem.options.method = 'multiCheb';
 
-problem.options.defaultAccuracy = 'low';
+problem.options.defaultAccuracy = 'medium';
 
-% problem.options.rungeKutta.nSegment=40;
+% problem.options.rungeKutta.nSegment=100;
 % problem.options.trapezoid.nGrid=200;
 
 % problem.options.nlpOpt.MaxFunEvals=1e5;
 % problem.options.nlpOpt.MaxIter=1e5;
 
-problem.options.chebyshev.nColPts=50;
+problem.options.chebyshev.nColPts=30;
+
+% problem.options.multiCheb.nColPts=30;
 
 
 % Solve the problem

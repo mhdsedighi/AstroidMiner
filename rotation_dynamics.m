@@ -1,7 +1,9 @@
 function dx = rotation_dynamics(x,u,params)
 
-% L M N p q r Ixx Iyy Izz Ixy Ixz Iyz
 
+N_sat=params.N_sat;
+Force_Vectors=params.Force_Vectors;
+Moment_Vectors=params.Moment_Vectors;
 
 Ixx=5000;
 Iyy=1000;
@@ -9,23 +11,6 @@ Izz=3000;
 Ixy=0;
 Ixz=0;
 Iyz=0;
-
-% vec1=[0;0.7071;0.7071];
-% vec2=[0.7071;0.7071;0];
-% vec3=[0.7071;0.7071;0];
-
-vec1=[1;0;0];
-vec2=[0;1;0];
-vec3=[0;0;1];
-
-T1=u(1,:);
-T2=u(2,:);
-T3=u(3,:);
-
-
-L=T1.*vec1(1)+T2.*vec2(1)+T3.*vec3(1);
-M=T1.*vec1(2)+T2.*vec2(2)+T3.*vec3(2);
-N=T1.*vec1(3)+T2.*vec2(3)+T3.*vec3(3);
 
 
 p=x(1,:);
@@ -37,17 +22,43 @@ quat1=x(5,:);
 quat2=x(6,:);
 quat3=x(7,:);
 
-quat0_dot=-0.5*(p.*quat1+q.*quat2+r.*quat3);
-quat1_dot=0.5*(p.*quat0+r.*quat2-q.*quat3);
-quat2_dot=0.5*(q.*quat0-r.*quat1+p.*quat3);
-quat3_dot=0.5*(r.*quat0+q.*quat1-p.*quat2);
+n_time=length(p);
 
 
 
 
-% u_dot=F_x./m+r.*v-q.*w;
-% v_dot=F_y./m-r.*u+p.*w;
-% w_dot=F_z./m+q.*u-p.*v;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% finding total force and moment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+moment_xs=zeros(N_sat,n_time);
+moment_ys=zeros(N_sat,n_time);
+moment_zs=zeros(N_sat,n_time);
+for i=1:N_sat
+   moment_xs(i,:)=u(i,:)*Moment_Vectors(i,1);
+   moment_ys(i,:)=u(i,:)*Moment_Vectors(i,2);
+   moment_zs(i,:)=u(i,:)*Moment_Vectors(i,3);
+end
+L=sum(moment_xs,1);
+M=sum(moment_ys,1);
+N=sum(moment_zs,1);
+
+
+
+F_x=zeros(1,n_time);
+F_y=zeros(1,n_time);
+F_z=zeros(1,n_time);
+DCM_mats=quat2dcm([quat0' quat1' quat2' quat3']);
+for i=1:n_time
+    for j=1:N_sat
+        F_x(i)=F_x(i)+u(j,i)*(DCM_mats(1,1,i)*Force_Vectors(j,1)+DCM_mats(2,1,i)*Force_Vectors(j,2)+DCM_mats(3,1,i)*Force_Vectors(j,3));
+        F_y(i)=F_y(i)+u(j,i)*(DCM_mats(1,2,i)*Force_Vectors(j,1)+DCM_mats(2,2,i)*Force_Vectors(j,2)+DCM_mats(3,2,i)*Force_Vectors(j,3));
+        F_z(i)=F_z(i)+u(j,i)*(DCM_mats(1,3,i)*Force_Vectors(j,1)+DCM_mats(2,3,i)*Force_Vectors(j,2)+DCM_mats(3,3,i)*Force_Vectors(j,3));
+    end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 
@@ -62,6 +73,13 @@ term7=Ixy.*Ixz + Ixx.*Iyz;
 p_dot=(Iyz.^2-Iyy.*Izz.*term2-term6.*term4-term5.*term3)./term1;
 q_dot=(Ixz.^2-Ixx.*Izz.*term3-term7.*term4-term5.*term2)./term1;
 r_dot=(Ixy.^2-Ixx.*Iyy.*term4-term6.*term3-term6.*term2)./term1;
+
+quat0_dot=-0.5*(p.*quat1+q.*quat2+r.*quat3);
+quat1_dot=0.5*(p.*quat0+r.*quat2-q.*quat3);
+quat2_dot=0.5*(q.*quat0-r.*quat1+p.*quat3);
+quat3_dot=0.5*(r.*quat0+q.*quat1-p.*quat2);
+
+
 
 
 
