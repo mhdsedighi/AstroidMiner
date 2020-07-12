@@ -3,17 +3,25 @@ function dx = rotation_dynamics(x,u,params)
 % L M N p q r Ixx Iyy Izz Ixy Ixz Iyz
 
 
-Ixx=100;
-Iyy=100;
-Izz=100;
-Ixy=0;
-Ixz=0;
-Iyz=0;
+Ixx=5000;
+Iyy=1000;
+Izz=3000;
+Ixy=100;
+Ixz=100;
+Iyz=100;
+
+vec1=[0;0.7071;0.7071];
+vec2=[0.7071;0.7071;0];
+vec3=[0.7071;0.7071;0];
+
+T1=u(1,:);
+T2=u(2,:);
+T3=u(3,:);
 
 
-L=u(1,:);
-M=u(2,:);
-N=u(3,:);
+L=T1.*vec1(1)+T2.*vec2(1)+T3.*vec3(1);
+M=T1.*vec1(2)+T2.*vec2(2)+T3.*vec3(2);
+N=T1.*vec1(3)+T2.*vec2(3)+T3.*vec3(3);
 
 
 p=x(1,:);

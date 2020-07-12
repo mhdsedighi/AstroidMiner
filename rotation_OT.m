@@ -25,13 +25,13 @@ Re=6378.14;
 % max_revolution=20;
 
 
-pqr_0=[50;-10;-100];
+pqr_0=[1;5;10];
 pqr_f=[0;0;0];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-torque_max=1e-2;
+torque_max=10000;
 
 
 
@@ -40,13 +40,13 @@ torque_max=1e-2;
 
 % User-defined dynamics and objective functions
 problem.func.dynamics = @(t,x,u)( rotation_dynamics(x,u,p) );
-problem.func.pathObj = @(t,x,u)( dot(u,u) );
+problem.func.pathObj = @(t,x,u)( sum(u.^2) );
 
 % Problem bounds
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = 1000;
-problem.bounds.finalTime.upp = 10000000;
+problem.bounds.finalTime.upp = 1e7;
 
 % problem.bounds.state.low = low_bound';
 % problem.bounds.state.upp = upp_bound';
@@ -80,7 +80,7 @@ problem.options.defaultAccuracy = 'low';
 % problem.options.nlpOpt.MaxFunEvals=1e5;
 % problem.options.nlpOpt.MaxIter=1e5;
 
-problem.options.chebyshev.nColPts=100;
+problem.options.chebyshev.nColPts=50;
 
 
 % Solve the problem
