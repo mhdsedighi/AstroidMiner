@@ -6,13 +6,17 @@ function dx = rotation_dynamics(x,u,params)
 Ixx=5000;
 Iyy=1000;
 Izz=3000;
-Ixy=100;
-Ixz=100;
-Iyz=100;
+Ixy=0;
+Ixz=0;
+Iyz=0;
 
-vec1=[0;0.7071;0.7071];
-vec2=[0.7071;0.7071;0];
-vec3=[0.7071;0.7071;0];
+% vec1=[0;0.7071;0.7071];
+% vec2=[0.7071;0.7071;0];
+% vec3=[0.7071;0.7071;0];
+
+vec1=[1;0;0];
+vec2=[0;1;0];
+vec3=[0;0;1];
 
 T1=u(1,:);
 T2=u(2,:);
@@ -27,6 +31,17 @@ N=T1.*vec1(3)+T2.*vec2(3)+T3.*vec3(3);
 p=x(1,:);
 q=x(2,:);
 r=x(3,:);
+
+quat0=x(4,:);
+quat1=x(5,:);
+quat2=x(6,:);
+quat3=x(7,:);
+
+quat0_dot=-0.5*(p.*quat1+q.*quat2+r.*quat3);
+quat1_dot=0.5*(p.*quat0+r.*quat2-q.*quat3);
+quat2_dot=0.5*(q.*quat0-r.*quat1+p.*quat3);
+quat3_dot=0.5*(r.*quat0+q.*quat1-p.*quat2);
+
 
 
 
@@ -53,5 +68,10 @@ r_dot=(Ixy.^2-Ixx.*Iyy.*term4-term6.*term3-term6.*term2)./term1;
 dx(1,:)=p_dot;
 dx(2,:)=q_dot;
 dx(3,:)=r_dot;
+dx(4,:)=quat0_dot;
+dx(5,:)=quat1_dot;
+dx(6,:)=quat2_dot;
+dx(7,:)=quat3_dot;
+
 
 end

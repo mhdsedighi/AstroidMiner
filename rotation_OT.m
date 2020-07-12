@@ -24,14 +24,16 @@ Re=6378.14;
 % min_revolution=1;
 % max_revolution=20;
 
+quat_0=eul2quat(deg2rad([0 0 0]))
+quat_f=eul2quat(deg2rad([0 0 0]))
 
-pqr_0=[1;5;10];
-pqr_f=[0;0;0];
+pqr_0=[1;5;10;quat_0'];
+pqr_f=[0;0;0;quat_f'];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-torque_max=10000;
+torque_max=10;
 
 
 
@@ -56,7 +58,10 @@ problem.bounds.initialState.upp = problem.bounds.initialState.low;
 % problem.bounds.initialState.low(end)=0;
 % problem.bounds.initialState.upp(end)=2*pi;
 
+
+% pqr_f(4:7)=-10;
 problem.bounds.finalState.low = pqr_f;
+% pqr_f(4:7)=10;
 problem.bounds.finalState.upp = pqr_f;
 
 problem.bounds.control.low = [-torque_max;-torque_max;-torque_max] ;
@@ -72,7 +77,7 @@ problem.guess.control = [0 0;0 0;0 0];
 problem.options.method = 'chebyshev';
 % problem.options.method = 'trapezoid';
 
-problem.options.defaultAccuracy = 'low';
+problem.options.defaultAccuracy = 'high';
 
 % problem.options.rungeKutta.nSegment=40;
 % problem.options.trapezoid.nGrid=200;
@@ -80,7 +85,7 @@ problem.options.defaultAccuracy = 'low';
 % problem.options.nlpOpt.MaxFunEvals=1e5;
 % problem.options.nlpOpt.MaxIter=1e5;
 
-problem.options.chebyshev.nColPts=50;
+problem.options.chebyshev.nColPts=100;
 
 
 % Solve the problem
