@@ -28,13 +28,13 @@ Re=6378.14;
 quat_0=eul2quat(deg2rad([0 0 0]));
 quat_f=eul2quat(deg2rad([0 0 0]));
 
-state_0=[1;0;0;quat_0'];
+state_0=[1;1;1;quat_0'];
 state_f=[0;0;0;quat_f'];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-thrust_max=1e-4;
+thrust_max=1e-3;
 angular_speed_end=1e-2;
 
 
