@@ -22,7 +22,7 @@ incl_f=deg2rad(0);
 omega_f=0;
 RA_f=0;
 
-min_revolution=1;
+min_revolution=0;
 max_revolution=20;
 
 
@@ -38,7 +38,7 @@ state_f=[0;0;0;quat_f';mee_f];
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-thrust_max=1e-3;
+thrust_max=1;
 angular_speed_end=1e-2;
 
 
@@ -210,6 +210,6 @@ N=length(T);
 % 
 % Force_history=[U(1,:).*cos(U(2,:)).*sin(U(3,:)) ;U(1,:).*cos(U(2,:)).*cos(U(3,:)) ; U(1,:).*sin(U(2,:))  ];
 % 
-plotting_rot
+plotting_combo
 
 T(end)
