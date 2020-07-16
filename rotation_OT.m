@@ -35,7 +35,7 @@ state_f=[0;0;0;quat_f'];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
 thrust_max=1e-4;
-
+angular_speed_end=1e-2;
 
 
 
@@ -73,8 +73,10 @@ problem.guess.state = [problem.bounds.initialState.low problem.bounds.finalState
 problem.guess.control = zeros(p.N_sat,2)+0.001;
 
 
+state_f(1:3)=-angular_speed_end;
 state_f(4:7)=-inf;
 problem.bounds.finalState.low = state_f;
+state_f(1:3)=angular_speed_end;
 state_f(4:7)=inf;
 problem.bounds.finalState.upp = state_f;
 
@@ -154,7 +156,7 @@ switch method
 %         
                 step=step+1;
         problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =50;
+        problem.options(step).chebyshev.nColPts =60;
         problem.options(step).defaultAccuracy = 'medium';
         problem.options(step).nlpOpt.MaxFunEvals=1e5;
         
