@@ -48,13 +48,13 @@ problem.func.pathObj = @(t,x,u)( pathcost(t,x,u) );
 % Problem bounds
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
-problem.bounds.finalTime.low = 1000;
-problem.bounds.finalTime.upp = 1e7;
+problem.bounds.finalTime.low = 1e7;
+problem.bounds.finalTime.upp = 1e8;
 
 problem.bounds.state.low = [-2 -2 -2 -inf -inf -inf -inf]';
 problem.bounds.state.upp = -1*problem.bounds.state.low;
 problem.bounds.initialState.low = state_0;
-problem.bounds.initialState.upp = problem.bounds.initialState.low;
+problem.bounds.initialState.upp = state_0;
 % 
 % problem.bounds.initialState.low(end)=0;
 % problem.bounds.initialState.upp(end)=2*pi;
@@ -68,8 +68,8 @@ problem.bounds.control.low = 0*ones(p.N_sat,1);
 problem.bounds.control.upp = thrust_max*ones(p.N_sat,1);
 
 % Guess at the initial trajectory
-problem.guess.time = [0,(problem.bounds.finalTime.upp+problem.bounds.finalTime.low)/2];
-problem.guess.state = [problem.bounds.initialState.low problem.bounds.finalState.low];
+problem.guess.time = [0,1e7];
+problem.guess.state = [state_0  state_f];
 problem.guess.control = zeros(p.N_sat,2)+0.001;
 
 
@@ -145,7 +145,8 @@ switch method
                 problem.options(step).method = 'chebyshev';
                 problem.options(step).chebyshev.nColPts =30;
                 problem.options(step).defaultAccuracy = 'low';
-%                 problem.options(step).nlpOpt.MaxFunEvals=1e5;
+                problem.options(step).nlpOpt.MaxFunEvals=1e6;
+                problem.options.nlpOpt.MaxIter=2000;
         
 %         step=step+1;
 %         problem.options(step).method = 'chebyshev';
@@ -154,11 +155,11 @@ switch method
 %         problem.options(step).nlpOpt.MaxFunEvals=1e6;
 %         
 %         
-                step=step+1;
-        problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =60;
-        problem.options(step).defaultAccuracy = 'medium';
-        problem.options(step).nlpOpt.MaxFunEvals=1e5;
+%                 step=step+1;
+%         problem.options(step).method = 'chebyshev';
+%         problem.options(step).chebyshev.nColPts =60;
+%         problem.options(step).defaultAccuracy = 'medium';
+%         problem.options(step).nlpOpt.MaxFunEvals=1e5;
         
 %                 step=step+1;
 %                 problem.options(step).method = 'trapezoid';
