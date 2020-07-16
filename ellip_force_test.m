@@ -1,5 +1,5 @@
 clc
-clear
+% clear
 close all
 
 
@@ -57,7 +57,7 @@ hold on
 axis equal
 view(25,45)
 [x_surf, y_surf, z_surf] = ellipsoid(0,0,0,a,b,c,35);
-surf(x_surf, y_surf,z_surf,'FaceAlpha',0.5,'EdgeColor','none');
+surf(x_surf, y_surf,z_surf,'FaceAlpha',0.1,'EdgeColor','none');
 plot3(0,0,0,'ro')
 Force_Vectors=[];
 Moment_Vectors=[];
@@ -65,7 +65,7 @@ for i=1:N_sat
     
     [x,y,z,R,normal_vector]=ellip_deg(a,b,c,azimuths(i),elevations(i));
     plot3(x,y,z,'b.')
-    plot_vector(x,y,z,normal_vector)
+    plot_vector(x,y,z,normal_vector*2)
     
     Force_Vectors=[Force_Vectors;normal_vector];
     Moment_Vectors=[Moment_Vectors;cross([x y z],normal_vector)];
