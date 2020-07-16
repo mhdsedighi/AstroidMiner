@@ -28,13 +28,13 @@ Re=6378.14;
 quat_0=eul2quat(deg2rad([0 0 0]));
 quat_f=eul2quat(deg2rad([0 0 0]));
 
-pqr_0=[1;3;0;quat_0'];
-pqr_f=[0;0;0;quat_f'];
+state_0=[3;3;0;quat_0'];
+state_f=[0;0;0;quat_f'];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-torque_max=1;
+thrust_max=10;
 
 
 
@@ -53,19 +53,19 @@ problem.bounds.finalTime.upp = 1e5;
 
 % problem.bounds.state.low = low_bound';
 % problem.bounds.state.upp = upp_bound';
-problem.bounds.initialState.low = pqr_0;
+problem.bounds.initialState.low = state_0;
 problem.bounds.initialState.upp = problem.bounds.initialState.low;
 % 
 % problem.bounds.initialState.low(end)=0;
 % problem.bounds.initialState.upp(end)=2*pi;
 
 
-problem.bounds.finalState.low = pqr_f;
-problem.bounds.finalState.upp = pqr_f;
+problem.bounds.finalState.low = state_f;
+problem.bounds.finalState.upp = state_f;
 
 
 problem.bounds.control.low = 0*ones(p.N_sat,1);
-problem.bounds.control.upp = torque_max*ones(p.N_sat,1);
+problem.bounds.control.upp = thrust_max*ones(p.N_sat,1);
 
 % Guess at the initial trajectory
 problem.guess.time = [0,(problem.bounds.finalTime.low+problem.bounds.finalTime.upp)/2];
@@ -73,10 +73,10 @@ problem.guess.state = [problem.bounds.initialState.low problem.bounds.finalState
 problem.guess.control = zeros(p.N_sat,2);
 
 
-pqr_f(4:7)=-inf;
-problem.bounds.finalState.low = pqr_f;
-pqr_f(4:7)=inf;
-problem.bounds.finalState.upp = pqr_f;
+state_f(4:7)=-inf;
+problem.bounds.finalState.low = state_f;
+state_f(4:7)=inf;
+problem.bounds.finalState.upp = state_f;
 
 % Select a solver:
 % problem.options.method = 'rungeKutta';
@@ -98,10 +98,10 @@ problem.options.defaultAccuracy = 'medium';
 
 % problem.options.multiCheb.nColPts=30;
 
-% method = 'trapezoid'; %  <-- this is robust, but less accurate
+method = 'trapezoid'; %  <-- this is robust, but less accurate
 % method = 'direct'; %  <-- this is robust, but some numerical artifacts
 % method = 'rungeKutta';  % <-- slow, gets a reasonable, but sub-optimal soln
-method = 'orthogonal';    %  <-- this usually finds bad local minimum
+% method = 'orthogonal';    %  <-- this usually finds bad local minimum
 % method = 'gpops';      %  <-- fast, but numerical problem is maxTorque is large
 
 switch method
@@ -117,7 +117,7 @@ switch method
         
     case 'trapezoid'
         problem.options(1).method = 'trapezoid';
-        problem.options(1).trapezoid.nGrid = 20;
+        problem.options(1).trapezoid.nGrid = 30;
         problem.options(2).method = 'trapezoid';
         problem.options(2).trapezoid.nGrid = 40;
         problem.options(3).method = 'trapezoid';
