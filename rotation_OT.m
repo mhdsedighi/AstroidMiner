@@ -43,7 +43,7 @@ thrust_max=1e-4;
 
 % User-defined dynamics and objective functions
 problem.func.dynamics = @(t,x,u)( rotation_dynamics(x,u,p) );
-problem.func.pathObj = @(t,x,u)( sum(u.^2) );
+problem.func.pathObj = @(t,x,u)( pathcost(t,x,u) );
 
 % Problem bounds
 problem.bounds.initialTime.low = 0;
