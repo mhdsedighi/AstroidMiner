@@ -6,9 +6,9 @@ N_sat=params.N_sat;
 Force_Vectors=params.Force_Vectors;
 Moment_Vectors=params.Moment_Vectors;
 
-Ixx=1000;
-Iyy=1000;
-Izz=1000;
+Ixx=100;
+Iyy=100;
+Izz=100;
 Ixy=0;
 Ixz=0;
 Iyz=0;

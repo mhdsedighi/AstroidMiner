@@ -23,7 +23,7 @@ omega_f=0;
 RA_f=0;
 
 min_revolution=0;
-max_revolution=20;
+max_revolution=1;
 
 
 mee_0=oe2mee([a_0 e_0 incl_0 omega_0 RA_0 theta_0],p.mu)';
@@ -32,14 +32,14 @@ mee_f=oe2mee([a_f e_f incl_f omega_f RA_f theta_0],p.mu)';
 quat_0=eul2quat(deg2rad([0 0 0]));
 quat_f=eul2quat(deg2rad([0 0 0]));
 
-state_0=[1;1;1;quat_0';mee_0];
+state_0=[0;0;0;quat_0';mee_0];
 state_f=[0;0;0;quat_f';mee_f];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-thrust_max=1;
-angular_speed_end=1e-2;
+thrust_max=1e-5;
+max_angular_speed_end=inf;
 
 
 
@@ -55,8 +55,8 @@ problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = 1e7;
 problem.bounds.finalTime.upp = 1e8;
 
-problem.bounds.state.low = [-2 -2 -2 -inf -inf -inf -inf 5*Re   -inf -inf -inf -inf -inf]';
-problem.bounds.state.upp = [ 2  2  2  inf  inf  inf  inf 100*Re   1    1     1    1  inf]';
+problem.bounds.state.low = [-20 -20 -20 -inf -inf -inf -inf 20*Re   -inf -inf -inf -inf -inf]';
+problem.bounds.state.upp = [ 20  20  20  inf  inf  inf  inf 100*Re   1    1     1    1  inf]';
 problem.bounds.initialState.low = state_0;
 problem.bounds.initialState.upp = state_0;
 % 
@@ -64,27 +64,33 @@ problem.bounds.initialState.upp = state_0;
 % problem.bounds.initialState.upp(end)=2*pi;
 
 
-problem.bounds.finalState.low = state_f;
-problem.bounds.finalState.upp = state_f;
+% problem.bounds.finalState.low = state_f;
+% problem.bounds.finalState.upp = state_f;
+
+
+% Guess at the initial trajectory
+problem.guess.time = [0,1e7];
+state_f(13)=mee_f(end)+max_revolution*2*pi;
+problem.guess.state = [state_0  state_f];
+problem.guess.control = zeros(p.N_sat,2)+0.001;
 
 
 problem.bounds.control.low = 0*ones(p.N_sat,1);
 problem.bounds.control.upp = thrust_max*ones(p.N_sat,1);
 
-% Guess at the initial trajectory
-problem.guess.time = [0,1e7];
-problem.guess.state = [state_0  state_f];
-problem.guess.control = zeros(p.N_sat,2)+0.001;
 
 
-state_f(1:3)=-angular_speed_end;
+
+state_f(1:3)=-max_angular_speed_end;
 state_f(4:7)=-inf;
 state_f(13)=mee_0(end)+min_revolution*2*pi;
 problem.bounds.finalState.low = state_f;
-state_f(1:3)=angular_speed_end;
+state_f(1:3)=max_angular_speed_end;
 state_f(4:7)=inf;
 state_f(13)=mee_f(end)+max_revolution*2*pi;
 problem.bounds.finalState.upp = state_f;
+
+
 
 % Select a solver:
 % problem.options.method = 'rungeKutta';
@@ -147,12 +153,12 @@ switch method
         step=0;
         
         
-                step=step+1;
-                problem.options(step).method = 'chebyshev';
-                problem.options(step).chebyshev.nColPts =30;
-                problem.options(step).defaultAccuracy = 'low';
-%                 problem.options(step).nlpOpt.MaxFunEvals=1e6;
-%                 problem.options.nlpOpt.MaxIter=2000;
+        step=step+1;
+        problem.options(step).method = 'chebyshev';
+        problem.options(step).chebyshev.nColPts =20;
+        problem.options(step).defaultAccuracy = 'low';
+%                         problem.options(step).nlpOpt.MaxFunEvals=1e6;
+        problem.options.nlpOpt.MaxIter=500;
         
 %         step=step+1;
 %         problem.options(step).method = 'chebyshev';
@@ -171,13 +177,13 @@ switch method
 %                 problem.options(step).method = 'trapezoid';
 %                 problem.options(step).chebyshev.nColPts = 40;
 %                 problem.options(step).defaultAccuracy = 'medium';
-%                 problem.options(step).nlpOpt.MaxFunEvals=1e5;
+% %                 problem.options(step).nlpOpt.MaxFunEvals=1e5;
         
         
-        %         problem.options(2).method = 'chebyshev';
-        %         problem.options(2).chebyshev.nColPts =100;
-        %         problem.options(2).defaultAccuracy = 'medium';
-        %         problem.options(2).nlpOpt.MaxFunEvals=1e5;
+%                 problem.options(2).method = 'chebyshev';
+%                 problem.options(2).chebyshev.nColPts =100;
+%                 problem.options(2).defaultAccuracy = 'medium';
+%                 problem.options(2).nlpOpt.MaxFunEvals=1e5;
        
 %          step=step+1;
 %         problem.options(step).method = 'rungeKutta';
