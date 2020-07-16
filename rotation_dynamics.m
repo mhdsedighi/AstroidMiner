@@ -22,7 +22,7 @@ quat1=x(5,:);
 quat2=x(6,:);
 quat3=x(7,:);
 
-n_time=length(p);
+N_time=length(p);
 
 
 
@@ -30,9 +30,9 @@ n_time=length(p);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% finding total force and moment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-L=zeros(1,n_time);
-M=zeros(1,n_time);
-N=zeros(1,n_time);
+L=zeros(1,N_time);
+M=zeros(1,N_time);
+N=zeros(1,N_time);
 for i=1:N_sat
    L=L+u(i,:)*Moment_Vectors(i,1);
    M=M+u(i,:)*Moment_Vectors(i,2);
@@ -80,13 +80,8 @@ quat3_dot=0.5*(r.*quat0+q.*quat1-p.*quat2);
 
 
 
-dx(1,:)=p_dot;
-dx(2,:)=q_dot;
-dx(3,:)=r_dot;
-dx(4,:)=quat0_dot;
-dx(5,:)=quat1_dot;
-dx(6,:)=quat2_dot;
-dx(7,:)=quat3_dot;
+dx=[p_dot;q_dot;r_dot;quat0_dot;quat1_dot;quat2_dot;quat3_dot];
+
 
 
 end
