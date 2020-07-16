@@ -28,13 +28,13 @@ Re=6378.14;
 quat_0=eul2quat(deg2rad([0 0 0]));
 quat_f=eul2quat(deg2rad([0 0 0]));
 
-pqr_0=[0;0;1;quat_0'];
+pqr_0=[1;3;0;quat_0'];
 pqr_f=[0;0;0;quat_f'];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-torque_max=10;
+torque_max=1;
 
 
 
@@ -49,7 +49,7 @@ problem.func.pathObj = @(t,x,u)( dot(u,u) );
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = 100;
-problem.bounds.finalTime.upp = 1000;
+problem.bounds.finalTime.upp = 1e5;
 
 % problem.bounds.state.low = low_bound';
 % problem.bounds.state.upp = upp_bound';
@@ -80,7 +80,9 @@ problem.bounds.finalState.upp = pqr_f;
 
 % Select a solver:
 % problem.options.method = 'rungeKutta';
-problem.options.method = 'chebyshev';
+% problem.options.method = 'chebyshev';
+
+
 % problem.options.method = 'trapezoid';
 % problem.options.method = 'multiCheb';
 
@@ -89,18 +91,61 @@ problem.options.defaultAccuracy = 'medium';
 % problem.options.rungeKutta.nSegment=100;
 % problem.options.trapezoid.nGrid=200;
 
-% problem.options.nlpOpt.MaxFunEvals=1e5;
+% problem.options.nlpOpt.MaxFunEvals=1e6;
 % problem.options.nlpOpt.MaxIter=1e5;
 
-problem.options.chebyshev.nColPts=30;
+% problem.options.chebyshev.nColPts=30;
 
 % problem.options.multiCheb.nColPts=30;
+
+% method = 'trapezoid'; %  <-- this is robust, but less accurate
+% method = 'direct'; %  <-- this is robust, but some numerical artifacts
+% method = 'rungeKutta';  % <-- slow, gets a reasonable, but sub-optimal soln
+method = 'orthogonal';    %  <-- this usually finds bad local minimum
+% method = 'gpops';      %  <-- fast, but numerical problem is maxTorque is large
+
+switch method
+    case 'direct'
+        problem.options(1).method = 'trapezoid';
+        problem.options(1).trapezoid.nGrid = 20;
+        
+        problem.options(2).method = 'trapezoid';
+        problem.options(2).trapezoid.nGrid = 40;
+        
+        problem.options(3).method = 'hermiteSimpson';
+        problem.options(3).hermiteSimpson.nSegment = 20;
+        
+    case 'trapezoid'
+        problem.options(1).method = 'trapezoid';
+        problem.options(1).trapezoid.nGrid = 20;
+        problem.options(2).method = 'trapezoid';
+        problem.options(2).trapezoid.nGrid = 40;
+        problem.options(3).method = 'trapezoid';
+        problem.options(3).trapezoid.nGrid = 60;
+        
+    case 'rungeKutta'
+        problem.options(1).method = 'rungeKutta';
+        problem.options(1).defaultAccuracy = 'low';
+        
+        problem.options(2).method = 'rungeKutta';
+        problem.options(2).defaultAccuracy = 'medium';
+        
+    case 'orthogonal'
+        problem.options(1).method = 'chebyshev';
+        problem.options(1).chebyshev.nColPts = 40;
+        
+%         problem.options(2).method = 'chebyshev';
+%         problem.options(2).chebyshev.nColPts = 100;
+    case 'gpops'
+        problem.options(1).method = 'gpops';
+        
+end
 
 
 % Solve the problem
 soln = optimTraj(problem);
-T = soln.grid.time;
-U = soln.grid.control;
+T = soln(end).grid.time;
+U = soln(end).grid.control;
 
 
 N=length(T);

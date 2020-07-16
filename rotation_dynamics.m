@@ -45,17 +45,17 @@ N=sum(moment_zs,1);
 
 
 
-F_x=zeros(1,n_time);
-F_y=zeros(1,n_time);
-F_z=zeros(1,n_time);
-DCM_mats=quat2dcm([quat0' quat1' quat2' quat3']);
-for i=1:n_time
-    for j=1:N_sat
-        F_x(i)=F_x(i)+u(j,i)*(DCM_mats(1,1,i)*Force_Vectors(j,1)+DCM_mats(2,1,i)*Force_Vectors(j,2)+DCM_mats(3,1,i)*Force_Vectors(j,3));
-        F_y(i)=F_y(i)+u(j,i)*(DCM_mats(1,2,i)*Force_Vectors(j,1)+DCM_mats(2,2,i)*Force_Vectors(j,2)+DCM_mats(3,2,i)*Force_Vectors(j,3));
-        F_z(i)=F_z(i)+u(j,i)*(DCM_mats(1,3,i)*Force_Vectors(j,1)+DCM_mats(2,3,i)*Force_Vectors(j,2)+DCM_mats(3,3,i)*Force_Vectors(j,3));
-    end
-end
+% F_x=zeros(1,n_time);
+% F_y=zeros(1,n_time);
+% F_z=zeros(1,n_time);
+% DCM_mats=quat2dcm([quat0' quat1' quat2' quat3']);
+% for i=1:n_time
+%     for j=1:N_sat
+%         F_x(i)=F_x(i)+u(j,i)*(DCM_mats(1,1,i)*Force_Vectors(j,1)+DCM_mats(2,1,i)*Force_Vectors(j,2)+DCM_mats(3,1,i)*Force_Vectors(j,3));
+%         F_y(i)=F_y(i)+u(j,i)*(DCM_mats(1,2,i)*Force_Vectors(j,1)+DCM_mats(2,2,i)*Force_Vectors(j,2)+DCM_mats(3,2,i)*Force_Vectors(j,3));
+%         F_z(i)=F_z(i)+u(j,i)*(DCM_mats(1,3,i)*Force_Vectors(j,1)+DCM_mats(2,3,i)*Force_Vectors(j,2)+DCM_mats(3,3,i)*Force_Vectors(j,3));
+%     end
+% end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
