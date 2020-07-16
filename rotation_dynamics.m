@@ -30,18 +30,15 @@ n_time=length(p);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% finding total force and moment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-moment_xs=zeros(N_sat,n_time);
-moment_ys=zeros(N_sat,n_time);
-moment_zs=zeros(N_sat,n_time);
+L=zeros(1,n_time);
+M=zeros(1,n_time);
+N=zeros(1,n_time);
 for i=1:N_sat
-   moment_xs(i,:)=u(i,:)*Moment_Vectors(i,1);
-   moment_ys(i,:)=u(i,:)*Moment_Vectors(i,2);
-   moment_zs(i,:)=u(i,:)*Moment_Vectors(i,3);
+   L=L+u(i,:)*Moment_Vectors(i,1);
+   M=M+u(i,:)*Moment_Vectors(i,2);
+   N=N+u(i,:)*Moment_Vectors(i,3);
 end
-L=sum(moment_xs,1);
-M=sum(moment_ys,1);
-N=sum(moment_zs,1);
+
 
 
 
