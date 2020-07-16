@@ -28,13 +28,13 @@ Re=6378.14;
 quat_0=eul2quat(deg2rad([0 0 0]));
 quat_f=eul2quat(deg2rad([0 0 0]));
 
-state_0=[3;3;0;quat_0'];
+state_0=[1;0;0;quat_0'];
 state_f=[0;0;0;quat_f'];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-thrust_max=10;
+thrust_max=1e-4;
 
 
 
@@ -43,16 +43,16 @@ thrust_max=10;
 
 % User-defined dynamics and objective functions
 problem.func.dynamics = @(t,x,u)( rotation_dynamics(x,u,p) );
-problem.func.pathObj = @(t,x,u)( dot(u,u) );
+problem.func.pathObj = @(t,x,u)( sum(u.^2) );
 
 % Problem bounds
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
-problem.bounds.finalTime.low = 100;
-problem.bounds.finalTime.upp = 1e5;
+problem.bounds.finalTime.low = 1000;
+problem.bounds.finalTime.upp = 1e7;
 
-% problem.bounds.state.low = low_bound';
-% problem.bounds.state.upp = upp_bound';
+problem.bounds.state.low = [-2 -2 -2 -inf -inf -inf -inf]';
+problem.bounds.state.upp = -1*problem.bounds.state.low;
 problem.bounds.initialState.low = state_0;
 problem.bounds.initialState.upp = problem.bounds.initialState.low;
 % 
@@ -68,9 +68,9 @@ problem.bounds.control.low = 0*ones(p.N_sat,1);
 problem.bounds.control.upp = thrust_max*ones(p.N_sat,1);
 
 % Guess at the initial trajectory
-problem.guess.time = [0,(problem.bounds.finalTime.low+problem.bounds.finalTime.upp)/2];
+problem.guess.time = [0,(problem.bounds.finalTime.upp+problem.bounds.finalTime.low)/2];
 problem.guess.state = [problem.bounds.initialState.low problem.bounds.finalState.low];
-problem.guess.control = zeros(p.N_sat,2);
+problem.guess.control = zeros(p.N_sat,2)+0.001;
 
 
 state_f(4:7)=-inf;
@@ -98,10 +98,10 @@ problem.options.defaultAccuracy = 'medium';
 
 % problem.options.multiCheb.nColPts=30;
 
-method = 'trapezoid'; %  <-- this is robust, but less accurate
+% method = 'trapezoid'; %  <-- this is robust, but less accurate
 % method = 'direct'; %  <-- this is robust, but some numerical artifacts
 % method = 'rungeKutta';  % <-- slow, gets a reasonable, but sub-optimal soln
-% method = 'orthogonal';    %  <-- this usually finds bad local minimum
+method = 'orthogonal';    %  <-- this usually finds bad local minimum
 % method = 'gpops';      %  <-- fast, but numerical problem is maxTorque is large
 
 switch method
@@ -129,13 +129,52 @@ switch method
         
         problem.options(2).method = 'rungeKutta';
         problem.options(2).defaultAccuracy = 'medium';
+       
+        
+        
+        
+        
         
     case 'orthogonal'
-        problem.options(1).method = 'chebyshev';
-        problem.options(1).chebyshev.nColPts = 40;
+        step=0;
         
-%         problem.options(2).method = 'chebyshev';
-%         problem.options(2).chebyshev.nColPts = 100;
+        
+                step=step+1;
+                problem.options(step).method = 'chebyshev';
+                problem.options(step).chebyshev.nColPts =30;
+                problem.options(step).defaultAccuracy = 'low';
+%                 problem.options(step).nlpOpt.MaxFunEvals=1e5;
+        
+%         step=step+1;
+%         problem.options(step).method = 'chebyshev';
+%         problem.options(step).chebyshev.nColPts =10;
+%         problem.options(step).defaultAccuracy = 'low';
+%         problem.options(step).nlpOpt.MaxFunEvals=1e6;
+%         
+%         
+                step=step+1;
+        problem.options(step).method = 'chebyshev';
+        problem.options(step).chebyshev.nColPts =50;
+        problem.options(step).defaultAccuracy = 'medium';
+        problem.options(step).nlpOpt.MaxFunEvals=1e5;
+        
+%                 step=step+1;
+%                 problem.options(step).method = 'trapezoid';
+%                 problem.options(step).chebyshev.nColPts = 40;
+%                 problem.options(step).defaultAccuracy = 'medium';
+%                 problem.options(step).nlpOpt.MaxFunEvals=1e5;
+        
+        
+        %         problem.options(2).method = 'chebyshev';
+        %         problem.options(2).chebyshev.nColPts =100;
+        %         problem.options(2).defaultAccuracy = 'medium';
+        %         problem.options(2).nlpOpt.MaxFunEvals=1e5;
+       
+%          step=step+1;
+%         problem.options(step).method = 'rungeKutta';
+%         problem.options(step).chebyshev.nColPts = 50;
+%         problem.options(step).defaultAccuracy = 'medium';
+%         problem.options(step).nlpOpt.MaxFunEvals=1e5;
     case 'gpops'
         problem.options(1).method = 'gpops';
         
@@ -163,3 +202,5 @@ N=length(T);
 % Force_history=[U(1,:).*cos(U(2,:)).*sin(U(3,:)) ;U(1,:).*cos(U(2,:)).*cos(U(3,:)) ; U(1,:).*sin(U(2,:))  ];
 % 
 plotting_rot
+
+T(end)

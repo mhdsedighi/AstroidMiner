@@ -2,12 +2,12 @@ function dx = rotation_dynamics(x,u,params)
 
 
 N_sat=params.N_sat;
-Force_Vectors=params.Force_Vectors;
+% Force_Vectors=params.Force_Vectors;
 Moment_Vectors=params.Moment_Vectors;
 
-Ixx=5000;
+Ixx=1000;
 Iyy=1000;
-Izz=3000;
+Izz=1000;
 Ixy=0;
 Ixz=0;
 Iyz=0;
