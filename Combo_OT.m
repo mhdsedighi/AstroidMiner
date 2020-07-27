@@ -1,64 +1,27 @@
 clc; clear; close all
 addpath OptimTraj
 addpath chebfun
-load('params')
-
-%parameters
-p.mu = 3.986005*10^5;
-Re=6378.14;
-
-%%%%%%%%%%%%%%%%%%%
-
-a_0=30*Re;
-e_0=0;
-incl_0=0;
-omega_0=0;
-RA_0=0;
-theta_0=deg2rad(0);
-
-a_f=31*Re;
-e_f=0;
-incl_f=deg2rad(0);
-omega_f=0;
-RA_f=0;
-
-min_revolution=0;
-max_revolution=1;
 
 
-mee_0=oe2mee([a_0 e_0 incl_0 omega_0 RA_0 theta_0],p.mu)';
-mee_f=oe2mee([a_f e_f incl_f omega_f RA_f theta_0],p.mu)';
-
-quat_0=eul2quat(deg2rad([0 0 0]));
-quat_f=eul2quat(deg2rad([0 0 0]));
-
-state_0=[0;0;0;quat_0';mee_0];
-state_f=[0;0;0;quat_f';mee_f];
-
-% low_bound=[5*Re -inf -inf -inf -inf -inf];
-% upp_bound=[20*Re 1 1 1 1 pi];
-
-thrust_max=1e-5;
-max_angular_speed_end=inf;
-
-
+params=0;
+p=0;
 
 %%%%%%%%%%%%%%%%%%%%%
 
 % User-defined dynamics and objective functions
-problem.func.dynamics = @(t,x,u)( combo_dynamics(x,u,p) );
-problem.func.pathObj = @(t,x,u)( pathcost(t,x,u) );
+problem.func.dynamics = @(t,x,u)( combo_dynamics(t,x,u,p) );
+problem.func.pathObj = @(t,x,u)( pathcost(t,x,u));
 
 % Problem bounds
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
-problem.bounds.finalTime.low = 1e7;
-problem.bounds.finalTime.upp = 1e8;
+problem.bounds.finalTime.low = 150;
+problem.bounds.finalTime.upp = 150;
 
-problem.bounds.state.low = [-20 -20 -20 -inf -inf -inf -inf 20*Re   -inf -inf -inf -inf -inf]';
-problem.bounds.state.upp = [ 20  20  20  inf  inf  inf  inf 100*Re   1    1     1    1  inf]';
-problem.bounds.initialState.low = state_0;
-problem.bounds.initialState.upp = state_0;
+problem.bounds.state.low = [0]';
+problem.bounds.state.upp = [500]';
+problem.bounds.initialState.low = 0;
+problem.bounds.initialState.upp = 500;
 % 
 % problem.bounds.initialState.low(end)=0;
 % problem.bounds.initialState.upp(end)=2*pi;
@@ -69,26 +32,19 @@ problem.bounds.initialState.upp = state_0;
 
 
 % Guess at the initial trajectory
-problem.guess.time = [0,1e7];
-state_f(13)=mee_f(end)+max_revolution*2*pi;
-problem.guess.state = [state_0  state_f];
-problem.guess.control = zeros(p.N_sat,2)+0.001;
+problem.guess.time = [0,150];
+problem.guess.state = [20  20];
+problem.guess.control = [20 20];
 
 
-problem.bounds.control.low = 0*ones(p.N_sat,1);
-problem.bounds.control.upp = thrust_max*ones(p.N_sat,1);
+problem.bounds.control.low = 0;
+problem.bounds.control.upp = 500;
 
 
 
 
-state_f(1:3)=-max_angular_speed_end;
-state_f(4:7)=-inf;
-state_f(13)=mee_0(end)+min_revolution*2*pi;
-problem.bounds.finalState.low = state_f;
-state_f(1:3)=max_angular_speed_end;
-state_f(4:7)=inf;
-state_f(13)=mee_f(end)+max_revolution*2*pi;
-problem.bounds.finalState.upp = state_f;
+problem.bounds.finalState.low = 0;
+problem.bounds.finalState.upp = 200;
 
 
 
@@ -131,7 +87,7 @@ switch method
         
     case 'trapezoid'
         problem.options(1).method = 'trapezoid';
-        problem.options(1).trapezoid.nGrid = 30;
+        problem.options(1).trapezoid.nGrid = 150;
         problem.options(2).method = 'trapezoid';
         problem.options(2).trapezoid.nGrid = 40;
         problem.options(3).method = 'trapezoid';
@@ -155,7 +111,7 @@ switch method
         
         step=step+1;
         problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =20;
+        problem.options(step).chebyshev.nColPts =150;
         problem.options(step).defaultAccuracy = 'low';
 %                         problem.options(step).nlpOpt.MaxFunEvals=1e6;
         problem.options.nlpOpt.MaxIter=500;
@@ -200,22 +156,50 @@ end
 soln = optimTraj(problem);
 T = soln(end).grid.time;
 U = soln(end).grid.control;
+x=soln(end).grid.state(1,:);
 
 
 N=length(T);
-% R=zeros(3,N);
-% V=zeros(3,N);
-% 
-% for i=1:N
-%     
-%     [r,v]=mee2rv(soln.grid.state(:,i)',p.mu);
-%     R(:,i)=r;
-%     V(:,i)=v;
-%     
-% end
-% 
-% Force_history=[U(1,:).*cos(U(2,:)).*sin(U(3,:)) ;U(1,:).*cos(U(2,:)).*cos(U(3,:)) ; U(1,:).*sin(U(2,:))  ];
-% 
-plotting_combo
+y=zeros(1,N);
+resid=zeros(1,N);
 
-T(end)
+for i=1:N
+    
+    if T(i)>20 && T(i)<50
+        
+        y(i)=14;
+    elseif T(i)>100 && T(i)<110
+        
+        y(i)=20;
+        
+    else
+        y(i)=5;
+    end
+    
+    % out=sum(u.^2)*(10+t(end))^2*sum((x-y));
+    
+    
+end
+
+
+for i=1:N
+    
+    resid(i)=sum(x(1:i))-sum(y(1:i));
+    
+    
+end
+
+
+% 
+figure
+subplot(3,1,1)
+hold on
+plot(T,soln(end).grid.state(1,:))
+
+subplot(3,1,2)
+hold on
+plot(T,soln(end).grid.control(1,:))
+
+subplot(3,1,3)
+hold on
+plot(T,resid)
