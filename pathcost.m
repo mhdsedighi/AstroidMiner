@@ -1,5 +1,7 @@
 function out=pathcost(t,x,u)
 
+% u=floor(u);
+% x=floor(x);
 
 N=length(t);
 y=zeros(1,N);
@@ -55,6 +57,6 @@ end
 % out=(1e3+u).*cost1;
 
 
-out=u.*0+cost1;
+out=(10+u).*cost1;
 
 end

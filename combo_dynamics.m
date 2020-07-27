@@ -1,6 +1,8 @@
 function dx = combo_dynamics(t,x,u,params)
 
 
+% u=floor(u);
+
 lag1=0.12;
 lag2=0.14;
 

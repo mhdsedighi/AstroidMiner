@@ -21,7 +21,7 @@ problem.bounds.finalTime.upp = 150;
 problem.bounds.state.low = [0]';
 problem.bounds.state.upp = [500]';
 problem.bounds.initialState.low = 0;
-problem.bounds.initialState.upp = 500;
+problem.bounds.initialState.upp = 0;
 % 
 % problem.bounds.initialState.low(end)=0;
 % problem.bounds.initialState.upp(end)=2*pi;
@@ -33,8 +33,8 @@ problem.bounds.initialState.upp = 500;
 
 % Guess at the initial trajectory
 problem.guess.time = [0,150];
-problem.guess.state = [20  20];
-problem.guess.control = [20 20];
+problem.guess.state = [0  0];
+problem.guess.control = [0 0];
 
 
 problem.bounds.control.low = 0;
@@ -61,8 +61,8 @@ problem.options.defaultAccuracy = 'medium';
 % problem.options.rungeKutta.nSegment=100;
 % problem.options.trapezoid.nGrid=200;
 
-% problem.options.nlpOpt.MaxFunEvals=1e6;
-% problem.options.nlpOpt.MaxIter=1e5;
+problem.options.nlpOpt.MaxFunEvals=1e6;
+problem.options.nlpOpt.MaxIter=1e5;
 
 % problem.options.chebyshev.nColPts=30;
 
@@ -194,12 +194,22 @@ end
 figure
 subplot(3,1,1)
 hold on
+grid minor
 plot(T,soln(end).grid.state(1,:))
+plot(T,soln(end).grid.state(1,:),'k.')
 
 subplot(3,1,2)
 hold on
+grid minor
 plot(T,soln(end).grid.control(1,:))
+plot(T,soln(end).grid.control(1,:),'k.')
 
 subplot(3,1,3)
 hold on
+grid minor
 plot(T,resid)
+plot(T,resid,'k.')
+
+
+
+minimum_time_spam=min(diff(T))
