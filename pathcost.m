@@ -60,6 +60,6 @@ end
 
 % out=(10+u).*(resid-35).^2+cost1;
 
-out=(10+u).*cost1.^2;
+out=(10+u).*cost1.*(resid-35).^2;
 
 end

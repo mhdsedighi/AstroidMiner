@@ -19,9 +19,9 @@ problem.bounds.finalTime.low = 150;
 problem.bounds.finalTime.upp = 150;
 
 problem.bounds.state.low = [0]';
-problem.bounds.state.upp = [500]';
+problem.bounds.state.upp = [100]';
 problem.bounds.initialState.low = 0;
-problem.bounds.initialState.upp = 20;
+problem.bounds.initialState.upp = 0;
 % 
 % problem.bounds.initialState.low(end)=0;
 % problem.bounds.initialState.upp(end)=2*pi;
@@ -118,10 +118,10 @@ switch method
         
 %         step=step+1;
 %         problem.options(step).method = 'chebyshev';
-%         problem.options(step).chebyshev.nColPts =10;
-%         problem.options(step).defaultAccuracy = 'low';
+%         problem.options(step).chebyshev.nColPts =150;
+%         problem.options(step).defaultAccuracy = 'medium';
 %         problem.options(step).nlpOpt.MaxFunEvals=1e6;
-%         
+% %         
 %         
 %                 step=step+1;
 %         problem.options(step).method = 'chebyshev';
@@ -192,21 +192,27 @@ end
 
 % 
 figure
+
+
 subplot(3,1,1)
 hold on
 grid minor
-plot(T,soln(end).grid.state(1,:))
-plot(T,soln(end).grid.state(1,:),'k.')
+ylabel('Production Input')
+plot(T,soln(end).grid.control(1,:))
+plot(T,soln(end).grid.control(1,:),'k.')
+
 
 subplot(3,1,2)
 hold on
 grid minor
-plot(T,soln(end).grid.control(1,:))
-plot(T,soln(end).grid.control(1,:),'k.')
+ylabel('Production Output')
+plot(T,soln(end).grid.state(1,:))
+plot(T,soln(end).grid.state(1,:),'k.')
 
 subplot(3,1,3)
 hold on
 grid minor
+ylabel('Repository')
 plot(T,resid)
 plot(T,resid,'k.')
 
