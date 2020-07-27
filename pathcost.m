@@ -43,11 +43,11 @@ for i=1:N
 
 
     if  (resid(i)<0)
-        cost1=cost1-resid;
+        cost1=cost1-resid(i);
     end
     
     if  (resid(i)>50)
-        cost1=cost1+(resid-50);
+        cost1=cost1+(resid(i)-50);
     end
     
     
@@ -58,6 +58,8 @@ end
 % out=(1e3+u).*cost1;
 
 
-out=(10+u).*(resid-35).^2+cost1;
+% out=(10+u).*(resid-35).^2+cost1;
+
+out=(10+u).*cost1.^2;
 
 end

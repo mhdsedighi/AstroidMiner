@@ -111,7 +111,7 @@ switch method
         
         step=step+1;
         problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =150;
+        problem.options(step).chebyshev.nColPts =50;
         problem.options(step).defaultAccuracy = 'low';
 %                         problem.options(step).nlpOpt.MaxFunEvals=1e6;
         problem.options.nlpOpt.MaxIter=500;
