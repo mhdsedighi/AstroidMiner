@@ -5,6 +5,7 @@ function out=pathcost(t,x,u)
 
 N=length(t);
 y=zeros(1,N);
+resid=zeros(1,N);
 
 
 cost1=0;
@@ -31,7 +32,7 @@ flag=0;
 
 for i=1:N
     
-    resid=sum(x(1:i))-sum(y(1:i));
+    resid(i)=sum(x(1:i))-sum(y(1:i));
     %     if sum(x(1:i))<y || x(i)-y(i)>50
 %     if (flag==0) && (resid<0 || resid >50)
 %         cost1=cost1+10;
@@ -41,11 +42,11 @@ for i=1:N
 %     end
 
 
-    if  (resid<0)
+    if  (resid(i)<0)
         cost1=cost1-resid;
     end
     
-    if  (resid>50)
+    if  (resid(i)>50)
         cost1=cost1+(resid-50);
     end
     
@@ -57,6 +58,6 @@ end
 % out=(1e3+u).*cost1;
 
 
-out=(10+u).*cost1;
+out=(10+u).*(resid-35).^2+cost1;
 
 end

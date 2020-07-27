@@ -21,7 +21,7 @@ problem.bounds.finalTime.upp = 150;
 problem.bounds.state.low = [0]';
 problem.bounds.state.upp = [500]';
 problem.bounds.initialState.low = 0;
-problem.bounds.initialState.upp = 0;
+problem.bounds.initialState.upp = 20;
 % 
 % problem.bounds.initialState.low(end)=0;
 % problem.bounds.initialState.upp(end)=2*pi;
@@ -33,8 +33,8 @@ problem.bounds.initialState.upp = 0;
 
 % Guess at the initial trajectory
 problem.guess.time = [0,150];
-problem.guess.state = [0  0];
-problem.guess.control = [0 0];
+problem.guess.state = [10  10];
+problem.guess.control = [10 10];
 
 
 problem.bounds.control.low = 0;
