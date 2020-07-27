@@ -87,11 +87,11 @@ switch method
         
     case 'trapezoid'
         problem.options(1).method = 'trapezoid';
-        problem.options(1).trapezoid.nGrid = 150;
-        problem.options(2).method = 'trapezoid';
-        problem.options(2).trapezoid.nGrid = 40;
-        problem.options(3).method = 'trapezoid';
-        problem.options(3).trapezoid.nGrid = 60;
+        problem.options(1).trapezoid.nGrid = 50;
+%         problem.options(2).method = 'trapezoid';
+%         problem.options(2).trapezoid.nGrid = 40;
+%         problem.options(3).method = 'trapezoid';
+%         problem.options(3).trapezoid.nGrid = 60;
         
     case 'rungeKutta'
         problem.options(1).method = 'rungeKutta';
@@ -112,16 +112,16 @@ switch method
         step=step+1;
         problem.options(step).method = 'chebyshev';
         problem.options(step).chebyshev.nColPts =50;
-        problem.options(step).defaultAccuracy = 'low';
+        problem.options(step).defaultAccuracy = 'high';
 %                         problem.options(step).nlpOpt.MaxFunEvals=1e6;
         problem.options.nlpOpt.MaxIter=500;
         
 %         step=step+1;
 %         problem.options(step).method = 'chebyshev';
-%         problem.options(step).chebyshev.nColPts =150;
-%         problem.options(step).defaultAccuracy = 'medium';
+%         problem.options(step).chebyshev.nColPts =140;
+%         problem.options(step).defaultAccuracy = 'high';
 %         problem.options(step).nlpOpt.MaxFunEvals=1e6;
-% %         
+% % %         
 %         
 %                 step=step+1;
 %         problem.options(step).method = 'chebyshev';
@@ -157,11 +157,14 @@ soln = optimTraj(problem);
 T = soln(end).grid.time;
 U = soln(end).grid.control;
 x=soln(end).grid.state(1,:);
+T2=linspace(0,150,500);
+N2=length(T2);
+y_exact=zeros(1,N2);
 
 
 N=length(T);
 y=zeros(1,N);
-resid=zeros(1,N);
+residual=zeros(1,N);
 
 for i=1:N
     
@@ -176,7 +179,21 @@ for i=1:N
         y(i)=5;
     end
     
-    % out=sum(u.^2)*(10+t(end))^2*sum((x-y));
+    
+end
+
+for i=1:N2
+    
+    if T2(i)>20 && T2(i)<50
+        
+        y_exact(i)=14;
+    elseif T2(i)>100 && T2(i)<110
+        
+        y_exact(i)=20;
+        
+    else
+        y_exact(i)=5;
+    end
     
     
 end
@@ -184,7 +201,7 @@ end
 
 for i=1:N
     
-    resid(i)=sum(x(1:i))-sum(y(1:i));
+    residual(i)=sum(x(1:i))-sum(y(1:i));
     
     
 end
@@ -205,17 +222,22 @@ plot(T,soln(end).grid.control(1,:),'k.')
 subplot(3,1,2)
 hold on
 grid minor
-ylabel('Production Output')
 plot(T,soln(end).grid.state(1,:))
+plot(T2,y_exact)
 plot(T,soln(end).grid.state(1,:),'k.')
+ll=legend('Production Output','Demand');
+% ll.String(3)='';
+% plot(T2,y_exact,'r.')
+% plot(T,soln(end).grid.state(1,:),'k.')
 
 subplot(3,1,3)
 hold on
 grid minor
 ylabel('Repository')
-plot(T,resid)
-plot(T,resid,'k.')
+xlabel('Time (days)')
+plot(T,residual)
+plot(T,residual,'k.')
 
 
 
-minimum_time_spam=min(diff(T))
+minimum_time_span=min(diff(T))
