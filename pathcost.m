@@ -11,10 +11,10 @@ cost1=0;
 
 for i=1:N
     
-    if t(i)>20 && t(i)<50
+    if t(i)>=20 && t(i)<=50
         
         y(i)=14;
-    elseif t(i)>100 && t(i)<110
+    elseif t(i)>=100 && t(i)<=110
         
         y(i)=20;
         
@@ -27,7 +27,7 @@ for i=1:N
     
 end
 
-flag=0;
+% flag=0;
 
 for i=1:N
     
@@ -62,6 +62,6 @@ end
 % int_cost=(u-floor(u)).^2+(x-floor(x)).^2;
 % out=(10+u).*cost1.*(resid-35).^2.*(1+int_cost);
 
-out=(10+u).*cost1.*(resid-35).^2;
+out=(1+u).*cost1.*(resid-35).^2;
 
 end

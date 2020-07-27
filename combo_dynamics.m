@@ -3,8 +3,8 @@ function dx = combo_dynamics(t,x,u,params)
 
 % u=floor(u);
 
-lag1=0.12;
-lag2=0.14;
+lag1=0.142;
+lag2=0.12;
 
 
 N_times=length(t);
@@ -12,7 +12,7 @@ x_new=zeros(1,N_times);
 
 for i=1:N_times
     
-    if u(i)<10
+    if u(i)<=10
         lag=lag1;
     else
         lag=lag2;

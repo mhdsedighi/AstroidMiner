@@ -19,7 +19,7 @@ problem.bounds.finalTime.low = 150;
 problem.bounds.finalTime.upp = 150;
 
 problem.bounds.state.low = [0]';
-problem.bounds.state.upp = [100]';
+problem.bounds.state.upp = [12]';
 problem.bounds.initialState.low = 0;
 problem.bounds.initialState.upp = 0;
 % 
@@ -113,6 +113,8 @@ switch method
         problem.options(step).method = 'chebyshev';
         problem.options(step).chebyshev.nColPts =50;
         problem.options(step).defaultAccuracy = 'high';
+%         problem.options.nlpOpt.TolFun=1e-15;
+%         problem.options.nlpOpt.TolCon=1e-15;
 %                         problem.options(step).nlpOpt.MaxFunEvals=1e6;
         problem.options.nlpOpt.MaxIter=500;
         
