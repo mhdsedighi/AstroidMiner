@@ -29,9 +29,14 @@ end
 
 % flag=0;
 
-for i=1:N
+for i=2:N
     
-    resid(i)=sum(x(1:i))-sum(y(1:i));
+%     resid(i)=sum(x(1:i))-sum(y(1:i));
+
+tt=t(1:i);
+xx=x(1:i);
+yy=y(1:i);
+resid(i)=trapz(tt,xx)-trapz(tt,yy);
     %     if sum(x(1:i))<y || x(i)-y(i)>50
 %     if (flag==0) && (resid<0 || resid >50)
 %         cost1=cost1+10;
@@ -62,6 +67,12 @@ end
 % int_cost=(u-floor(u)).^2+(x-floor(x)).^2;
 % out=(10+u).*cost1.*(resid-35).^2.*(1+int_cost);
 
-out=(1+u).*cost1.*(resid-35).^2;
+
+repo=resid-35;
+repo(1)=1;
+
+out=(1+u).*cost1.*(repo).^2;
+
+% out=(1+u).*cost1;
 
 end

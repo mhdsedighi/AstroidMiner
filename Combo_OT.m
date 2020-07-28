@@ -15,11 +15,11 @@ problem.func.pathObj = @(t,x,u)( pathcost(t,x,u));
 % Problem bounds
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
-problem.bounds.finalTime.low = 150;
-problem.bounds.finalTime.upp = 150;
+problem.bounds.finalTime.low = 200;
+problem.bounds.finalTime.upp = 200;
 
 problem.bounds.state.low = [0]';
-problem.bounds.state.upp = [12]';
+problem.bounds.state.upp = [100]';
 problem.bounds.initialState.low = 0;
 problem.bounds.initialState.upp = 0;
 % 
@@ -38,13 +38,13 @@ problem.guess.control = [10 10];
 
 
 problem.bounds.control.low = 0;
-problem.bounds.control.upp = 500;
+problem.bounds.control.upp = 20;
 
 
 
 
 problem.bounds.finalState.low = 0;
-problem.bounds.finalState.upp = 200;
+problem.bounds.finalState.upp = 0;
 
 
 
