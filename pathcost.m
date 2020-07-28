@@ -71,7 +71,7 @@ end
 repo=resid-35;
 repo(1)=1;
 
-out=(1+u).*cost1.*(repo).^2;
+out=(1+u.^2).*cost1.*(repo).^2;
 
 % out=(1+u).*cost1;
 

@@ -38,7 +38,7 @@ problem.guess.control = [10 10];
 
 
 problem.bounds.control.low = 0;
-problem.bounds.control.upp = 20;
+problem.bounds.control.upp = 25;
 
 
 
