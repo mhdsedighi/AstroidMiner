@@ -1,4 +1,4 @@
-function out=pathcost(t,x,u)
+function out=cost(t,x,u)
 
 
 

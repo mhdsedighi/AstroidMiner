@@ -1,4 +1,4 @@
-function dx = combo_dynamics(t,x,u,params)
+function dx = company_dynamics(t,x,u,params)
 
 
 % u=floor(u);
