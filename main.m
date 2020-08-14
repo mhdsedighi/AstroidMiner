@@ -3,13 +3,16 @@ addpath OptimTraj
 addpath chebfun
 
 
-params=0;
-p=0;
+params.lag1=0.12;
+params.lag2=0.142;
+
+params.mode=1;
+% params.mode=2;
 
 %%%%%%%%%%%%%%%%%%%%%
 
 % User-defined dynamics and objective functions
-problem.func.dynamics = @(t,x,u)( company_dynamics(t,x,u,p) );
+problem.func.dynamics = @(t,x,u)( company_dynamics(t,x,u,params) );
 problem.func.pathObj = @(t,x,u)( cost(t,x,u));
 
 % Problem bounds
@@ -22,7 +25,7 @@ problem.bounds.state.low = [0]';
 problem.bounds.state.upp = [100]';
 problem.bounds.initialState.low = 0;
 problem.bounds.initialState.upp = 0;
-% 
+%
 % problem.bounds.initialState.low(end)=0;
 % problem.bounds.initialState.upp(end)=2*pi;
 
@@ -38,7 +41,13 @@ problem.guess.control = [10 10];
 
 
 problem.bounds.control.low = 0;
-problem.bounds.control.upp = 100;
+
+if params.mode==1
+    problem.bounds.control.upp = 12;
+else
+    problem.bounds.control.upp = 10;
+end
+    
 
 
 
@@ -55,16 +64,16 @@ problem.options.defaultAccuracy = 'medium';
 problem.options.nlpOpt.MaxFunEvals=1e6;
 problem.options.nlpOpt.MaxIter=1e5;
 
-        step=0;
-        step=step+1;
-        problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =60;
-        problem.options(step).defaultAccuracy = 'high';
+step=0;
+step=step+1;
+problem.options(step).method = 'chebyshev';
+problem.options(step).chebyshev.nColPts =40;
+problem.options(step).defaultAccuracy = 'high';
 %         problem.options.nlpOpt.TolFun=1e-15;
 %         problem.options.nlpOpt.TolCon=1e-15;
 %                         problem.options(step).nlpOpt.MaxFunEvals=1e6;
-        problem.options.nlpOpt.MaxIter=500;
- 
+problem.options.nlpOpt.MaxIter=500;
+
 
 
 % Solve the problem
@@ -122,7 +131,7 @@ for i=1:N
 end
 
 
-% 
+%
 figure
 
 

@@ -3,20 +3,21 @@ function dx = company_dynamics(t,x,u,params)
 
 % u=floor(u);
 
-lag1=0.142;
-lag2=0.12;
 
 
 N_times=length(t);
 x_new=zeros(1,N_times);
 
+if params.mode==1
+    lag=params.lag1;
+else
+    lag=params.lag2;
+end
+    
+
 for i=1:N_times
     
-    if u(i)<=10
-        lag=lag1;
-    else
-        lag=lag2;
-    end
+
     
     if t(i)<lag
 %         interp1(t,x,t(i)-lag)
