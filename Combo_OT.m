@@ -9,21 +9,24 @@ Re=6378.14;
 
 %%%%%%%%%%%%%%%%%%%
 
-a_0=30*Re;
-e_0=0;
-incl_0=0;
+a_0=50*Re;
+e_0=0.9;
+incl_0=deg2rad(70);
 omega_0=0;
 RA_0=0;
-theta_0=deg2rad(0);
+theta_0=deg2rad(180);
 
-a_f=31*Re;
+a_f=2*Re;
 e_f=0;
 incl_f=deg2rad(0);
 omega_f=0;
 RA_f=0;
 
-min_revolution=0;
-max_revolution=1;
+min_revolution=1;
+max_revolution=10;
+
+min_days=0;
+max_days=50;
 
 
 mee_0=oe2mee([a_0 e_0 incl_0 omega_0 RA_0 theta_0],p.mu)';
@@ -32,14 +35,14 @@ mee_f=oe2mee([a_f e_f incl_f omega_f RA_f theta_0],p.mu)';
 quat_0=eul2quat(deg2rad([0 0 0]));
 quat_f=eul2quat(deg2rad([0 0 0]));
 
-state_0=[0;0;0;quat_0';mee_0];
+state_0=[1;2;5;quat_0';mee_0];
 state_f=[0;0;0;quat_f';mee_f];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-thrust_max=1e-5;
-max_angular_speed_end=inf;
+thrust_max=1e-7;
+max_angular_speed_end=1e-5;
 
 
 
@@ -52,11 +55,11 @@ problem.func.pathObj = @(t,x,u)( pathcost(t,x,u) );
 % Problem bounds
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
-problem.bounds.finalTime.low = 1e7;
-problem.bounds.finalTime.upp = 1e8;
+problem.bounds.finalTime.low = min_days*24*3600;
+problem.bounds.finalTime.upp = max_days*24*3600;
 
-problem.bounds.state.low = [-20 -20 -20 -inf -inf -inf -inf 20*Re   -inf -inf -inf -inf -inf]';
-problem.bounds.state.upp = [ 20  20  20  inf  inf  inf  inf 100*Re   1    1     1    1  inf]';
+problem.bounds.state.low = [-20 -20 -20 -inf -inf -inf -inf 0.7*min([a_0 a_f])   -inf -inf -inf -inf -inf]';
+problem.bounds.state.upp = [ 20  20  20  inf  inf  inf  inf 1.3*max([a_0 a_f])   1    1     1    1  inf]';
 problem.bounds.initialState.low = state_0;
 problem.bounds.initialState.upp = state_0;
 % 
@@ -69,10 +72,10 @@ problem.bounds.initialState.upp = state_0;
 
 
 % Guess at the initial trajectory
-problem.guess.time = [0,1e7];
+problem.guess.time = [0,0.5*(min_days+max_days)*24*3600];
 state_f(13)=mee_f(end)+max_revolution*2*pi;
 problem.guess.state = [state_0  state_f];
-problem.guess.control = zeros(p.N_sat,2)+0.001;
+problem.guess.control = zeros(p.N_sat,2)+0.1*thrust_max;
 
 
 problem.bounds.control.low = 0*ones(p.N_sat,1);
@@ -88,6 +91,7 @@ problem.bounds.finalState.low = state_f;
 state_f(1:3)=max_angular_speed_end;
 state_f(4:7)=inf;
 state_f(13)=mee_f(end)+max_revolution*2*pi;
+state_f(13)=inf;
 problem.bounds.finalState.upp = state_f;
 
 
@@ -155,16 +159,16 @@ switch method
         
         step=step+1;
         problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =20;
+        problem.options(step).chebyshev.nColPts =120;
         problem.options(step).defaultAccuracy = 'low';
-%                         problem.options(step).nlpOpt.MaxFunEvals=1e6;
-        problem.options.nlpOpt.MaxIter=500;
+                        problem.options(step).nlpOpt.MaxFunEvals=5e4;
+%         problem.options.nlpOpt.MaxIter=500;
         
 %         step=step+1;
 %         problem.options(step).method = 'chebyshev';
-%         problem.options(step).chebyshev.nColPts =10;
+%         problem.options(step).chebyshev.nColPts =20;
 %         problem.options(step).defaultAccuracy = 'low';
-%         problem.options(step).nlpOpt.MaxFunEvals=1e6;
+% %         problem.options(step).nlpOpt.MaxFunEvals=1e6;
 %         
 %         
 %                 step=step+1;
