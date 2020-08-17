@@ -22,7 +22,7 @@ end
 % %     Force_mag(i)=norm(Force_history_xyz(:,i));
 % end
 
-% EUL=rad2deg(EUL);
+EUL=rad2deg(EUL);
 
 close all
 
