@@ -9,15 +9,15 @@ Re=6378.14;
 
 %%%%%%%%%%%%%%%%%%%
 
-a_0=50*Re;
-e_0=0.9;
-incl_0=deg2rad(70);
+a_0=100*Re;
+e_0=0.99;
+incl_0=deg2rad(0);
 omega_0=0;
 RA_0=0;
-theta_0=deg2rad(180);
+theta_0=deg2rad(190);
 
-a_f=2*Re;
-e_f=0;
+a_f=10*Re;
+e_f=0.5;
 incl_f=deg2rad(0);
 omega_f=0;
 RA_f=0;
@@ -28,9 +28,10 @@ max_revolution=10;
 min_days=0;
 max_days=50;
 
-
-mee_0=oe2mee([a_0 e_0 incl_0 omega_0 RA_0 theta_0],p.mu)';
-mee_f=oe2mee([a_f e_f incl_f omega_f RA_f theta_0],p.mu)';
+oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
+oe_f=[a_f e_f incl_f omega_f RA_f 0];
+mee_0=oe2mee(oe_0,p.mu)';
+mee_f=oe2mee(oe_f,p.mu)';
 
 quat_0=eul2quat(deg2rad([0 0 0]));
 quat_f=eul2quat(deg2rad([0 0 0]));
@@ -161,7 +162,7 @@ switch method
         problem.options(step).method = 'chebyshev';
         problem.options(step).chebyshev.nColPts =120;
         problem.options(step).defaultAccuracy = 'low';
-                        problem.options(step).nlpOpt.MaxFunEvals=5e4;
+        problem.options(step).nlpOpt.MaxFunEvals=3e4;
 %         problem.options.nlpOpt.MaxIter=500;
         
 %         step=step+1;
