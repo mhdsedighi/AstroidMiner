@@ -2,13 +2,17 @@ N=length(T);
 R=zeros(3,N);
 V=zeros(3,N);
 OE=zeros(6,N);
+EUL=zeros(3,N);
 
 for i=1:N
     [r,v]=mee2rv(soln(end).grid.state(8:13,i)',p.mu);
+    quat=soln(end).grid.state(4:7,i);
+    
     oe=rv2oe(r,v,p.mu);
     R(:,i)=r;
     V(:,i)=v;
     OE(:,i)=oe';
+    EUL(:,i)=quat2eul(quat')';
 end
 % 
 % Force_history_xyz=zeros(3,N);
@@ -17,6 +21,8 @@ end
 %     Force_history_xyz(:,i)=rsw2xyz(Force_history(:,i),R(:,i),V(:,i));
 % %     Force_mag(i)=norm(Force_history_xyz(:,i));
 % end
+
+% EUL=rad2deg(EUL);
 
 close all
 
@@ -44,22 +50,24 @@ xlabel('t (s)')
 legend
 
 
+
+
 figure
-subplot(3,1,1)
+subplot(3,2,1)
 hold on
 plot(T(1),state_0(1),'bo')
 plot(T(end),state_f(1),'bo')
 plot(T,soln(end).grid.state(1,:))
 plot(T,soln(end).grid.state(1,:),'r.')
 ylabel('\omega_x')
-subplot(3,1,2)
+subplot(3,2,3)
 hold on
 plot(T(1),state_0(2),'bo')
 plot(T(end),state_f(2),'bo')
 plot(T,soln(end).grid.state(2,:))
 plot(T,soln(end).grid.state(2,:),'r.')
 ylabel('\omega_y')
-subplot(3,1,3)
+subplot(3,2,5)
 hold on
 plot(T(1),state_0(3),'bo')
 plot(T(end),state_f(3),'bo')
@@ -68,6 +76,15 @@ plot(T,soln(end).grid.state(3,:),'r.')
 ylabel('\omega_z')
 xlabel('t (s)')
 
+subplot(3,2,2)
+plot(T,EUL(1,:),'b.')
+ylabel('\phi')
+subplot(3,2,4)
+plot(T,EUL(2,:),'b.')
+ylabel('\theta')
+subplot(3,2,6)
+plot(T,EUL(3,:),'b.')
+ylabel('\psi')
 
 
 

@@ -33,7 +33,7 @@ oe_f=[a_f e_f incl_f omega_f RA_f 0];
 mee_0=oe2mee(oe_0,p.mu)';
 mee_f=oe2mee(oe_f,p.mu)';
 
-quat_0=eul2quat(deg2rad([0 0 0]));
+quat_0=eul2quat(deg2rad([20 30 40]));
 quat_f=eul2quat(deg2rad([0 0 0]));
 
 state_0=[1;2;5;quat_0';mee_0];
