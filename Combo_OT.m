@@ -10,11 +10,11 @@ Re=6378.14;
 %%%%%%%%%%%%%%%%%%%
 
 a_0=100*Re;
-e_0=0.99;
+e_0=0;
 incl_0=deg2rad(0);
 omega_0=0;
 RA_0=0;
-theta_0=deg2rad(190);
+theta_0=deg2rad(0);
 
 a_f=10*Re;
 e_f=0.5;
@@ -33,8 +33,10 @@ oe_f=[a_f e_f incl_f omega_f RA_f 0];
 mee_0=oe2mee(oe_0,p.mu)';
 mee_f=oe2mee(oe_f,p.mu)';
 
+mee_f=mee_0;
+
 quat_0=eul2quat(deg2rad([20 30 40]));
-quat_f=eul2quat(deg2rad([0 0 0]));
+quat_f=eul2quat(deg2rad([30 40 50]));
 
 state_0=[1;2;5;quat_0';mee_0];
 state_f=[0;0;0;quat_f';mee_f];
@@ -42,7 +44,7 @@ state_f=[0;0;0;quat_f';mee_f];
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-thrust_max=1e-7;
+thrust_max=5e-8;
 max_angular_speed_end=1e-5;
 
 
@@ -86,13 +88,13 @@ problem.bounds.control.upp = thrust_max*ones(p.N_sat,1);
 
 
 state_f(1:3)=-max_angular_speed_end;
-state_f(4:7)=-inf;
+state_f(4:7)=-1;
 state_f(13)=mee_0(end)+min_revolution*2*pi;
 problem.bounds.finalState.low = state_f;
 state_f(1:3)=max_angular_speed_end;
-state_f(4:7)=inf;
+state_f(4:7)=1;
 state_f(13)=mee_f(end)+max_revolution*2*pi;
-state_f(13)=inf;
+state_f(13)=1000;
 problem.bounds.finalState.upp = state_f;
 
 
@@ -162,7 +164,7 @@ switch method
         problem.options(step).method = 'chebyshev';
         problem.options(step).chebyshev.nColPts =120;
         problem.options(step).defaultAccuracy = 'low';
-        problem.options(step).nlpOpt.MaxFunEvals=3e4;
+        problem.options(step).nlpOpt.MaxFunEvals=1e4;
 %         problem.options.nlpOpt.MaxIter=500;
         
 %         step=step+1;
