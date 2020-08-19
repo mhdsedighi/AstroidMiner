@@ -67,7 +67,7 @@ problem.options.nlpOpt.MaxIter=1e5;
 step=0;
 step=step+1;
 problem.options(step).method = 'chebyshev';
-problem.options(step).chebyshev.nColPts =100;
+problem.options(step).chebyshev.nColPts =50;
 problem.options(step).defaultAccuracy = 'high';
 %         problem.options.nlpOpt.TolFun=1e-15;
 %         problem.options.nlpOpt.TolCon=1e-15;
@@ -81,7 +81,7 @@ soln = optimTraj(problem);
 T = soln(end).grid.time;
 U = soln(end).grid.control;
 x=soln(end).grid.state(1,:);
-T2=linspace(0,150,500);
+T2=linspace(0,200,500);
 N2=length(T2);
 y_exact=zeros(1,N2);
 
