@@ -67,7 +67,7 @@ problem.options.nlpOpt.MaxIter=1e5;
 step=0;
 step=step+1;
 problem.options(step).method = 'chebyshev';
-problem.options(step).chebyshev.nColPts =40;
+problem.options(step).chebyshev.nColPts =100;
 problem.options(step).defaultAccuracy = 'high';
 %         problem.options.nlpOpt.TolFun=1e-15;
 %         problem.options.nlpOpt.TolCon=1e-15;
@@ -121,11 +121,10 @@ for i=1:N2
     
     
 end
-
-
-for i=1:N
+residual(1)=0;
+for i=2:N
     
-    residual(i)=sum(x(1:i))-sum(y(1:i));
+    residual(i)=trapz(T(1:i),x(1:i))-trapz(T(1:i),y(1:i));
     
     
 end
