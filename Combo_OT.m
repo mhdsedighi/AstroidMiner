@@ -4,8 +4,15 @@ addpath chebfun
 load('params')
 
 %parameters
-p.mu = 3.986005*10^5;
+params.mu = 3.986005*10^5;
 Re=6378.14;
+
+params.Ixx=1000;
+params.Iyy=1000;
+params.Izz=1000;
+params.Ixy=0;
+params.Ixz=0;
+params.Iyz=0;
 
 %%%%%%%%%%%%%%%%%%%
 
@@ -31,8 +38,8 @@ max_days=10;
 
 oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
 oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
-mee_0=oe2mee(oe_0,p.mu)';
-mee_f=oe2mee(oe_f,p.mu)';
+mee_0=oe2mee(oe_0,params.mu)';
+mee_f=oe2mee(oe_f,params.mu)';
 
 % mee_f=mee_0;
 
@@ -53,7 +60,7 @@ max_angular_speed_end=1e-5;
 %%%%%%%%%%%%%%%%%%%%%
 
 % User-defined dynamics and objective functions
-problem.func.dynamics = @(t,x,u)( combo_dynamics(x,u,p) );
+problem.func.dynamics = @(t,x,u)( combo_dynamics(x,u,params) );
 problem.func.pathObj = @(t,x,u)( pathcost(t,x,u) );
 
 % Problem bounds
@@ -79,11 +86,11 @@ problem.bounds.initialState.upp = state_0;
 problem.guess.time = [0,0.5*(min_days+max_days)*24*3600];
 state_f(13)=mee_f(end)+max_revolution*2*pi;
 problem.guess.state = [state_0  state_f];
-problem.guess.control = zeros(p.N_sat,2)+0.1*thrust_max;
+problem.guess.control = zeros(params.N_sat,2)+0.1*thrust_max;
 
 
-problem.bounds.control.low = 0*ones(p.N_sat,1);
-problem.bounds.control.upp = thrust_max*ones(p.N_sat,1);
+problem.bounds.control.low = 0*ones(params.N_sat,1);
+problem.bounds.control.upp = thrust_max*ones(params.N_sat,1);
 
 
 
@@ -216,7 +223,7 @@ N=length(T);
 % 
 % for i=1:N
 %     
-%     [r,v]=mee2rv(soln.grid.state(:,i)',p.mu);
+%     [r,v]=mee2rv(soln.grid.state(:,i)',params.mu);
 %     R(:,i)=r;
 %     V(:,i)=v;
 %     

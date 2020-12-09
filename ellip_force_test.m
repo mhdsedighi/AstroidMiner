@@ -73,12 +73,12 @@ for i=1:N_sat
 end
 
 
-p.Force_Vectors=Force_Vectors;
-p.Moment_Vectors=Moment_Vectors;
-p.N_sat=N_sat;
+params.Force_Vectors=Force_Vectors;
+params.Moment_Vectors=Moment_Vectors;
+params.N_sat=N_sat;
 
 
-save params p
+save params params
 
 
 

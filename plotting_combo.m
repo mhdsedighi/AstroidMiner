@@ -5,10 +5,10 @@ OE=zeros(6,N);
 EUL=zeros(3,N);
 
 for i=1:N
-    [r,v]=mee2rv(soln(end).grid.state(8:13,i)',p.mu);
+    [r,v]=mee2rv(soln(end).grid.state(8:13,i)',params.mu);
     quat=soln(end).grid.state(4:7,i);
     
-    oe=rv2oe(r,v,p.mu);
+    oe=rv2oe(r,v,params.mu);
     R(:,i)=r;
     V(:,i)=v;
     OE(:,i)=oe';
