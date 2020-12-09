@@ -31,14 +31,16 @@ max_days=10;
 quat_0=eul2quat(deg2rad([0 0 0]));
 quat_f=eul2quat(deg2rad([0 0 0]));
 
-state_0=[1e-3;1e-3;0;quat_0'];
+state_0=[1e-3;0;0;quat_0'];
 state_f=[0;0;0;quat_f'];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
+% 
+% thrust_max=5e-7;
 
-thrust_max=5e-7;
-angular_speed_end=1e-2;
+thrust_max=1e-5;
+angular_speed_end=1e-6;
 
 
 
@@ -49,8 +51,8 @@ problem.func.dynamics = @(t,x,u)( rotation_dynamics(x,u,p) );
 problem.func.pathObj = @(t,x,u)( pathcost(t,x,u) );
 
 % Problem bounds
-problem.bounds.initialTime.low = 0;
-problem.bounds.initialTime.upp = 0;
+problem.bounds.initialTime.low = 1e5;
+problem.bounds.initialTime.upp = 1e5;
 problem.bounds.finalTime.low = min_days*24*3600;
 problem.bounds.finalTime.upp = max_days*24*3600;
 
@@ -73,7 +75,8 @@ problem.bounds.control.upp = thrust_max*ones(p.N_sat,1);
 % Guess at the initial trajectory
 problem.guess.time = [0,0.5*(min_days+max_days)*24*3600];
 problem.guess.state = [state_0  state_f];
-problem.guess.control = zeros(p.N_sat,2)+0.5*thrust_max;
+% problem.guess.control = zeros(p.N_sat,2)+0.5*thrust_max;
+problem.guess.control=zeros(p.N_sat,2);
 
 
 state_f(1:3)=-angular_speed_end;
@@ -146,7 +149,7 @@ switch method
         
                 step=step+1;
                 problem.options(step).method = 'chebyshev';
-                problem.options(step).chebyshev.nColPts =250;
+                problem.options(step).chebyshev.nColPts =100;
                 problem.options(step).defaultAccuracy = 'low';
                 problem.options(step).nlpOpt.MaxFunEvals=3e4;
 %                 problem.options.nlpOpt.MaxIter=2000;

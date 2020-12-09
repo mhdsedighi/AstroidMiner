@@ -9,9 +9,9 @@ Moment_Vectors=params.Moment_Vectors;
 Ixx=1000;
 Iyy=1000;
 Izz=1000;
-Ixy=50;
-Ixz=40;
-Iyz=60;
+Ixy=0;
+Ixz=0;
+Iyz=0;
 
 
 p=x(1,:);
