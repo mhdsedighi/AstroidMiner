@@ -63,7 +63,7 @@ Force_Vectors=[];
 Moment_Vectors=[];
 for i=1:N_sat
     
-    [x,y,z,R,normal_vector]=ellip_deg(a,b,c,azimuths(i),elevations(i));
+    [x,y,z,normal_vector]=ellip_deg(a,b,c,azimuths(i),elevations(i));
     plot3(x,y,z,'b.')
     plot_vector(x,y,z,normal_vector*2)
     
