@@ -1,19 +1,23 @@
-function [params]=rigid_positioning(N_sat,a,b,c,azimuths,elevations,pitchs,yaws)
+function [params]=rigid_positioning(N_sat,a,b,c,azimuths,elevations,gammas,lambdas)
 
-d2r=0.017453292519943;
 
 Force_Vectors=zeros(N_sat,3);
 Moment_Vectors=zeros(N_sat,3);
 
 for i=1:N_sat
     
-    [x,y,z,normal_vector]=ellip_deg(a,b,c,azimuths(i),elevations(i));
+    [x,y,z,UP_vec,North_vec,Right_vec]=ellip_deg(a,b,c,azimuths(i),elevations(i));
     
     sat_pos=[x,y,z];
-    [normal_vector]=rotate_about(normal_vector,sat_pos,d2r*pitchs(i),d2r*yaws(i));
     
-    Force_Vectors(i,:)=normal_vector;
-    Moment_Vectors(i,:)=cross(sat_pos,normal_vector);
+    cos_gamma=cosd(gammas(i));
+    sin_gamma=sind(gammas(i));
+    cos_lambda=cosd(lambdas(i));
+    sin_lambda=sind(lambdas(i));
+    force_vec=cos_gamma*UP_vec+sin_gamma*cos_lambda*North_vec+sin_lambda*sin_lambda*Right_vec;
+    
+    Force_Vectors(i,:)=force_vec;
+    Moment_Vectors(i,:)=cross(sat_pos,force_vec);
     
 end
 

@@ -8,10 +8,16 @@
 clc
 clear
 
+load solve1
+quatS=soln(end).grid.state(4:7,:)';
+fmS=[Force_command_xyz; Moment_command];
+tS=T;
+N_time=length(T);
+
 a=10;
 b=14;
 c=15;
-N_sat=30;
+N_sat=45;
 % azimuths=[-45 45 180+45   180-45   90         90       0      0]
 % elevations=[0 0    0         0     90+30      90-30    -90+30 -90-30]
 % pitchs=zeros(1,N_sat);
@@ -19,30 +25,36 @@ N_sat=30;
 
 azimuths=rand_gen(1,N_sat,0,360);
 elevations=rand_gen(1,N_sat,-90,90);
-pitchs=zeros(1,N_sat);
-yaws=zeros(1,N_sat);
+% pitchs=zeros(1,N_sat);
+% yaws=zeros(1,N_sat);
+gammas=rand_gen(1,N_sat,0,30);
+lambdas=rand_gen(1,N_sat,0,360);
 
 
-params=rigid_positioning(N_sat,a,b,c,azimuths,elevations,pitchs,yaws);
+
+
+
+params=rigid_positioning(N_sat,a,b,c,azimuths,elevations,gammas,lambdas);
 
 
 
 % quat=eul2quat(deg2rad([20 0 40]));
 
-N_time=100;
-Tmax=1000;
-quatS=eul2quat(deg2rad([rand_gen(N_time,1,-90,90) rand_gen(N_time,1,-90,90) rand_gen(N_time,1,0,360)]));
-max_moment=5;
-max_force=7;
-fmS=[rand_gen(3,N_time,-max_force,max_force) ; rand_gen(3,N_time,-max_moment,max_moment)];
+% N_time=100;
+% Tmax=1000;
+% quatS=eul2quat(deg2rad([rand_gen(N_time,1,-90,90) rand_gen(N_time,1,-90,90) rand_gen(N_time,1,0,360)]));
+% max_moment=5;
+% max_force=7;
+% fmS=[rand_gen(3,N_time,-max_force,max_force) ; rand_gen(3,N_time,-max_moment,max_moment)];
+% 
+% tS=linspace(0,Tmax,N_time);
 
-tS=linspace(0,Tmax,N_time);
 
-sum_u=zeros(1,N_time);
-U=zeros(N_sat,N_time);
+% U=zeros(N_sat,N_time);
 
 exitflagS=zeros(1,N_time);
-
+sum_u=zeros(1,N_time);
+% resi=zeros(1,N_time);
 for i=1:N_time
     quat=quatS(i,:);
     fm=fmS(:,i);
@@ -60,7 +72,7 @@ cost=trapz(tS,sum_u);
 
 sum_flags=sum(exitflagS);
 if sum_flags<N_time
-    cost=cost*(N_time-sum_flags);
+    cost=cost*(N_time-sum_flags)
 end
 
 cost
