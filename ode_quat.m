@@ -48,3 +48,5 @@ T2=sol2.x;
 
 plotting_ode_quat
 
+save solve3
+

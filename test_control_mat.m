@@ -8,16 +8,17 @@
 clc
 clear
 
-load solve1
-quatS=soln(end).grid.state(4:7,:)';
-fmS=[Force_command_xyz; Moment_command];
-tS=T;
-N_time=length(T);
+load solve3
+quatS=sol2.y';
+% fmS=[Force_command_xyz; Moment_command];
+fmS=U';
+% tS=T;
+N_time=length(T2);
 
 a=10;
 b=14;
 c=15;
-N_sat=45;
+N_sat=20;
 % azimuths=[-45 45 180+45   180-45   90         90       0      0]
 % elevations=[0 0    0         0     90+30      90-30    -90+30 -90-30]
 % pitchs=zeros(1,N_sat);
@@ -57,7 +58,9 @@ sum_u=zeros(1,N_time);
 % resi=zeros(1,N_time);
 for i=1:N_time
     quat=quatS(i,:);
-    fm=fmS(:,i);
+%     fm=fmS(:,i);
+fm=interp1(T,fmS,T2(i))';
+
     [params]=control_mat(params,quat);
     %     u_star=lsqnonneg(params.control_mat,fm);
     [u_star,~,~,exitflag,~] = lsqnonneg(params.control_mat,fm);
@@ -68,7 +71,8 @@ for i=1:N_time
 end
 % cost=trapz(tS,sum_u)*(1+sum(-exitflagS+1))
 
-cost=trapz(tS,sum_u);
+% cost=trapz(tS,sum_u);
+cost=trapz(T2,sum_u);
 
 sum_flags=sum(exitflagS);
 if sum_flags<N_time
