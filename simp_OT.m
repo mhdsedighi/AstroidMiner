@@ -241,3 +241,5 @@ N=length(T);
 plotting_combo
 
 T(end)
+
+save solve2
