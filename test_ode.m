@@ -1,7 +1,9 @@
 clc; clear; close all
 load('params')
+load solve1
 
-global params
+global params T Moment_command Force_command
+
 
 %parameters
 params.mu = 3.986005*10^5;
@@ -33,8 +35,8 @@ oe_f=oe_0;
 mee_f=mee_0;
 state_f=state_0;
 
-tspan = [0 100000];
-opts = odeset('MaxStep',10);
+tspan = [0 50000];
+% opts = odeset('MaxStep',10);
 sol = ode45(@ode_dynamics,tspan,state_0,opts);
 
 N_time=length(sol.x);

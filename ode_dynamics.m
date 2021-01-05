@@ -1,12 +1,21 @@
 function dx = ode_dynamics(t,x)
 
-global params
+global params T Moment_command Force_command
 
 mu=params.mu;
 
-N_sat=params.N_sat;
-Force_Vectors=params.Force_Vectors;
-Moment_Vectors=params.Moment_Vectors;
+% N_sat=params.N_sat;
+% Force_Vectors=params.Force_Vectors;
+% Moment_Vectors=params.Moment_Vectors;
+
+% % L = interp1(T,Moment_command(1,:),t,'spline');
+% % M = interp1(T,Moment_command(2,:),t,'spline');
+% % N = interp1(T,Moment_command(3,:),t,'spline');
+
+L = interp1(T,Moment_command(1,:),t);
+M = interp1(T,Moment_command(2,:),t);
+N = interp1(T,Moment_command(3,:),t);
+
 
 Ixx=params.Ixx;
 Iyy=params.Iyy;
@@ -36,9 +45,9 @@ xlmee = x(13,:);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% finding total force and moment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-L=0;
-M=0;
-N=0;
+% L=0;
+% M=0;
+% N=0;
 % for i=1:N_sat
 %    L=L+u(i,:)*Moment_Vectors(i,1);
 %    M=M+u(i,:)*Moment_Vectors(i,2);
@@ -49,7 +58,7 @@ N=0;
 % F_x=0;
 % F_y=0;
 % F_z=0;
-pert_1=0;
+pert_1=1e-5*sin(t);
 pert_2=0;
 pert_3=0;
 % DCM_mats=quat2dcm([quat0' quat1' quat2' quat3']);

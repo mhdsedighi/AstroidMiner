@@ -32,10 +32,10 @@ RA_f=0;
 theta_f=deg2rad(10);
 
 min_revolution=0;
-max_revolution=2;
+max_revolution=0;
 
 min_days=0;
-max_days=10;
+max_days=0.5;
 
 oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
 oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
@@ -53,7 +53,7 @@ state_f=[0;0;0;quat_f';mee_f];
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-thrust_max=5e-8;
+thrust_max=500;
 max_angular_speed_end=1e-5;
 
 
@@ -86,7 +86,10 @@ problem.bounds.initialState.upp = state_0;
 % Guess at the initial trajectory
 problem.guess.time = [0,0.5*(min_days+max_days)*24*3600];
 state_f(13)=mee_f(end)+max_revolution*2*pi;
-problem.guess.state = [state_0  state_f];
+% problem.guess.state = [state_0  state_f];
+state_1=state_0;
+state_1(1:3)=0;
+problem.guess.state = [state_0  state_1];
 problem.guess.control = zeros(params.N_sat,2)+0.1*thrust_max;
 
 
@@ -99,11 +102,13 @@ problem.bounds.control.upp = thrust_max*ones(params.N_sat,1);
 state_f(1:3)=-max_angular_speed_end;
 state_f(4:7)=-1;
 state_f(13)=mee_0(end)+min_revolution*2*pi;
+state_f(8:13)=-inf;
 problem.bounds.finalState.low = state_f;
 state_f(1:3)=max_angular_speed_end;
 state_f(4:7)=1;
 state_f(13)=mee_f(end)+max_revolution*2*pi;
 state_f(13)=1000;
+state_f(8:13)=inf;
 problem.bounds.finalState.upp = state_f;
 
 
@@ -158,11 +163,11 @@ switch method
         step=0;
         
         
-        step=step+1;
-        problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =50;
-        problem.options(step).defaultAccuracy = 'low';
-        problem.options(step).nlpOpt.MaxFunEvals=5e5;
+%         step=step+1;
+%         problem.options(step).method = 'chebyshev';
+%         problem.options(step).chebyshev.nColPts =50;
+%         problem.options(step).defaultAccuracy = 'low';
+%         problem.options(step).nlpOpt.MaxFunEvals=1e5;
 %         problem.options.nlpOpt.MaxIter=500;
         
 %         step=step+1;
@@ -182,7 +187,7 @@ switch method
 %                 problem.options(step).method = 'trapezoid';
 %                 problem.options(step).chebyshev.nColPts = 40;
 %                 problem.options(step).defaultAccuracy = 'medium';
-% %                 problem.options(step).nlpOpt.MaxFunEvals=1e5;
+%                 problem.options(step).nlpOpt.MaxFunEvals=1e5;
         
         
 %                 problem.options(2).method = 'chebyshev';
@@ -221,6 +226,24 @@ N=length(T);
 % 
 % Force_history=[U(1,:).*cos(U(2,:)).*sin(U(3,:)) ;U(1,:).*cos(U(2,:)).*cos(U(3,:)) ; U(1,:).*sin(U(2,:))  ];
 % 
-plotting_combo
+
+
+
+
+N=length(T);
+% R=zeros(3,N);
+% V=zeros(3,N);
+% OE=zeros(6,N);
+% EUL=zeros(3,N);
+Force_command_xyz=zeros(3,N);
+for i=1:N
+    [r,v]=mee2rv(soln(end).grid.state(8:13,i)',params.mu);
+    Force_command_xyz(:,i)=rsw2xyz(U(1:3,i),r,v);
+end
+Moment_command=U(4:6,:);
+
+plotting_simp
 
 T(end)
+
+save solve1
