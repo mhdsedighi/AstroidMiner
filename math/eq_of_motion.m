@@ -2,10 +2,9 @@ clc
 clear
 syms L M N p q r Ixx Iyy Izz Ixy Ixz Ixy Iyz
 
-% Ixy=0
-% Ixz=0
-% Ixy=0
-% Iyz=0
+Ixy=0
+Ixz=0
+Iyz=0
 
 I=[Ixx -Ixy -Ixz;-Ixy Iyy -Iyz;-Ixz -Iyz Izz];
 omega=[p;q;r];

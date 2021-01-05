@@ -4,56 +4,60 @@ addpath chebfun
 load('params')
 
 %parameters
-params.N_sat=6;
-params.mu = 3.986005*10^5;
-Re=6378.14;
+% params.N_sat=6;
+% params.mu = 3.986005*10^5;
+% Re=6378.14;
 
 params.Ixx=1000;
-params.Iyy=1000;
-params.Izz=1000;
-params.Ixy=0;
-params.Ixz=0;
-params.Iyz=0;
+params.Iyy=500;
+params.Izz=600;
+params.Ixy=5;
+params.Ixz=5;
+params.Iyz=5;
 
 %%%%%%%%%%%%%%%%%%%
 
-a_0=100*Re;
-e_0=0;
-incl_0=deg2rad(0);
-omega_0=0;
-RA_0=0;
-theta_0=deg2rad(0);
-
-a_f=10*Re;
-e_f=0;
-incl_f=deg2rad(0);
-omega_f=0;
-RA_f=0;
-theta_f=deg2rad(10);
-
-min_revolution=0;
-max_revolution=2;
+% a_0=100*Re;
+% e_0=0;
+% incl_0=deg2rad(0);
+% omega_0=0;
+% RA_0=0;
+% theta_0=deg2rad(0);
+% 
+% a_f=10*Re;
+% e_f=0;
+% incl_f=deg2rad(0);
+% omega_f=0;
+% RA_f=0;
+% theta_f=deg2rad(10);
+% 
+% min_revolution=0;
+% max_revolution=2;
 
 min_days=0;
-max_days=10;
+max_days=1;
 
-oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
-oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
-mee_0=oe2mee(oe_0,params.mu)';
-mee_f=oe2mee(oe_f,params.mu)';
+% oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
+% oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
+% mee_0=oe2mee(oe_0,params.mu)';
+% mee_f=oe2mee(oe_f,params.mu)';
 
 % mee_f=mee_0;
 
-quat_0=eul2quat(deg2rad([20 30 40]));
-quat_f=eul2quat(deg2rad([30 40 50]));
+% quat_0=eul2quat(deg2rad([20 30 40]));
+% quat_f=eul2quat(deg2rad([30 40 50]));
 
-state_0=[1e-2;2e-2;5e-2;quat_0';mee_0];
-state_f=[0;0;0;quat_f';mee_f];
+% state_0=[1e-2;2e-2;5e-2;quat_0';mee_0];
+% state_f=[0;0;0;quat_f';mee_f];
 
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-thrust_max=5e-8;
+
+state_0=[1e-2;2e-2;5e-2];
+state_f=[0;0;0];
+
+moment_max=10;
 max_angular_speed_end=1e-5;
 
 
@@ -70,8 +74,10 @@ problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = min_days*24*3600;
 problem.bounds.finalTime.upp = max_days*24*3600;
 
-problem.bounds.state.low = [-20 -20 -20 -inf -inf -inf -inf 0.7*min([a_0 a_f])   -inf -inf -inf -inf -inf]';
-problem.bounds.state.upp = [ 20  20  20  inf  inf  inf  inf 1.3*max([a_0 a_f])   1    1     1    1  inf]';
+% problem.bounds.state.low = [-20 -20 -20 -inf -inf -inf -inf 0.7*min([a_0 a_f])   -inf -inf -inf -inf -inf]';
+% problem.bounds.state.upp = [ 20  20  20  inf  inf  inf  inf 1.3*max([a_0 a_f])   1    1     1    1  inf]';
+problem.bounds.state.low = [-20 -20 -20]';
+problem.bounds.state.upp = [ 20  20  20]';
 problem.bounds.initialState.low = state_0;
 problem.bounds.initialState.upp = state_0;
 % 
@@ -85,25 +91,25 @@ problem.bounds.initialState.upp = state_0;
 
 % Guess at the initial trajectory
 problem.guess.time = [0,0.5*(min_days+max_days)*24*3600];
-state_f(13)=mee_f(end)+max_revolution*2*pi;
+% state_f(13)=mee_f(end)+max_revolution*2*pi;
 problem.guess.state = [state_0  state_f];
-problem.guess.control = zeros(params.N_sat,2)+0.1*thrust_max;
+problem.guess.control = zeros(3,2)+0.01*moment_max;
 
 
-problem.bounds.control.low = 0*ones(params.N_sat,1);
-problem.bounds.control.upp = thrust_max*ones(params.N_sat,1);
+problem.bounds.control.low = 0*ones(3,1);
+problem.bounds.control.upp = moment_max*ones(3,1);
 
 
 
 
 state_f(1:3)=-max_angular_speed_end;
-state_f(4:7)=-1;
-state_f(13)=mee_0(end)+min_revolution*2*pi;
+% state_f(4:7)=-1;
+% state_f(13)=mee_0(end)+min_revolution*2*pi;
 problem.bounds.finalState.low = state_f;
 state_f(1:3)=max_angular_speed_end;
-state_f(4:7)=1;
-state_f(13)=mee_f(end)+max_revolution*2*pi;
-state_f(13)=1000;
+% state_f(4:7)=1;
+% state_f(13)=mee_f(end)+max_revolution*2*pi;
+% state_f(13)=1000;
 problem.bounds.finalState.upp = state_f;
 
 
@@ -158,16 +164,17 @@ switch method
         step=0;
         
         
-        step=step+1;
-        problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =50;
-        problem.options(step).defaultAccuracy = 'low';
-        problem.options(step).nlpOpt.MaxFunEvals=5e5;
+%         step=step+1;
+%         problem.options(step).method = 'chebyshev';
+%         problem.options(step).chebyshev.nColPts =100;
+%         problem.options(step).defaultAccuracy = 'low';
+%         problem.options(step).nlpOpt.MaxFunEvals=1e6;
+%         problem.options(step).MaxIterations = 700;
 %         problem.options.nlpOpt.MaxIter=500;
         
 %         step=step+1;
 %         problem.options(step).method = 'chebyshev';
-%         problem.options(step).chebyshev.nColPts =20;
+%         problem.options(step).chebyshev.nColPts =150;
 %         problem.options(step).defaultAccuracy = 'low';
 % %         problem.options(step).nlpOpt.MaxFunEvals=1e6;
 %         
@@ -180,9 +187,10 @@ switch method
         
 %                 step=step+1;
 %                 problem.options(step).method = 'trapezoid';
-%                 problem.options(step).chebyshev.nColPts = 40;
+%                 problem.options(step).trapezoid.nGrid = 60;
 %                 problem.options(step).defaultAccuracy = 'medium';
-% %                 problem.options(step).nlpOpt.MaxFunEvals=1e5;
+%                 problem.options(step).nlpOpt.MaxFunEvals=1e5;
+%                 problem.options(step).MaxIterations=1000;
         
         
 %                 problem.options(2).method = 'chebyshev';
@@ -195,6 +203,15 @@ switch method
 %         problem.options(step).chebyshev.nColPts = 50;
 %         problem.options(step).defaultAccuracy = 'medium';
 %         problem.options(step).nlpOpt.MaxFunEvals=1e5;
+
+%   step=step+1;
+%         problem.options(step).method = 'rungeKutta';
+%         problem.options(step).defaultAccuracy = 'medium';
+
+  step=step+1;
+        problem.options(step).method = 'hermiteSimpson';
+        problem.options(step).hermiteSimpson.nSegment = 50;
+        
     case 'gpops'
         problem.options(1).method = 'gpops';
         
