@@ -1,56 +1,41 @@
-function cost=positioning_cost(azi_ele,N_cube,a,b,c,F_cube)
+function cost=positioning_cost(x,N_sat,N_time,T,T2,quatS,fmS,params)
 
-azimuths=azi_ele(1:N_cube);
-elevations=azi_ele(N_cube+1:end);
 
-F=[0 0 0];
-M=[0 0 0];
-F_array=zeros(N_cube,3);
-M_array=zeros(N_cube,3);
+azimuths=x(1:N_sat);
+elevations=x(N_sat+1:2*N_sat);
+gammas=x(2*N_sat+1:3*N_sat);
+lambdas=x(3*N_sat+1:4*N_sat);
 
-for i=1:N_cube
+
+param1=rigid_positioning(N_sat,params.a,params.b,params.c,azimuths,elevations,gammas,lambdas);
+control_mat=param1.Moment_Vectors';
+
+
+
+
+exitflagS=zeros(1,N_time);
+sum_u=zeros(1,N_time);
+
+for i=1:N_time
+%     quat=quatS(i,:);
+    fm=interp1(T,fmS,T2(i))';
     
-    [x,y,z,R,normal_vector]=ellip_deg(a,b,c,azimuths(i),elevations(i));
+    [u_star,~,~,exitflag,~] = lsqnonneg(control_mat,fm);
     
-    F=F+normal_vector*F_cube;
-    M=M+cross([x y z],F);
-    F_array(i,:)=F;
-    M_array(i,:)=M;
-    
+    exitflagS(i)=exitflag;
+    sum_u(i)=sum(u_star);
 end
 
-% F_x=sum(F_array(:,1));
-% F_y=sum(F_array(:,2));
-% F_z=sum(F_array(:,3));
-% M_x=sum(M_array(:,1));
-% M_y=sum(M_array(:,2));
-% M_z=sum(M_array(:,3));
+cost=trapz(T2,sum_u);
 
-sum_F_x=available_F_at_dir(F_array,[1 0 0]);
-sum_F_minus_x=available_F_at_dir(F_array,[-1 0 0]);
-sum_F_y=available_F_at_dir(F_array,[0 1 0]);
-sum_F_minus_y=available_F_at_dir(F_array,[0 -1 0]);
-sum_F_z=available_F_at_dir(F_array,[0 0 1]);
-sum_F_minus_z=available_F_at_dir(F_array,[0 0 -1]);
+sum_flags=sum(exitflagS);
+if sum_flags<N_time
+    cost=cost*(N_time-sum_flags);
+end
 
-% cost_neutral_force=0;
-% for i=1:N_cube
-%     for j=1:N_cube
-%         if i~=j
-%             neutral_factor=dot(F_array(i,:),F_array(j,:));
-% %             if neutral_factor<0
-%                 cost_neutral_force=cost_neutral_force+sign(neutral_factor)*(neutral_factor)^2;
-% %             end
-%         end
-%     end
-% end
-% cost_neutral_force
 
-F_dir_cost=(sum_F_x-sum_F_minus_x)^2+(sum_F_y-sum_F_minus_y)^2+(sum_F_z-sum_F_minus_z)^2;
-% cost=cost_neutral_force*F_dir_cost
-% norm(F)
-% norm(M)
 
-cost=F_dir_cost;
+
+
 
 end
