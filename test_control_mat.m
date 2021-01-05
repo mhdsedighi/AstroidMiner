@@ -16,9 +16,12 @@ fmS=U';
 N_time=length(T2);
 
 a=10;
-b=14;
-c=15;
+b=8;
+c=6;
+
 N_sat=20;
+
+
 % azimuths=[-45 45 180+45   180-45   90         90       0      0]
 % elevations=[0 0    0         0     90+30      90-30    -90+30 -90-30]
 % pitchs=zeros(1,N_sat);
@@ -80,6 +83,8 @@ if sum_flags<N_time
 end
 
 cost
+
+plot_sats
 
 % sum2=0;
 % for i=1:N_sat

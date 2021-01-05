@@ -6,9 +6,7 @@ Moment_Vectors=zeros(N_sat,3);
 
 for i=1:N_sat
     
-    [x,y,z,UP_vec,North_vec,Right_vec]=ellip_deg(a,b,c,azimuths(i),elevations(i));
-    
-    sat_pos=[x,y,z];
+    [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape(a,b,c,azimuths(i),elevations(i));
     
     cos_gamma=cosd(gammas(i));
     sin_gamma=sind(gammas(i));
