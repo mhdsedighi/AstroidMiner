@@ -1,8 +1,8 @@
 function dx = quat_dynamics(t,x)
 
-global pqr_history T_history
+global pqr_history T_rot_history
 
-pqr=interp1(T_history,pqr_history,t);
+pqr=interp1(T_rot_history,pqr_history,t);
 
 p=pqr(1);
 q=pqr(2);

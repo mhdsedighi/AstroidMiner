@@ -1,12 +1,22 @@
 clc; clear; close all
 % load('params')
-load solve2
 
-global pqr_history T_history
+global pqr_history T_rot_history
 
+load solve_rot
 
 pqr_history=soln(end).grid.state(1:3,:)';
-T_history=soln(end).grid.time;
+T_rot_history=soln(end).grid.time;
+
+
+load solve_path
+
+T_path_history=soln(end).grid.time;
+
+T_rot_history=[T_rot_history T_path_history(end)];
+pqr_history=[pqr_history ; pqr_history(end,:)];
+
+
 
 quat_0=eul2quat(deg2rad([20 30 40]));
 
@@ -36,7 +46,7 @@ quat_0=eul2quat(deg2rad([20 30 40]));
 % state_f=state_0;
 
 tspan = [0 T(end)];
-opts = odeset('MaxStep',10);
+opts = odeset('MaxStep',100);
 sol2 = ode45(@quat_dynamics,tspan,quat_0,opts);
 
 N_time=length(sol2.x);
@@ -48,5 +58,5 @@ T2=sol2.x;
 
 plotting_ode_quat
 
-save solve3
+save solve_quat
 
