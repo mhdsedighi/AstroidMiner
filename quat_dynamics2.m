@@ -1,19 +1,12 @@
-function dx = quat_dynamics(t,x)
+function dx = quat_dynamics2(t,x,Inertia,inv_Inertia)
+
+% global params
 
 
-% function dx = quat_dynamics(t,x,p_his,q_his,r_his,T_rot_history)
 
-global pqr_rot_history T_rot_history
-
-pqr=interp1(T_rot_history,pqr_rot_history,t);
-
-p=pqr(1);
-q=pqr(2);
-r=pqr(3);
-
-% p=interp1(T_rot_history',p_his,t);
-% q=interp1(T_rot_history,q_his,t);
-% r=interp1(T_rot_history,r_his,t);
+% p=pqr(1);
+% q=pqr(2);
+% r=pqr(3);
 
 % global params
 
@@ -29,21 +22,17 @@ r=pqr(3);
 % Ixy=params.Ixy;
 % Ixz=params.Ixz;
 % Iyz=params.Iyz;
+% 
+% 
+p=x(1,:);
+q=x(2,:);
+r=x(3,:);
 
 
-% if t<t_switch
-
-% else
-%     p=x(1,:);
-%     q=x(2,:);
-%     r=x(3,:);
-% end
-
-
-quat0=x(1,:);
-quat1=x(2,:);
-quat2=x(3,:);
-quat3=x(4,:);
+quat0=x(4,:);
+quat1=x(5,:);
+quat2=x(6,:);
+quat3=x(7,:);
 
 % pmee = x(8,:);
 % fmee = x(9,:);
@@ -95,8 +84,10 @@ quat3=x(4,:);
 % L=0;
 % M=0;
 % N=0;
-% 
-% 
+
+Moment=[0;0;0];
+
+
 % term1=Izz.*Ixy.^2 + 2.*Ixy.*Ixz.*Iyz + Iyy.*Ixz.^2 + Ixx.*Iyz.^2 - Ixx.*Iyy.*Izz;
 % term2=L + p.*(Ixz.*q - Ixy.*r) + q.*(Iyz.*q + Iyy.*r) - r.*(Izz.*q + Iyz.*r);
 % term3=M - p.*(Ixz.*p + Ixx.*r) - q.*(Iyz.*p - Ixy.*r) + r.*(Izz.*p + Ixz.*r);
@@ -108,6 +99,10 @@ quat3=x(4,:);
 % p_dot=(Iyz.^2-Iyy.*Izz.*term2-term6.*term4-term5.*term3)./term1;
 % q_dot=(Ixz.^2-Ixx.*Izz.*term3-term7.*term4-term5.*term2)./term1;
 % r_dot=(Ixy.^2-Ixx.*Iyy.*term4-term6.*term3-term6.*term2)./term1;
+
+% Inertia,inv_Inertia,pqr_rot_history,T_rot_history
+
+pqr_dot=inv_Inertia*(Moment - cross(x(1:3),Inertia*x(1:3)));
 
 quat0_dot=-0.5*(p.*quat1+q.*quat2+r.*quat3);
 quat1_dot=0.5*(p.*quat0+r.*quat2-q.*quat3);
@@ -137,7 +132,7 @@ quat3_dot=0.5*(r.*quat0+q.*quat1-p.*quat2);
 %%%%%%%
 
 
-dx=[quat0_dot;quat1_dot;quat2_dot;quat3_dot];
+dx=[pqr_dot;quat0_dot;quat1_dot;quat2_dot;quat3_dot];
 
 
 
