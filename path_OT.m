@@ -52,7 +52,7 @@ state_f=mee_f;
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-thrust_max=0.0000001;
+thrust_max=0.000001;
 % thrust_max=1;
 % max_angular_speed_end=1e-5;
 
@@ -224,3 +224,6 @@ U = soln(end).grid.control;
 T(end)/3600/24
 
 plotting_path
+
+
+save solve_path
