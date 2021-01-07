@@ -1,4 +1,4 @@
-function [params]=rigid_positioning(N_sat,a,b,c,azimuths,elevations,gammas,lambdas)
+function [Force_Vectors,Moment_Vectors]=rigid_positioning(N_sat,a,b,c,azimuths,elevations,gammas,lambdas)
 
 
 Force_Vectors=zeros(N_sat,3);
@@ -20,8 +20,8 @@ for i=1:N_sat
 end
 
 % params.N_sat=N_sat;
-params.Force_Vectors=Force_Vectors;
-params.Moment_Vectors=Moment_Vectors;
+% params.Force_Vectors=Force_Vectors;
+% params.Moment_Vectors=Moment_Vectors;
 
 
 end

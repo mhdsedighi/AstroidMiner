@@ -61,7 +61,7 @@ params.b=b;
 params.c=c;
 
 
-params.N_sat=10;
+% params.N_sat=10;
 
 max_gamma=30;
 

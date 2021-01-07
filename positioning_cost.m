@@ -21,10 +21,10 @@ for i=1:N_time
     quat=quatS(:,i)';
     fm=fmS(:,i);
     
-    params1=rigid_positioning(N_sat,params.a,params.b,params.c,azimuths,elevations,gammas,lambdas);
-    params1=control_mat(params1,quat,N_sat);
+    [Force_Vectors,Moment_Vectors]=rigid_positioning(N_sat,params.a,params.b,params.c,azimuths,elevations,gammas,lambdas);
+    c_mat=control_mat(Force_Vectors,Moment_Vectors,quat,N_sat);
     
-    [u_star,~,~,exitflag,~] = lsqnonneg(params1.control_mat,fm);
+    [u_star,~,~,exitflag,~] = lsqnonneg(c_mat,fm);
     
     exitflagS(i)=exitflag;
     sum_u(i)=sum(u_star);
