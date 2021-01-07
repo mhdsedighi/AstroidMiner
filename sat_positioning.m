@@ -1,10 +1,10 @@
-
-% A=[1 2 4;3 0 5];
-% b=[3;4];
-%
-% x_b = lsqminnorm(A,b)
-
-% params=[];
+% % % 
+% % % % A=[1 2 4;3 0 5];
+% % % % b=[3;4];
+% % % %
+% % % % x_b = lsqminnorm(A,b)
+% % % 
+% % % % params=[];
 clc
 clear
 
@@ -33,14 +33,14 @@ Force_history_xyz=Force_history_xyz';
 % Moment_command
 
 N_time=length(T_quats);
-fmS=zeros(6,N_time);
+fms=zeros(6,N_time);
 for i=1:N_time
     t=T_quats(i);
     
     this_quat=quats(:,i);
     this_moment=interp1(T_rot,Moment_command,t)';
     this_force=interp1(T_path,Force_history_xyz,t)';
-    fmS(:,i)=[this_force;this_moment];
+    fms(:,i)=[this_force;this_moment];
     
 end
 
@@ -51,11 +51,11 @@ end
 % tS=T;
 % N_time=length(T2);
 
-N_sat=20;
+N_sat=10;
 
-a=10;
-b=8;
-c=6;
+a=20;
+b=13;
+c=8;
 params.a=a;
 params.b=b;
 params.c=c;
@@ -77,19 +77,25 @@ lambdas=rand_gen(1,N_sat,0,180);
 
 
 x0=[azimuths elevations gammas lambdas];
-LB=[zeros(1,N_sat) -90*ones(1,N_sat) zeros(1,2*N_sat)];
-UB=[360*ones(1,N_sat) 90*ones(1,N_sat) max_gamma*ones(1,N_sat) 360*ones(1,N_sat)];
+LB=[zeros(1,N_sat) -90*ones(1,N_sat) -max_gamma*ones(1,N_sat) zeros(1,N_sat)];
+UB=[360*ones(1,N_sat) 90*ones(1,N_sat) max_gamma*ones(1,N_sat) 180*ones(1,N_sat)];
 
 
 % params=rigid_positioning(N_sat,a,b,c,azimuths,elevations,gammas,lambdas);
 % params.N_sat=N_sat;
+fun=@(x)positioning_cost(x,N_sat,N_time,T_quats,quats,fms,params);
+options = saoptimset;
+% options.Display='Iter';
+options.PlotFcns={@saplotbestf,@saplotbestx };
+options.MaxIter=1e6;
+[x_opt,cost_opt,exitflag,output] = simulannealbnd(fun,x0,LB,UB,options);
 
 
-cost=positioning_cost(x0,N_sat,N_time,T_quats,quats,fmS,params)
+% cost=positioning_cost(x0,N_sat,N_time,T_quats,quats,fms,params)
 
 
 
-x=x0;
+x=x_opt;
 azimuths=x(1:N_sat);
 elevations=x(N_sat+1:2*N_sat);
 gammas=x(2*N_sat+1:3*N_sat);

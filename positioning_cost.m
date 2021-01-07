@@ -1,4 +1,4 @@
-function cost=positioning_cost(x,N_sat,N_time,T_quats,quatS,fmS,params)
+function cost=positioning_cost(x,N_sat,N_time,T_quats,quats,fms,params)
 
 
 azimuths=x(1:N_sat);
@@ -18,8 +18,8 @@ exitflagS=zeros(1,N_time);
 sum_u=zeros(1,N_time);
 
 for i=1:N_time
-    quat=quatS(:,i)';
-    fm=fmS(:,i);
+    quat=quats(:,i)';
+    fm=fms(:,i);
     
     [Force_Vectors,Moment_Vectors]=rigid_positioning(N_sat,params.a,params.b,params.c,azimuths,elevations,gammas,lambdas);
     c_mat=control_mat(Force_Vectors,Moment_Vectors,quat,N_sat);
