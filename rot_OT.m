@@ -8,12 +8,15 @@ load('params')
 % params.mu = 3.986005*10^5;
 % Re=6378.14;
 
-params.Ixx=1000;
-params.Iyy=500;
-params.Izz=600;
-params.Ixy=10;
-params.Ixz=20;
-params.Iyz=30;
+Ixx=1000;
+Iyy=500;
+Izz=600;
+Ixy=10;
+Ixz=10;
+Iyz=10;
+
+params.Inertia =[Ixx -Ixy -Ixz;-Ixy Iyy -Iyz;-Ixz -Iyz Izz];
+params.inv_Inertia=inv(params.Inertia);
 
 %%%%%%%%%%%%%%%%%%%
 

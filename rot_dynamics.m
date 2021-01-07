@@ -6,17 +6,17 @@ function dx = rot_dynamics(x,u,params)
 % Force_Vectors=params.Force_Vectors;
 % Moment_Vectors=params.Moment_Vectors;
 
-Ixx=params.Ixx;
-Iyy=params.Iyy;
-Izz=params.Izz;
-Ixy=params.Ixy;
-Ixz=params.Ixz;
-Iyz=params.Iyz;
-
-
-p=x(1,:);
-q=x(2,:);
-r=x(3,:);
+% Ixx=params.Ixx;
+% Iyy=params.Iyy;
+% Izz=params.Izz;
+% Ixy=params.Ixy;
+% Ixz=params.Ixz;
+% Iyz=params.Iyz;
+% 
+% 
+% p=x(1,:);
+% q=x(2,:);
+% r=x(3,:);
 
 % quat0=x(4,:);
 % quat1=x(5,:);
@@ -48,9 +48,9 @@ r=x(3,:);
 %    N=N+u(i,:)*Moment_Vectors(i,3);
 % end
 
-L=u(1,:);
-M=u(2,:);
-N=u(3,:);
+% L=u(1,:);
+% M=u(2,:);
+% N=u(3,:);
 
 
 % F_x=zeros(1,N_time);
@@ -88,17 +88,29 @@ N=u(3,:);
 % r_dot=(N + Ixx.*p.*q - Iyy.*p.*q)/Izz;
 
 
-term1=Izz.*Ixy.^2 + 2.*Ixy.*Ixz.*Iyz + Iyy.*Ixz.^2 + Ixx.*Iyz.^2 - Ixx.*Iyy.*Izz;
-term2=L + p.*(Ixz.*q - Ixy.*r) + q.*(Iyz.*q + Iyy.*r) - r.*(Izz.*q + Iyz.*r);
-term3=M - p.*(Ixz.*p + Ixx.*r) - q.*(Iyz.*p - Ixy.*r) + r.*(Izz.*p + Ixz.*r);
-term4=N + p.*(Ixy.*p + Ixx.*q) - q.*(Iyy.*p + Ixy.*q) + r.*(Iyz.*p - Ixz.*q);
-term5=Ixz.*Iyz + Ixy.*Izz;
-term6=Ixy.*Iyz + Ixz.*Iyy;
-term7=Ixy.*Ixz + Ixx.*Iyz;
+% term1=Izz.*Ixy.^2 + 2.*Ixy.*Ixz.*Iyz + Iyy.*Ixz.^2 + Ixx.*Iyz.^2 - Ixx.*Iyy.*Izz;
+% term2=L + p.*(Ixz.*q - Ixy.*r) + q.*(Iyz.*q + Iyy.*r) - r.*(Izz.*q + Iyz.*r);
+% term3=M - p.*(Ixz.*p + Ixx.*r) - q.*(Iyz.*p - Ixy.*r) + r.*(Izz.*p + Ixz.*r);
+% term4=N + p.*(Ixy.*p + Ixx.*q) - q.*(Iyy.*p + Ixy.*q) + r.*(Iyz.*p - Ixz.*q);
+% term5=Ixz.*Iyz + Ixy.*Izz;
+% term6=Ixy.*Iyz + Ixz.*Iyy;
+% term7=Ixy.*Ixz + Ixx.*Iyz;
+% 
+% p_dot=(Iyz.^2-Iyy.*Izz.*term2-term6.*term4-term5.*term3)./term1;
+% q_dot=(Ixz.^2-Ixx.*Izz.*term3-term7.*term4-term5.*term2)./term1;
+% r_dot=(Ixy.^2-Ixx.*Iyy.*term4-term6.*term3-term6.*term2)./term1;
 
-p_dot=(Iyz.^2-Iyy.*Izz.*term2-term6.*term4-term5.*term3)./term1;
-q_dot=(Ixz.^2-Ixx.*Izz.*term3-term7.*term4-term5.*term2)./term1;
-r_dot=(Ixy.^2-Ixx.*Iyy.*term4-term6.*term3-term6.*term2)./term1;
+[~,N_time]=size(x);
+pqr_dot=zeros(3,N_time);
+for i=1:N_time
+    
+    Moment=u(:,i);
+    
+    pqr_dot(:,i)=params.inv_Inertia*(Moment - cross(x(1:3,i),params.Inertia*x(1:3,i)));
+    
+end
+
+
 
 % quat0_dot=-0.5*(p.*quat1+q.*quat2+r.*quat3);
 % quat1_dot=0.5*(p.*quat0+r.*quat2-q.*quat3);
@@ -131,8 +143,9 @@ r_dot=(Ixy.^2-Ixx.*Iyy.*term4-term6.*term3-term6.*term2)./term1;
 % dx=[p_dot;q_dot;r_dot;quat0_dot;quat1_dot;quat2_dot;quat3_dot;meedot_1;meedot_2;meedot_3;meedot_4;meedot_5;meedot_6];
 
 
-dx=[p_dot;q_dot;r_dot];
+% dx=[p_dot;q_dot;r_dot];
 
+dx=pqr_dot;
 
 
 end
