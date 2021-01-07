@@ -8,12 +8,50 @@
 clc
 clear
 
-load solve3
-quatS=sol2.y';
-% fmS=[Force_command_xyz; Moment_command];
-fmS=U';
+load solve_path
+T_path=T;
+
+load solve_rot
+Moment_command=U;
+T_rot=T;
+
+load solve_quat
+% T_quats
+% quats
+
+
+T_rot=[T_rot T_path(end)];
+Moment_command=[Moment_command [0;0;0]]';
+
+
+Force_history_xyz=Force_history_xyz';
+
+% N=length(Force_history_xyz)-length(Moment_command);
+%
+% Moment_command=
+
+% Moment_command
+
+N_time=length(T_quats);
+fmS=zeros(6,N_time);
+for i=1:N_time
+    t=T_quats(i);
+    
+    this_quat=quats(:,i);
+    this_moment=interp1(T_rot,Moment_command,t)';
+    this_force=interp1(T_path,Force_history_xyz,t)';
+    fmS(:,i)=[this_force;this_moment];
+    
+end
+
+
+
+% fmS=[Force_history_xyz; Moment_command];
+% fmS=U';
 % tS=T;
-N_time=length(T2);
+% N_time=length(T2);
+
+N_sat=20;
 
 a=10;
 b=8;
@@ -23,7 +61,7 @@ params.b=b;
 params.c=c;
 
 
-N_sat=20;
+params.N_sat=10;
 
 max_gamma=30;
 
@@ -34,8 +72,8 @@ max_gamma=30;
 
 azimuths=rand_gen(1,N_sat,0,360);
 elevations=rand_gen(1,N_sat,-90,90);
-gammas=rand_gen(1,N_sat,0,30);
-lambdas=rand_gen(1,N_sat,0,360);
+gammas=rand_gen(1,N_sat,-30,30);
+lambdas=rand_gen(1,N_sat,0,180);
 
 
 x0=[azimuths elevations gammas lambdas];
@@ -47,7 +85,7 @@ UB=[360*ones(1,N_sat) 90*ones(1,N_sat) max_gamma*ones(1,N_sat) 360*ones(1,N_sat)
 % params.N_sat=N_sat;
 
 
-cost=positioning_cost(x0,N_sat,N_time,T,T2,quatS,fmS,params)
+cost=positioning_cost(x0,N_sat,N_time,T_quats,quats,fmS,params)
 
 
 

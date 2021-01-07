@@ -19,7 +19,7 @@ for i=1:N_sat
     
 end
 
-params.N_sat=N_sat;
+% params.N_sat=N_sat;
 params.Force_Vectors=Force_Vectors;
 params.Moment_Vectors=Moment_Vectors;
 

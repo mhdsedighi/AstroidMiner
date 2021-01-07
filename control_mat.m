@@ -1,4 +1,4 @@
-function [params]=control_mat(params,quat)
+function [params]=control_mat(params,quat,N_sat)
 
 
 
@@ -12,13 +12,16 @@ function [params]=control_mat(params,quat)
 % params.control_mat=[alligned_Force_vectors;params.Moment_Vectors'];
 
 % alligned_Force_vectors=zeros(3,params.N_sat);
-% dcm=quat2dcm(quat);
-% 
-% for i=1:params.N_sat
-%     alligned_Force_vectors(:,i)=dcm*params.Force_Vectors(i,:)';
-% end
+alligned_Force_vectors=zeros(3,N_sat);
+dcm=quat2dcm(quat);
 
-params.control_mat=params.Moment_Vectors';
+for i=1:N_sat
+    alligned_Force_vectors(:,i)=dcm*params.Force_Vectors(i,:)';
+end
+
+% params.control_mat=params.Moment_Vectors';
+
+params.control_mat=[alligned_Force_vectors;params.Moment_Vectors'];
 
 
 end
