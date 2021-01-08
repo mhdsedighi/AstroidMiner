@@ -19,7 +19,9 @@ load solve_quat
 % T_quats
 % quats
 
-model3d_maker
+% model3d_maker
+load shape
+params.shape=shape;
 
 T_rot=[T_rot T_path(end)];
 Moment_command=[Moment_command [0;0;0]]';

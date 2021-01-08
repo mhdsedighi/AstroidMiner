@@ -5,9 +5,10 @@ Force_Vectors=zeros(N_sat,3);
 Moment_Vectors=zeros(N_sat,3);
 
 for i=1:N_sat
-    
+%     
 %     [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape(params.a,params.b,params.c,azimuths(i),elevations(i));
-    [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(params.V,params.F,azimuths(i),elevations(i));
+%     [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(params.shape.V,params.shape.F,azimuths(i),elevations(i));
+[sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d_fast(params,azimuths(i),elevations(i));
     
     cos_gamma=cosd(gammas(i));
     sin_gamma=sind(gammas(i));
