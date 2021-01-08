@@ -21,7 +21,7 @@ for i=1:N_time
     quat=quats(:,i)';
     fm=fms(:,i);
     
-    [Force_Vectors,Moment_Vectors]=rigid_positioning(N_sat,params.a,params.b,params.c,azimuths,elevations,gammas,lambdas);
+    [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
     c_mat=control_mat(Force_Vectors,Moment_Vectors,quat,N_sat);
     
     [u_star,~,~,exitflag,~] = lsqnonneg(c_mat,fm);
