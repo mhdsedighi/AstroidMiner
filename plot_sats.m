@@ -46,13 +46,14 @@ for i=1:N_sat
     
 end
 
-scale=0.1;
+scale=params.a/5;
 
 UP_vec=UP_vec*scale;
 North_vec=North_vec*scale;
 Right_vec=Right_vec*scale;
+force_vec=force_vec*scale;
 
-plt0=quiver3(0,0,0,5,0,0);
+plt0=quiver3(0,0,0,params.a/4,0,0);
 
 plt1=quiver3(sat_pos(:,1),sat_pos(:,2),sat_pos(:,3),UP_vec(:,1),UP_vec(:,2),UP_vec(:,3));
 plt2=quiver3(sat_pos(:,1),sat_pos(:,2),sat_pos(:,3),North_vec(:,1),North_vec(:,2),North_vec(:,3));
@@ -62,12 +63,21 @@ plt4=quiver3(sat_pos(:,1),sat_pos(:,2),sat_pos(:,3),force_vec(:,1),force_vec(:,2
 plt1.Color=[0.6350, 0.0780, 0.1840];
 plt2.Color=[0.4660, 0.6740, 0.1880];
 plt3.Color=[0, 0.4470, 0.7410];
+plt4.Color=[0.25, 0.25, 0.25];
+
 plt1.LineStyle=':';
-% plt1.LineWidth=1.5
 plt2.LineStyle=':';
 plt3.LineStyle=':';
 plt1.ShowArrowHead=0;
 plt2.ShowArrowHead=0;
 plt3.ShowArrowHead=0;
+plt1.LineWidth=2.5;
+plt2.LineWidth=2.5;
+plt3.LineWidth=2.5;
+plt4.LineWidth=3;
 
-plt4.Color=[0.25, 0.25, 0.25];
+
+plt1.AutoScale=0;
+plt2.AutoScale=0;
+plt3.AutoScale=0;
+plt4.AutoScale=0;
