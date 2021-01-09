@@ -3,8 +3,21 @@ figure
 hold on
 axis equal
 view(25,45)
-[x_surf, y_surf, z_surf] = ellipsoid(0,0,0,a,b,c,35);
-surf(x_surf, y_surf,z_surf,'FaceAlpha',0.1,'EdgeColor','none');
+
+
+% [x_surf, y_surf, z_surf] = ellipsoid(0,0,0,a,b,c,35);
+% surf(x_surf, y_surf,z_surf,'FaceAlpha',0.1,'EdgeColor','none');
+
+aa=drawMesh(params.shape.V, params.shape.F);
+aa.FaceAlpha=0.6;
+aa.EdgeAlpha=0.6;
+aa.FaceColor=[0.3020 0.1529 0.0235];
+aa.EdgeColor=[0.3020 0.1529 0];
+% lighting flat
+% material metal 
+material dull 
+camlight
+
 plot3(0,0,0,'ro')
 % Force_Vectors=[];
 % Moment_Vectors=[];
@@ -24,7 +37,8 @@ force_vec=zeros(N_sat,3);
 
 for i=1:N_sat
     
-    [sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape(a,b,c,azimuths(i),elevations(i));
+%     [sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape(a,b,c,azimuths(i),elevations(i));
+[sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape_3d(params.shape.V,params.shape.F,azimuths(i),elevations(i));
     
     
     force_vec(i,:)=cosd(gammas(i))*UP_vec(i,:)+sind(gammas(i))*cosd(lambdas(i))*North_vec(i,:)+sind(gammas(i))*sind(lambdas(i))*Right_vec(i,:);

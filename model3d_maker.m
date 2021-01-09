@@ -33,7 +33,7 @@ F=obj.f.v;
 
 
 
-[AZI,ELE] = meshgrid(0:5:360,(-90:5:90));
+[AZI,ELE] = meshgrid(linspace(0,360,20),linspace(-90,90,20));
 
 [m,n]=size(AZI);
 
@@ -46,6 +46,11 @@ UP_vec_z=zeros(m,n);
 North_vec_x=zeros(m,n);
 North_vec_y=zeros(m,n);
 North_vec_z=zeros(m,n);
+
+figure
+hold on
+axis equal
+
 
 for i=1:m
     for j=1:n
@@ -69,6 +74,8 @@ for i=1:m
         North_vec_y(i,j)=North_vec(2);
         North_vec_z(i,j)=North_vec(3);
         
+        
+        plot3(pos_x(i,j),pos_y(i,j),pos_z(i,j),'k.');
         
         
     end
