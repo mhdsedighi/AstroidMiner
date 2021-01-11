@@ -4,8 +4,11 @@ addpath chebfun
 load('params')
 
 %parameters
-params.mu = 3.986005*10^5;
-Re=6378.14;
+% params.mu = 3.986005*10^5;
+params.mu = 1.32712440018 *10^11;
+% Re=6378.14;
+
+
 
 % params.Ixx=1000;
 % params.Iyy=1000;
@@ -15,26 +18,27 @@ Re=6378.14;
 % params.Iyz=0;
 
 %%%%%%%%%%%%%%%%%%%
+AU=1.496e+8;
 
-a_0=100*Re;
-e_0=0;
-incl_0=deg2rad(70);
-omega_0=0;
-RA_0=0;
+a_0=1.1896*AU;
+e_0=0.1902;
+incl_0=deg2rad(5.8837);
+omega_0=deg2rad(211.43);
+RA_0=deg2rad(251.62);
 theta_0=deg2rad(0);
 
-a_f=10*Re;
-e_f=0;
-incl_f=deg2rad(0);
-omega_f=0;
-RA_f=0;
-theta_f=deg2rad(10);
+a_f=149598023;
+e_f=0.0167086;
+incl_f=deg2rad(7.155);
+omega_f=deg2rad(114.20783);
+RA_f=deg2rad(-11.26064);
+theta_f=deg2rad(0);
 
 min_revolution=1;
-max_revolution=2;
+max_revolution=10;
 
 min_days=0;
-max_days=10;
+max_days=700;
 
 oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
 oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
@@ -70,8 +74,8 @@ problem.bounds.initialTime.upp = 0;
 problem.bounds.finalTime.low = min_days*24*3600;
 problem.bounds.finalTime.upp = max_days*24*3600;
 
-problem.bounds.state.low = [0.7*min([a_0 a_f])   -inf -inf -inf -inf -inf]';
-problem.bounds.state.upp = [1.3*max([a_0 a_f])   1    1     1    1  inf]';
+problem.bounds.state.low = [0.5*min([a_0 a_f])   -inf -inf -inf -inf -inf]';
+problem.bounds.state.upp = [1.5*max([a_0 a_f])   1    1     1    1  inf]';
 problem.bounds.initialState.low = state_0;
 problem.bounds.initialState.upp = state_0;
 % 
@@ -173,7 +177,7 @@ switch method
         
         step=step+1;
         problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =100;
+        problem.options(step).chebyshev.nColPts =200;
         problem.options(step).defaultAccuracy = 'low';
         problem.options(step).nlpOpt.MaxFunEvals=1e5;
 %         problem.options.nlpOpt.MaxIter=500;

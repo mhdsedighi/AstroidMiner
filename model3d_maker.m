@@ -1,7 +1,9 @@
 clear
 % close all
 
-length_real=10;
+
+R=435; %meters 
+length_real=2*R;
 
 addpath('geom3d/geom3d')
 addpath('geom3d/meshes3d')

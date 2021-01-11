@@ -8,12 +8,18 @@ load('params')
 % params.mu = 3.986005*10^5;
 % Re=6378.14;
 
-Ixx=1000;
-Iyy=500;
-Izz=600;
-Ixy=10;
-Ixz=10;
-Iyz=10;
+mass=450e9; %kg
+R=435; %meters 
+Ixx=0.4*mass*R^2;
+
+rotation_period=7.627; %hours
+spin_speed=(2*pi)/(7.63*3600);
+
+Iyy=0.9*Ixx;
+Izz=0.8*Ixx;
+Ixy=0.2*Ixx;
+Ixz=0.2*Ixx;
+Iyz=0.2*Ixx;
 
 params.Inertia =[Ixx -Ixy -Ixz;-Ixy Iyy -Iyz;-Ixz -Iyz Izz];
 params.inv_Inertia=inv(params.Inertia);
@@ -37,8 +43,8 @@ params.inv_Inertia=inv(params.Inertia);
 % min_revolution=0;
 % max_revolution=2;
 
-min_days=0;
-max_days=0.5;
+min_hours=0;
+max_hours=3;
 
 % oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
 % oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
@@ -56,12 +62,12 @@ max_days=0.5;
 % low_bound=[5*Re -inf -inf -inf -inf -inf];
 % upp_bound=[20*Re 1 1 1 1 pi];
 
-
-state_0=[1e-2;2e-2;5e-2];
+spin_vector=[2;1;0.3];
+state_0=spin_speed*spin_vector/norm(spin_vector);
 state_f=[0;0;0];
 
-moment_max=10;
-max_angular_speed_end=1e-4;
+moment_max=500;
+max_angular_speed_end=1e-6;
 
 
 
@@ -74,8 +80,8 @@ problem.func.pathObj = @(t,x,u)( pathcost(t,x,u) );
 % Problem bounds
 problem.bounds.initialTime.low = 0;
 problem.bounds.initialTime.upp = 0;
-problem.bounds.finalTime.low = min_days*24*3600;
-problem.bounds.finalTime.upp = max_days*24*3600;
+problem.bounds.finalTime.low = min_hours*3600;
+problem.bounds.finalTime.upp = max_hours*3600;
 
 % problem.bounds.state.low = [-20 -20 -20 -inf -inf -inf -inf 0.7*min([a_0 a_f])   -inf -inf -inf -inf -inf]';
 % problem.bounds.state.upp = [ 20  20  20  inf  inf  inf  inf 1.3*max([a_0 a_f])   1    1     1    1  inf]';
@@ -93,7 +99,7 @@ problem.bounds.initialState.upp = state_0;
 
 
 % Guess at the initial trajectory
-problem.guess.time = [0,0.5*(min_days+max_days)*24*3600];
+problem.guess.time = [0,0.5*(min_hours+max_hours)*24*3600];
 % state_f(13)=mee_f(end)+max_revolution*2*pi;
 problem.guess.state = [state_0  state_f];
 problem.guess.control = zeros(3,2)+0.01*moment_max;
@@ -167,9 +173,9 @@ switch method
         step=0;
         
         
-%         step=step+1;
-%         problem.options(step).method = 'chebyshev';
-%         problem.options(step).chebyshev.nColPts =100;
+        step=step+1;
+        problem.options(step).method = 'chebyshev';
+        problem.options(step).chebyshev.nColPts =100;
 %         problem.options(step).defaultAccuracy = 'low';
 %         problem.options(step).nlpOpt.MaxFunEvals=1e6;
 %         problem.options(step).MaxIterations = 700;
@@ -211,9 +217,9 @@ switch method
 %         problem.options(step).method = 'rungeKutta';
 %         problem.options(step).defaultAccuracy = 'medium';
 
-  step=step+1;
-        problem.options(step).method = 'hermiteSimpson';
-        problem.options(step).hermiteSimpson.nSegment = 100;
+%   step=step+1;
+%         problem.options(step).method = 'hermiteSimpson';
+%         problem.options(step).hermiteSimpson.nSegment = 300;
         
     case 'gpops'
         problem.options(1).method = 'gpops';

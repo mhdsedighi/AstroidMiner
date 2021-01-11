@@ -8,6 +8,14 @@
 clc
 clear
 
+addpath('geom3d/geom3d')
+addpath('geom3d/meshes3d')
+addpath('3dmodels')
+
+mass=450e9; %kg
+
+
+
 load solve_path
 T_path=T;
 
@@ -22,12 +30,18 @@ load solve_quat
 % model3d_maker
 load shape
 params.shape=shape;
+params.a=435*2;
+params.b=435*2;
+params.c=435*2;
 
 T_rot=[T_rot T_path(end)];
 Moment_command=[Moment_command [0;0;0]]';
 
 
 Force_history_xyz=Force_history_xyz';
+
+
+Force_history_xyz=Force_history_xyz*1000;
 
 % N=length(Force_history_xyz)-length(Moment_command);
 %
@@ -40,7 +54,7 @@ fms=zeros(6,N_time);
 for i=1:N_time
     t=T_quats(i);
     
-    this_quat=quats(:,i);
+%     this_quat=quats(:,i);
     this_moment=interp1(T_rot,Moment_command,t)';
     this_force=interp1(T_path,Force_history_xyz,t)';
     fms(:,i)=[this_force;this_moment];
@@ -54,14 +68,9 @@ end
 % tS=T;
 % N_time=length(T2);
 
-N_sat=10;
+N_sat=20;
 
-a=20;
-b=13;
-c=8;
-params.a=a;
-params.b=b;
-params.c=c;
+
 
 
 % params.N_sat=10;

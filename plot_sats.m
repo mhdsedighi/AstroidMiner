@@ -10,7 +10,7 @@ view(25,45)
 
 aa=drawMesh(params.shape.V, params.shape.F);
 aa.FaceAlpha=0.6;
-aa.EdgeAlpha=0.6;
+aa.EdgeAlpha=0.9;
 aa.FaceColor=[0.3020 0.1529 0.0235];
 aa.EdgeColor=[0.3020 0.1529 0];
 % lighting flat

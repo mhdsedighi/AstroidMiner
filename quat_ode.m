@@ -62,7 +62,7 @@ sol_a = ode45(@quat_dynamics,tspan,state_0);
 tspan = [T_rot_history(end) T_path_history(end)];
 state_0=[pqr_rot_history(end,:)';sol_a.y(:,end)];
 % state_0=[[0 0 0]';sol_a.y(:,end)];
-opts = odeset('MaxStep',100);
+opts = odeset('MaxStep',2000);
 sol_b = ode45(@quat_dynamics2,tspan,state_0,opts,Inertia,inv_Inertia);
 
 T_b=sol_b.x;

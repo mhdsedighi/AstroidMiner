@@ -70,6 +70,23 @@ xlabel('t (s)')
 
 
 
+
+figure
+subplot(3,1,1)
+hold on
+plot(T_rot_history,pqr_rot_history(:,1))
+ylabel('\omega_x')
+subplot(3,1,2)
+hold on
+plot(T_rot_history,pqr_rot_history(:,2))
+ylabel('\omega_y')
+subplot(3,1,3)
+hold on
+plot(T_rot_history,pqr_rot_history(:,3))
+ylabel('\omega_z')
+xlabel('t (s)')
+
+
 figure
 subplot(3,1,1)
 hold on
