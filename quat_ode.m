@@ -55,8 +55,8 @@ inv_Inertia=inv(Inertia);
 
 tspan = [0 T_rot_history(end)];
 state_0=quat_0';
-opts = odeset('MaxStep',100);
-sol_a = ode45(@quat_dynamics,tspan,state_0);
+opts = odeset('MaxStep',10);
+sol_a = ode45(@quat_dynamics,tspan,state_0,opts);
 
 
 tspan = [T_rot_history(end) T_path_history(end)];
@@ -65,10 +65,14 @@ state_0=[pqr_rot_history(end,:)';sol_a.y(:,end)];
 opts = odeset('MaxStep',2000);
 sol_b = ode45(@quat_dynamics2,tspan,state_0,opts,Inertia,inv_Inertia);
 
+T_a=sol_a.x;
 T_b=sol_b.x;
 T_quats=[sol_a.x sol_b.x(2:end)];
-pqrs_b=sol_b.y(1:3,:);
 quats=[sol_a.y(1:4,:) sol_b.y(4:7,2:end)];
+
+pqrs_b=sol_b.y(1:3,:);
+quats_a=sol_a.y(1:4,:);
+quats_b=sol_b.y(4:7,:);
 
 
 T_switch=pqr_rot_history(end,:);

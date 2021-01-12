@@ -87,6 +87,7 @@ ylabel('\omega_z')
 xlabel('t (s)')
 
 
+
 figure
 subplot(3,1,1)
 hold on
@@ -121,17 +122,31 @@ xlabel('t (s)')
 % xlabel('t (s)')
 
 
-EUL=quat2eul(quats');
+EUL=rad2deg(quat2eul(quats_a'));
 
 figure
 subplot(3,1,1)
-plot(T_quats,EUL(:,1),'b')
+plot(T_a,EUL(:,1),'b')
 ylabel('\phi')
 subplot(3,1,2)
-plot(T_quats,EUL(:,2),'b')
+plot(T_a,EUL(:,2),'b')
 ylabel('\theta')
 subplot(3,1,3)
-plot(T_quats,EUL(:,3),'b')
+plot(T_a,EUL(:,3),'b')
+ylabel('\psi')
+
+
+EUL=rad2deg(quat2eul(quats_b'));
+
+figure
+subplot(3,1,1)
+plot(T_b,EUL(:,1),'b')
+ylabel('\phi')
+subplot(3,1,2)
+plot(T_b,EUL(:,2),'b')
+ylabel('\theta')
+subplot(3,1,3)
+plot(T_b,EUL(:,3),'b')
 ylabel('\psi')
 
 
