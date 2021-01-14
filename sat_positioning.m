@@ -41,7 +41,7 @@ Moment_command=[Moment_command [0;0;0]]';
 Force_history_xyz=Force_history_xyz';
 
 
-Force_history_xyz=Force_history_xyz*1000;
+Force_history_xyz=Force_history_xyz*1000*mass;
 
 % N=length(Force_history_xyz)-length(Moment_command);
 %
