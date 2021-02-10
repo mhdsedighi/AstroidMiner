@@ -17,7 +17,7 @@ assignin('base','u_off',u_off);
 assignin('base','u_on',u_on);
 assignin('base','u',u);
 
-% simout=sim('pwpf2');
+% simout=sim('pwpf');
 
 % % https://nl.mathworks.com/matlabcentral/answers/114527-limit-computation-time-of-a-simulink-simulation
 % % https://stackoverflow.com/questions/35446636/access-to-cpu-time-during-simulink
@@ -41,7 +41,7 @@ while(true)
         cost=7777777;
         break;
     end
-    pause(1);
+    pause(0.1);
 end
 
 
