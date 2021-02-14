@@ -110,6 +110,7 @@ end
 
 out
 
+codegen -report new_linprog -args {f,C,b,lb,ub}
 
 
 
