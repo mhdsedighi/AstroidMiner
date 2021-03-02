@@ -1,4 +1,4 @@
-function [c_mat]=control_mat(Force_Vectors,Moment_Vectors,quat,N_sat)
+function c_mat=control_mat(Force_Vectors,Moment_Vectors,quat,N_sat)
 
 
 

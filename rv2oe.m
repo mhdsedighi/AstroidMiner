@@ -63,6 +63,9 @@ q = -hhat(2) / (1.0 + hhat(3));
 
 const1 = 1.0 / (1.0 + p * p + q * q);
 
+fhat=zeros(3,1);
+ghat=zeros(3,1);
+
 fhat(1) = const1 * (1.0 - p * p + q * q);
 fhat(2) = const1 * 2.0 * p * q;
 fhat(3) = -const1 * 2.0 * p;
