@@ -2,21 +2,22 @@
 % clear
 close all
 
-% pwpf_dis
+pwpf_dis
 
-sample_time=0.1;
+sample_time=2;
+
+c_mass=1;
 
 test_freq=2*pi/60;
-max_Thrust_analog=1e-8;
-min_on_off_time=1;
-digital_factor=1e-8;
+max_Thrust_analog=1e-8*c_mass;
+min_on_off_time=5;
+digital_factor=1e-8*c_mass;
 % Thrust_digital=digital_factor;
 
 
 % t_sim=min_on_off_time*5;
 % t_sim=600;
-t_sim=100;
-
+t_sim=1000;
 
 % Tm_d=2;
 % Km_d=5;
@@ -29,7 +30,7 @@ t_sim=100;
 Tm_span=[1e-3 10];
 Km_span=[1e-4 20000];
 h_span=[0 10]*digital_factor;
-u_off_span=[-10 10]*digital_factor;
+u_off_span=[0 10]*digital_factor;
 Thrust_digital_span=[1 1]*digital_factor;
 
 LB=[Tm_span(1) Km_span(1) h_span(1) u_off_span(1) Thrust_digital_span(1)];
@@ -38,7 +39,7 @@ UB=[Tm_span(2) Km_span(2) h_span(2) u_off_span(2) Thrust_digital_span(2)];
 
 % x0=[Tm,Km,h,u_off,Thrust_digital];
 x0=rand_gen(1,5,LB,UB);
-x0(4)=-abs(x0(4));
+% x0(4)=-abs(x0(4));
 
 % cost = cost_pwpf(x0)
 
