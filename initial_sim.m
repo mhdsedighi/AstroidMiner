@@ -71,7 +71,8 @@ mee_f=oe2mee(oe_f,params.mu)';
 
 eul_0=deg2rad([20 30 40]);
 rotation_period=7.627; %hours
-spin_speed=(2*pi)/(7.63*3600);
+% spin_speed=(2*pi)/(7.63*3600);
+spin_speed=1e-1;
 spin_vector=[2;1;0.3];
 pqr_0=spin_speed*spin_vector/norm(spin_vector)';
 
@@ -108,21 +109,21 @@ gain4=1;
 gain5=1;
 
 
-load solve_path
-
-mee_his=soln(end).grid.state;
-% mee_end=mee_his(:,end);
-
-mee1_span=[mee_his(1,end) mee_his(1,1)];
-gain_span_mat=ones(5,2);
-
-
-% oe = mee2oe(mee_end',params.mu)
-
-t_f=T(end);
-% 
-T=[T T(end)+1000 T(end)+2000];
-mee_his=[mee_his mee_his(:,end) mee_his(:,end)];
+% % % load solve_path
+% % % 
+% % % mee_his=soln(end).grid.state;
+% % % % mee_end=mee_his(:,end);
+% % % 
+% % % mee1_span=[mee_his(1,end) mee_his(1,1)];
+% % % gain_span_mat=ones(5,2);
+% % % 
+% % % 
+% % % % oe = mee2oe(mee_end',params.mu)
+% % % 
+% % % t_f=T(end);
+% % % % 
+% % % T=[T T(end)+1000 T(end)+2000];
+% % % mee_his=[mee_his mee_his(:,end) mee_his(:,end)];
 % 
 % mee_his_stop=mee_his(:,2);
 % 
@@ -145,8 +146,8 @@ mee_his=[mee_his mee_his(:,end) mee_his(:,end)];
 % set_param('test_pid7', 'MinimalZcImpactIntegration', 'on')
 
 
-Thrust_max=1e-5;
-max_f=Thrust_max*1e11;
+max_f=100000;
+Thrust_max=max_f/params.mass;
 
 max_F_available=[0 0;0 0;0 0];
 max_M_available=[0 0;0 0;0 0];
@@ -172,8 +173,14 @@ for j=1:3
     end
 end
 
-max_F_available=max_F_available*0.8
-max_M_available=max_M_available*0.8
+max_F_available=max_F_available*0.7
+max_M_available=max_M_available*0.7
+
+
+
+
+s=tf('s');
+sys_rot=1/(params.Inertia(1,1)*s);
 
 
 
