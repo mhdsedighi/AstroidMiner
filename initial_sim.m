@@ -3,6 +3,24 @@ clc; clear; close all
 % addpath chebfun
 load('params')
 
+
+
+% % % 10 8 6 m
+% % % nickel density
+% % % around sun
+% % % 10-1 rad/s
+% % % 
+% % % 169581 kg
+% % % 4.5 3.45 1.5 m
+% % % Ixx 480e3
+% % % Iyy 763116
+% % % Izz 1090492
+% % % 12 cube sast min 8
+% % % omega=0.06 0.04 0.03 rad/s
+% % % thrusters 0.3N 0.25N 0.2N (0.5 N)
+
+
+
 %parameters
 % params.mu = 3.986005*10^5;
 % params.mu = 1.32712440018 *10^11;
@@ -59,11 +77,23 @@ pqr_0=spin_speed*spin_vector/norm(spin_vector)';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-N_sat=8;
-azimuths=[-45 45 180+45   180-45   90         90       0      0 30];
-elevations=[0 0    0         0     90+30      90-30    -90+30 -90-30 -90];
+% N_sat=8;
+% azimuths=[-45 45 180+45   180-45   90         90       0      0 30];
+% elevations=[0 0    0         0     90+30      90-30    -90+30 -90-30 -90];
+% gammas=zeros(1,N_sat);
+% lambdas=zeros(1,N_sat);
+
+
+
+%%%%%%
+N_sat=30;
+azimuths=rand_gen(1,N_sat,0,360);
+elevations=rand_gen(1,N_sat,-90,90);
 gammas=zeros(1,N_sat);
 lambdas=zeros(1,N_sat);
+
+
+%%%%%%
 
 [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
 Force_Vectors=Force_Vectors';
@@ -111,6 +141,39 @@ mee_his=[mee_his mee_his(:,end) mee_his(:,end)];
 
 
 
+% set_param('test_pid_exact_1', 'MinimalZcImpactIntegration', 'on')
+% set_param('test_pid7', 'MinimalZcImpactIntegration', 'on')
+
+
+Thrust_max=1e-5;
+max_f=Thrust_max*1e11;
+
+max_F_available=[0 0;0 0;0 0];
+max_M_available=[0 0;0 0;0 0];
+
+
+for j=1:3
+    for i=1:N_sat
+        if Force_Vectors(j,i)>0
+            max_F_available(j,1)=max_F_available(j,1)+max_f*Force_Vectors(j,i);
+        else
+            max_F_available(j,2)=max_F_available(j,2)+max_f*Force_Vectors(j,i);
+        end
+    end
+end
+
+for j=1:3
+    for i=1:N_sat
+        if Moment_Vectors(j,i)>0
+            max_M_available(j,1)=max_M_available(j,1)+max_f*Moment_Vectors(j,i);
+        else
+            max_M_available(j,2)=max_M_available(j,2)+max_f*Moment_Vectors(j,i);
+        end
+    end
+end
+
+max_F_available=max_F_available*0.8
+max_M_available=max_M_available*0.8
 
 
 
