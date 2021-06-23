@@ -6,7 +6,7 @@ Tm=inputArg(1);
 Km=inputArg(2);
 h=inputArg(3);
 u_off=inputArg(4);
-u=inputArg(5);
+Thrust_digital=inputArg(5);
 
 u_on=h+u_off;
 
@@ -15,7 +15,7 @@ assignin('base','Tm',Tm);
 assignin('base','Km',Km);
 assignin('base','u_off',u_off);
 assignin('base','u_on',u_on);
-assignin('base','u',u);
+assignin('base','Thrust_digital',Thrust_digital);
 
 % simout=sim('pwpf');
 

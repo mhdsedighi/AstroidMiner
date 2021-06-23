@@ -1,13 +1,17 @@
 % clc
-clear
+% clear
 close all
 
 
 
-sample_time=2;
-order_force=50;
+sample_time=0.1;
+% order_force= max(max(out1.U));
+maxS= max(out1.U);
+out2=out1;
+out2.U=out2.U./maxS;
+order_force=max(max(out2.U));
 test_freq=2*pi/60;
-min_on_off_time=5;
+min_on_off_time=0.1;
 
 %%%%%%%%%%%
 
@@ -27,7 +31,7 @@ t_sim=1000;
 % u_off=0;
 % Thrust_digital=1;
 
-pwpf_dis
+pwpf_real_signal
 
 Tm_span=[1e-3 10];
 Km_span=[1e-4 20000];
@@ -63,7 +67,7 @@ Thrust_digital=x_opt(5)
 u_on=h+u_off
 
 
-sim pwpf_dis
+sim pwpf_real_signal
 
 
 

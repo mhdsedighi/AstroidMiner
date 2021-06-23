@@ -22,7 +22,7 @@ assignin('base','Thrust_digital',Thrust_digital);
 % % https://nl.mathworks.com/matlabcentral/answers/114527-limit-computation-time-of-a-simulink-simulation
 % % https://stackoverflow.com/questions/35446636/access-to-cpu-time-during-simulink
 
-model='pwpf_dis';
+model='pwpf_real_signal';
 timeout=4;
 
 set_param(model,'SimulationCommand','start')
