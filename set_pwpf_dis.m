@@ -1,18 +1,20 @@
 % clc
-% clear
+clear
 close all
 
-pwpf_dis
+
 
 sample_time=2;
-
-c_mass=1;
-
+order_force=50;
 test_freq=2*pi/60;
-max_Thrust_analog=1e-8*c_mass;
 min_on_off_time=5;
-digital_factor=1e-8*c_mass;
-% Thrust_digital=digital_factor;
+
+%%%%%%%%%%%
+
+
+max_Thrust_analog=1e-8;
+digital_factor=1e-8;
+scale=order_force/max_Thrust_analog;
 
 
 % t_sim=min_on_off_time*5;
@@ -25,7 +27,7 @@ t_sim=1000;
 % u_off=0;
 % Thrust_digital=1;
 
-
+pwpf_dis
 
 Tm_span=[1e-3 10];
 Km_span=[1e-4 20000];
