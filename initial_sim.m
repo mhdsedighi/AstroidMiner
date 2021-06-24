@@ -184,6 +184,11 @@ sys_rot=1/(params.Inertia(1,1)*s);
 
 
 
+set_param('model_1/asteroid/actuation/thrusters','Commented','through')
+% set_param('model_1/asteroid/actuation/thrusters','Commented','off')
+
+
+
 
 
 

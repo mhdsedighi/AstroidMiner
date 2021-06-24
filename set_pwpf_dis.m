@@ -4,14 +4,16 @@ close all
 
 
 
-sample_time=0.5;
+sample_time=1;
+min_on_off_time=0.5;
+
 % order_force= max(max(out1.U));
 maxS= max(out1.U);
 out2=out1;
 % out2.U=out2.U./maxS;
 order_force=maxS;
 test_freq=2*pi/60;
-min_on_off_time=0.1;
+
 
 %%%%%%%%%%%
 
