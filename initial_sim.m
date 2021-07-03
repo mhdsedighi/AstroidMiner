@@ -1,4 +1,4 @@
-clc; clear; close all
+% clc; clear; close all
 % addpath OptimTraj
 % addpath chebfun
 load('params')
