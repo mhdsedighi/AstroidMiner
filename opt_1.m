@@ -1,7 +1,5 @@
 clc
 
-
-
 azimuths_0=rand_gen(1,N_sat,0,360);
 elevations_0=rand_gen(1,N_sat,-90,90);
 gammas_0=zeros(1,N_sat);
@@ -47,5 +45,13 @@ options.MaxIter=1e6;
 % % % 
 % % % 
 % % % cost_handle(x_opt)
+
+
+azimuths=x_opt(1:N_sat);
+elevations=x_opt(N_sat+1:2*N_sat);
+gammas=x_opt(2*N_sat+1:3*N_sat);
+lambdas=x_opt(3*N_sat+1:4*N_sat);
+
+plot_sats
 
 

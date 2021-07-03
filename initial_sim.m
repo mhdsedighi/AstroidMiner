@@ -5,6 +5,23 @@ load('params')
 
 
 
+assume_ellipsoid=0;   %%%% 0 or 1
+
+
+
+if assume_ellipsoid==0
+    %%% run model3d_make first and set real length there
+    load('shape');
+    params.shape=shape;
+end
+params.assume_ellipsoid=assume_ellipsoid;
+
+
+
+% shape_mode='3d';
+
+
+
 % % % 10 8 6 m
 % % % nickel density
 % % % around sun
@@ -182,7 +199,7 @@ sys_rot=1/(params.Inertia(1,1)*s);
 
 
 
-set_param('model_1/asteroid/actuation/thrusters','Commented','through')
+% set_param('model_1/asteroid/actuation/thrusters','Commented','through')
 % set_param('model_1/asteroid/actuation/thrusters','Commented','off')
 
 

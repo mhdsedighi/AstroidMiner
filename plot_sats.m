@@ -5,29 +5,32 @@ axis equal
 view(25,45)
 
 
+
+
 % [x_surf, y_surf, z_surf] = ellipsoid(0,0,0,a,b,c,35);
 % surf(x_surf, y_surf,z_surf,'FaceAlpha',0.1,'EdgeColor','none');
 
-aa=drawMesh(params.shape.V, params.shape.F);
-aa.FaceAlpha=0.6;
-aa.EdgeAlpha=0.9;
-aa.FaceColor=[0.3020 0.1529 0.0235];
-aa.EdgeColor=[0.3020 0.1529 0];
+% params.shape.V=shape.V;
+% params.shape.F=shape.F;
+
+if assume_ellipsoid
+    [x_surf, y_surf, z_surf] = ellipsoid(0,0,0,params.a,params.b,params.c,35);
+    astplt=surf(x_surf, y_surf,z_surf,'FaceAlpha',0.1,'EdgeColor','none');
+else  
+    astplt=drawMesh(shape.V, shape.F);
+end
+
+astplt.FaceAlpha=0.6;
+astplt.EdgeAlpha=0;
+astplt.FaceColor=[0.3020 0.1529 0.0235];
+astplt.EdgeColor=[0.3020 0.1529 0];
 % lighting flat
-% material metal 
-material dull 
+% material metal
+material dull
 camlight
 
 plot3(0,0,0,'ro')
-% Force_Vectors=[];
-% Moment_Vectors=[];
 
-% plot_vector(0,0,0,[1 0 0])
-
-% plot1=quiver3([0 1],[0 1],[0 1],[1 0],[1 0],[1 1]);
-% 
-% lamda=30;
-% gamma=50;
 
 sat_pos=zeros(N_sat,3);
 UP_vec=zeros(N_sat,3);
@@ -37,16 +40,18 @@ force_vec=zeros(N_sat,3);
 
 for i=1:N_sat
     
-%     [sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape(a,b,c,azimuths(i),elevations(i));
-[sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape_3d(params.shape.V,params.shape.F,azimuths(i),elevations(i));
+    if assume_ellipsoid
+        [sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape(params.a,params.b,params.c,azimuths(i),elevations(i));     
+    else
+        [sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape_3d(shape.V,shape.F,azimuths(i),elevations(i));
+    end
     
     
     force_vec(i,:)=cosd(gammas(i))*UP_vec(i,:)+sind(gammas(i))*cosd(lambdas(i))*North_vec(i,:)+sind(gammas(i))*sind(lambdas(i))*Right_vec(i,:);
     
-    
 end
 
-scale=params.a/5;
+scale=1*params.a/5;
 
 UP_vec=UP_vec*scale;
 North_vec=North_vec*scale;
@@ -65,15 +70,15 @@ plt2.Color=[0.4660, 0.6740, 0.1880];
 plt3.Color=[0, 0.4470, 0.7410];
 plt4.Color=[0.25, 0.25, 0.25];
 
-plt1.LineStyle=':';
-plt2.LineStyle=':';
-plt3.LineStyle=':';
+% plt1.LineStyle=':';
+% plt2.LineStyle=':';
+% plt3.LineStyle=':';
 plt1.ShowArrowHead=0;
 plt2.ShowArrowHead=0;
 plt3.ShowArrowHead=0;
-plt1.LineWidth=2.5;
-plt2.LineWidth=2.5;
-plt3.LineWidth=2.5;
+plt1.LineWidth=1.5;
+plt2.LineWidth=1.5;
+plt3.LineWidth=1.5;
 plt4.LineWidth=3;
 
 
