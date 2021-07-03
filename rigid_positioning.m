@@ -11,7 +11,6 @@ for i=1:N_sat
     else
         [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(params.shape.V,params.shape.F,azimuths(i),elevations(i));
     end
-% [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d_fast(params,azimuths(i),elevations(i));
     
     cos_gamma=cosd(gammas(i));
     sin_gamma=sind(gammas(i));
