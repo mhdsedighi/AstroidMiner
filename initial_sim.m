@@ -13,6 +13,8 @@ if assume_ellipsoid==0
     %%% run model3d_make first and set real length there
     load('shape');
     params.shape=shape;
+    addpath('geom3d/geom3d')
+    addpath('geom3d/meshes3d')
 end
 params.assume_ellipsoid=assume_ellipsoid;
 
