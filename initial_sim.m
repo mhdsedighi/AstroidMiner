@@ -163,7 +163,7 @@ gain5=1;
 % set_param('test_pid7', 'MinimalZcImpactIntegration', 'on')
 
 
-max_f=100000;
+max_f=10;
 Thrust_max=max_f/params.mass;
 
 max_F_available=[0 0;0 0;0 0];

@@ -20,31 +20,38 @@ UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 30*ones(1,N_sat) 30*ones(1,N_sat)];
 
 cost_handle=@(inputArg)specific_sim(inputArg,sim_data);
 
+
+
+%%%%%% Single Thread
+
 % specific_sim(x0,sim_data)
 
 % 
-options = optimoptions('simulannealbnd');
-% options.Display='Iter';
-options.PlotFcns={@saplotbestf,@saplotbestx };
-options.MaxIter=1e6;
-[x_opt,cost_opt,exitflag,output] = simulannealbnd(cost_handle,x0,LB,UB,options);
+% % % options = optimoptions('simulannealbnd');
+% % % % options.Display='Iter';
+% % % options.PlotFcns={@saplotbestf,@saplotbestx };
+% % % options.MaxIter=1e6;
+% % % [x_opt,cost_opt,exitflag,output] = simulannealbnd(cost_handle,x0,LB,UB,options);
 
-% % % poolobj = gcp;
-% % % pctRunOnAll('initial_sim')
-% % % % addAttachedFiles(poolobj,{'myFun1.m','myFun2.m'})
-% % % addAttachedFiles(poolobj,{'model_1.slx','specific_sim.m'});
-% % % parfevalOnAll(@load_system,0,'model_1');
-% % % 
-% % % 
-% % % options = optimoptions('particleswarm','UseParallel', true, 'UseVectorized', false,'Display','iter','PlotFcn','pswplotbestf');
-% % % % 'SwarmSize',10
-% % % nvars=4*N_sat;
-% % % 
-% % % 
-% % % [x_opt,cost_opt,exitflag,output]=particleswarm(cost_handle,nvars,LB,UB,options)
-% % % 
-% % % 
-% % % cost_handle(x_opt)
+
+
+%%%%%% Multi Thread
+
+
+cost_handle_multi=@(inputArg)multi_sim(inputArg,sim_data);
+poolobj = gcp;
+pctRunOnAll('initial_sim')
+% addAttachedFiles(poolobj,{'myFun1.m','myFun2.m'})
+addAttachedFiles(poolobj,{'model_1.slx','multi_sim.m'});
+parfevalOnAll(@load_system,0,'model_1');
+options = optimoptions('particleswarm','UseParallel', true, 'UseVectorized', true,'Display','iter','PlotFcn','pswplotbestf','SwarmSize',10);
+nvars=4*N_sat;
+
+
+[x_opt,cost_opt,exitflag,output]=particleswarm(cost_handle_multi,nvars,LB,UB,options)
+
+
+cost_handle(x_opt)
 
 
 azimuths=x_opt(1:N_sat);
