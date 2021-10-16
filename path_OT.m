@@ -177,7 +177,7 @@ switch method
         
         step=step+1;
         problem.options(step).method = 'chebyshev';
-        problem.options(step).chebyshev.nColPts =200;
+        problem.options(step).chebyshev.nColPts =400;
         problem.options(step).defaultAccuracy = 'low';
         problem.options(step).nlpOpt.MaxFunEvals=1e5;
 %         problem.options.nlpOpt.MaxIter=500;
@@ -228,6 +228,13 @@ U = soln(end).grid.control;
 T(end)/3600/24
 
 plotting_path
+
+
+
+ref_mee=soln(end).grid.state(1:6,:);
+ref_T=T;
+
+save('ref.mat','ref_mee','ref_T')
 
 
 save solve_path

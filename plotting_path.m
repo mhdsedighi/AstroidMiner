@@ -1,3 +1,6 @@
+
+load solve_path
+
 N=length(T);
 R=zeros(3,N);
 V=zeros(3,N);
