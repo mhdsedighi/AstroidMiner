@@ -235,9 +235,6 @@ max_M_available=max_M_available*0.7
 % set_param('model_1/asteroid/actuation/thrusters','Commented','off')
 
 
-signss=ones(1,8);
-
-signss(1)=-1;
 
 % sim('model_new_3');
 % out.Rdots.Data(end,:)
