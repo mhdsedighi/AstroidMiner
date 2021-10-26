@@ -72,20 +72,24 @@ theta_0=deg2rad(0);
 % RA_0=deg2rad(0);
 % theta_0=deg2rad(0);
 
-% % % a_f=149598023/1000;
-% % % e_f=0.0167086;
-% % % incl_f=deg2rad(7.155);
-% % % omega_f=deg2rad(114.20783);
-% % % RA_f=deg2rad(-11.26064);
-% % % theta_f=deg2rad(0);
+a_f=149598023/1000;
+e_f=0.0167086;
+incl_f=deg2rad(7.155);
+omega_f=deg2rad(114.20783);
+RA_f=deg2rad(-11.26064);
+theta_f=deg2rad(0);
 
-
-a_f=a_0*1.1;
-e_f=e_0*0.5;
-incl_f=incl_0;
+e_f=e_0;
 omega_f=omega_0;
 RA_f=RA_0;
-theta_f=theta_0;
+
+
+% a_f=a_0*1.1;
+% e_f=e_0*0.5;
+% incl_f=incl_0;
+% omega_f=omega_0;
+% RA_f=RA_0;
+% theta_f=theta_0;
 
 
 % a_f=a_0*0.9;
@@ -222,13 +226,21 @@ max_M_available=max_M_available*0.7
 
 
 
-s=tf('s');
-sys_rot=1/(params.Inertia(1,1)*s);
+% s=tf('s');
+% sys_rot=1/(params.Inertia(1,1)*s);
 
 
 
 % set_param('model_1/asteroid/actuation/thrusters','Commented','through')
 % set_param('model_1/asteroid/actuation/thrusters','Commented','off')
+
+
+signss=ones(1,8);
+
+signss(1)=-1;
+
+% sim('model_new_3');
+% out.Rdots.Data(end,:)
 
 
 
