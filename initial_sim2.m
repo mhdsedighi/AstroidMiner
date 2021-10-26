@@ -50,19 +50,19 @@ params.assume_ellipsoid=assume_ellipsoid;
 %%%%%%%%%%%%%%%%%%%
 AU=1.496e+8;
 
-% a_0=1.1896*AU/1000;
-% e_0=0.1902;
-% incl_0=deg2rad(5.8837);
-% omega_0=deg2rad(211.43);
-% RA_0=deg2rad(251.62);
-% theta_0=deg2rad(0);
+a_0=1.1896*AU/1000;
+e_0=0.1902;
+incl_0=deg2rad(5.8837);
+omega_0=deg2rad(211.43);
+RA_0=deg2rad(251.62);
+theta_0=deg2rad(0);
 
-a_0=1.1896*AU/100;
-e_0=0.1;
-incl_0=deg2rad(5);
-omega_0=deg2rad(10);
-RA_0=deg2rad(10);
-theta_0=deg2rad(1);
+% a_0=1.1896*AU/100;
+% e_0=0.1;
+% incl_0=deg2rad(5);
+% omega_0=deg2rad(10);
+% RA_0=deg2rad(10);
+% theta_0=deg2rad(1);
 
 
 % a_0=1.1896*AU;
@@ -72,28 +72,28 @@ theta_0=deg2rad(1);
 % RA_0=deg2rad(0);
 % theta_0=deg2rad(0);
 
-% a_f=149598023/1000;
-% e_f=0.0167086;
-% incl_f=deg2rad(7.155);
-% omega_f=deg2rad(114.20783);
-% RA_f=deg2rad(-11.26064);
-% theta_f=deg2rad(0);
+% % % a_f=149598023/1000;
+% % % e_f=0.0167086;
+% % % incl_f=deg2rad(7.155);
+% % % omega_f=deg2rad(114.20783);
+% % % RA_f=deg2rad(-11.26064);
+% % % theta_f=deg2rad(0);
 
 
-% a_f=a_0*0.8;
-% e_f=0.01;
+a_f=a_0*1.1;
+e_f=e_0*0.5;
+incl_f=incl_0;
+omega_f=omega_0;
+RA_f=RA_0;
+theta_f=theta_0;
+
+
+% a_f=a_0*0.9;
+% e_f=0.2;
 % incl_f=deg2rad(5);
 % omega_f=deg2rad(10);
-% RA_f=deg2rad(20);
+% RA_f=deg2rad(0);
 % theta_f=deg2rad(0);
-
-
-a_f=a_0*0.9;
-e_f=0.2;
-incl_f=deg2rad(5);
-omega_f=deg2rad(10);
-RA_f=deg2rad(0);
-theta_f=deg2rad(0);
 
 min_revolution=1;
 max_revolution=10;
@@ -105,6 +105,9 @@ oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
 oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
 mp_0=oe2mp(oe_0);
 mp_f=oe2mp(oe_f);
+
+oe_0=mp2oe(mp_0)
+oe_f=mp2oe(mp_f)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
