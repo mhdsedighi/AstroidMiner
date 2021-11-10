@@ -50,7 +50,7 @@ params.assume_ellipsoid=assume_ellipsoid;
 %%%%%%%%%%%%%%%%%%%
 AU=1.496e+8;
 
-a_0=1.1896*AU/1000;
+a_0=1.1896*AU;
 e_0=0.1902;
 incl_0=deg2rad(5.8837);
 omega_0=deg2rad(211.43);
@@ -72,24 +72,24 @@ theta_0=deg2rad(0);
 % RA_0=deg2rad(0);
 % theta_0=deg2rad(0);
 
-a_f=149598023/1000;
-e_f=0.0167086;
-incl_f=deg2rad(7.155);
-omega_f=deg2rad(114.20783);
-RA_f=deg2rad(-11.26064);
-theta_f=deg2rad(0);
-
-e_f=e_0;
-omega_f=omega_0;
-RA_f=RA_0;
-
-
-% a_f=a_0*1.1;
-% e_f=e_0*0.5;
-% incl_f=incl_0;
+% a_f=149598023;
+% e_f=0.0167086;
+% incl_f=deg2rad(7.155);
+% omega_f=deg2rad(114.20783);
+% RA_f=deg2rad(-11.26064);
+% theta_f=deg2rad(0);
+% 
+% e_f=e_0;
 % omega_f=omega_0;
 % RA_f=RA_0;
-% theta_f=theta_0;
+
+
+a_f=a_0*1;
+e_f=e_0*1;
+incl_f=incl_0*1;
+omega_f=omega_0*1.1;
+RA_f=RA_0*1;
+theta_f=theta_0*1;
 
 
 % a_f=a_0*0.9;
