@@ -50,12 +50,28 @@ params.assume_ellipsoid=assume_ellipsoid;
 %%%%%%%%%%%%%%%%%%%
 AU=1.496e+8;
 
+% a_0=1.1896*AU;
+% e_0=0.1902;
+% incl_0=deg2rad(5.8837);
+% omega_0=deg2rad(211.43);
+% RA_0=deg2rad(251.62);
+% theta_0=deg2rad(0);
+
+
 a_0=1.1896*AU;
-e_0=0.1902;
-incl_0=deg2rad(5.8837);
-omega_0=deg2rad(211.43);
-RA_0=deg2rad(251.62);
-theta_0=deg2rad(0);
+e_0=0.1;
+incl_0=deg2rad(5);
+omega_0=deg2rad(5);
+RA_0=deg2rad(20);
+theta_0=deg2rad(10);
+
+
+a_f=a_0*1.1;
+e_f=0.1;
+incl_f=deg2rad(4);
+omega_f=deg2rad(0);
+RA_f=deg2rad(25);
+theta_f=theta_0;
 
 % a_0=1.1896*AU/100;
 % e_0=0.1;
@@ -84,12 +100,7 @@ theta_0=deg2rad(0);
 % RA_f=RA_0;
 
 
-a_f=a_0*1;
-e_f=e_0*1;
-incl_f=incl_0*1;
-omega_f=omega_0*1.1;
-RA_f=RA_0*1;
-theta_f=theta_0*1;
+
 
 
 % a_f=a_0*0.9;
@@ -107,11 +118,11 @@ max_days=700;
 
 oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
 oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
-mp_0=oe2mp(oe_0);
-mp_f=oe2mp(oe_f);
+mp_0=oe2mee(oe_0,params.mu);
+mp_f=oe2mee(oe_f,params.mu);
 
-oe_0=mp2oe(mp_0)
-oe_f=mp2oe(mp_f)
+oe_0=mee2oe(mp_0,params.mu)
+oe_f=mee2oe(mp_f,params.mu)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,7 +130,7 @@ oe_f=mp2oe(mp_f)
 eul_0=deg2rad([20 30 40]);
 rotation_period=7.627; %hours
 % spin_speed=(2*pi)/(7.63*3600);
-spin_speed=1e-1;
+spin_speed=1e-1*0;
 spin_vector=[2;1;0.3];
 pqr_0=spin_speed*spin_vector/norm(spin_vector)';
 
