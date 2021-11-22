@@ -121,8 +121,8 @@ oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
 mp_0=oe2mee(oe_0,params.mu);
 mp_f=oe2mee(oe_f,params.mu);
 
-oe_0=mee2oe(mp_0,params.mu)
-oe_f=mee2oe(mp_f,params.mu)
+% oe_0=mee2oe(mp_0,params.mu)
+% oe_f=mee2oe(mp_f,params.mu)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
