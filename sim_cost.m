@@ -58,7 +58,7 @@ simOut=sim(simIn);
 N_t=length(simOut.F_req_B.Time);
 T_vec=simOut.F_req_B.Time;
 
-
+T_end=T_vec(end);
 
 FM=[simOut.F_req_B.Data';simOut.M_req.Data'];
 C=[Force_Vectors;Moment_Vectors];
@@ -94,7 +94,7 @@ int_Fs=trapz(T_vec,Uss,2);
 reach_fac=norm(simOut.R.Data(1:5));
 detumble_fac=simOut.omega.Data;
 
-cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+mark_err/N_t)^5*(1+reach_fac)^2*(1+detumble_fac)^2;
+cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+mark_err/N_t)^5*(1+reach_fac)^2*(1+detumble_fac)^2*T_end*1e-8;
 
 
 
