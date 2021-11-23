@@ -94,7 +94,7 @@ int_Fs=trapz(T_vec,Uss,2);
 reach_fac=norm(simOut.R.Data(1:5));
 detumble_fac=simOut.omega.Data;
 
-cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+mark_err/N_t)*(1+reach_fac)^2*(1+detumble_fac)^2;
+cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+mark_err/N_t)^5*(1+reach_fac)^2*(1+detumble_fac)^2;
 
 
 

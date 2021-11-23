@@ -13,8 +13,8 @@ view(25,45)
 plot3(0,0,0,'ro')
 size=1e7;
 plot_planet(size)
-plot_orbit(oe_0,'k.')
-plot_orbit(oe_f,'r.')
+plot_orbit(oe_0,'k:')
+plot_orbit(oe_f,'r')
 
 
 plot3(XYZ(:,1),XYZ(:,2),XYZ(:,3),'b')

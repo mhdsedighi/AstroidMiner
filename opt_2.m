@@ -24,7 +24,7 @@ rot_Gains_0=[1 1 1];
 
 x0=[azimuths_0 elevations_0 gammas_0 lambdas_0 W_0 rot_Gains_0];
 LB=[zeros(1,N_sat) -90*ones(1,N_sat) -30*ones(1,N_sat) -30*ones(1,N_sat) 0.5*ones(1,5) 0.5*ones(1,3)];
-UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 30*ones(1,N_sat) 30*ones(1,N_sat) 1.5*ones(1,5) 5*ones(1,3)];
+UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 30*ones(1,N_sat) 30*ones(1,N_sat) 1.5*ones(1,5) 1.5*ones(1,3)];
 
 
 cost_handle=@(inputArg)sim_cost(inputArg,N_sat,params);
