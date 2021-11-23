@@ -4,12 +4,12 @@ function cost_array = multi_sim2(inputArg,sim_data)
 
 N_sat=sim_data.N_sat;
 
-assignin('base','params',sim_data.params);
-assignin('base','mee_0',sim_data.mee_0);
-assignin('base','pqr_0',sim_data.pqr_0);
-assignin('base','eul_0',sim_data.eul_0);
-assignin('base','N_sat',sim_data.N_sat);
-assignin('base','max_f',sim_data.max_f);
+% assignin('base','params',sim_data.params);
+% assignin('base','mee_0',sim_data.mee_0);
+% assignin('base','pqr_0',sim_data.pqr_0);
+% assignin('base','eul_0',sim_data.eul_0);
+% assignin('base','N_sat',sim_data.N_sat);
+% assignin('base','max_f',sim_data.max_f);
 
 
 [N_par,~]=size(inputArg);
@@ -133,10 +133,16 @@ parfor i_par=1:N_par
     detumble_fac=simOut(i_par).omega.Data;
 
     cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+mark_err/N_t)*(1+reach_fac)^2*(1+detumble_fac)^2;
-
+    if reach_fac>1
+        cost_array(i_par)=cost_array(i_par)*10;
+    end
 
 
 end
+% 
+% if sim_data.finalrun
+% assignin('base','out',)
+% end
 
 
 
