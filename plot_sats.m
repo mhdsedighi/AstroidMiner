@@ -1,4 +1,4 @@
-close all
+% close all
 figure
 hold on
 axis equal

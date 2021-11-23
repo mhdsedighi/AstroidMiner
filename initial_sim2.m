@@ -55,7 +55,7 @@ e_0=0.1902;
 incl_0=deg2rad(5.8837);
 omega_0=deg2rad(211.43);
 RA_0=deg2rad(251.62);
-theta_0=deg2rad(0);
+theta_0=deg2rad(180);
 
 
 % a_0=1.1896*AU;
@@ -229,6 +229,9 @@ end
 max_F_available=max_F_available*0.7
 max_M_available=max_M_available*0.7
 
+
+W=[1 1 1 1 1];
+rot_Gains=[1 1 1];
 
 
 

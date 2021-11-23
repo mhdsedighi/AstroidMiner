@@ -18,12 +18,13 @@ elevations_0=rand_gen(1,N_sat,-90,90);
 gammas_0=zeros(1,N_sat);
 lambdas_0=zeros(1,N_sat);
 W_0=[1 1 1 1 1];
+rot_Gains_0=[1 1 1];
 
 
 
-x0=[azimuths_0 elevations_0 gammas_0 lambdas_0 W_0];
-LB=[zeros(1,N_sat) -90*ones(1,N_sat) -30*ones(1,N_sat) -30*ones(1,N_sat) 0.5*ones(1,5)];
-UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 30*ones(1,N_sat) 30*ones(1,N_sat) 1.5*ones(1,5)];
+x0=[azimuths_0 elevations_0 gammas_0 lambdas_0 W_0 rot_Gains_0];
+LB=[zeros(1,N_sat) -90*ones(1,N_sat) -30*ones(1,N_sat) -30*ones(1,N_sat) 0.5*ones(1,5) 0.5*ones(1,3)];
+UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 30*ones(1,N_sat) 30*ones(1,N_sat) 1.5*ones(1,5) 5*ones(1,3)];
 
 
 cost_handle=@(inputArg)sim_cost(inputArg,N_sat,params);
@@ -75,9 +76,11 @@ elevations=x_opt(N_sat+1:2*N_sat);
 gammas=x_opt(2*N_sat+1:3*N_sat);
 lambdas=x_opt(3*N_sat+1:4*N_sat);
 W=x_opt(4*N_sat+1:4*N_sat+5);
+rot_Gains=x_opt(4*N_sat+6:4*N_sat+8);
 
 out=sim('model_5_exact.slx');
 
+close all
 plot_sats
 plot_sim
 
