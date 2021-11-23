@@ -3,7 +3,7 @@ XYZ=out.r.Data;
 
 
 
-close all
+% close all
 
 figure
 hold on
