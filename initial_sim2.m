@@ -118,8 +118,8 @@ max_days=700;
 
 oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
 oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
-mp_0=oe2mee(oe_0,params.mu);
-mp_f=oe2mee(oe_f,params.mu);
+mee_0=oe2mee(oe_0,params.mu);
+mee_f=oe2mee(oe_f,params.mu);
 
 % oe_0=mee2oe(mp_0,params.mu)
 % oe_f=mee2oe(mp_f,params.mu)
@@ -160,11 +160,6 @@ Moment_Vectors=Moment_Vectors';
 
 
 
-gain1=1;
-gain2=1;
-gain3=1;
-gain4=1;
-gain5=1;
 
 
 % % % load solve_path
