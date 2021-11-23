@@ -5,6 +5,7 @@ azimuths=inputArg(1:N_sat);
 elevations=inputArg(N_sat+1:2*N_sat);
 gammas=inputArg(2*N_sat+1:3*N_sat);
 lambdas=inputArg(3*N_sat+1:4*N_sat);
+W=inputArg(4*N_sat+1:4*N_sat+5);
 
 
 [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
@@ -45,8 +46,10 @@ Moment_Vectors=Moment_Vectors';
 
 simIn= Simulink.SimulationInput('model_5_exact');
 % simIn.setBlockParameter('asteroid/gain13','Gain',1);
-simOut = sim(simIn);
 
+simIn= simIn.setVariable('W',W);
+
+simOut=sim(simIn);
 
 N_t=length(simOut.F_req_B.Time);
 T_vec=simOut.F_req_B.Time;
