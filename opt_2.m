@@ -34,12 +34,6 @@ options.PlotFcns={@saplotbestf,@saplotbestx };
 options.MaxIter=1e6;
 [x_opt,cost_opt,exitflag,output] = simulannealbnd(cost_handle,x0,LB,UB,options);
 cost_handle(x_opt)
-azimuths=x_opt(1:N_sat);
-elevations=x_opt(N_sat+1:2*N_sat);
-gammas=x_opt(2*N_sat+1:3*N_sat);
-lambdas=x_opt(3*N_sat+1:4*N_sat);
-plot_sats
-plot_sim
 
 
 sim_data.params=params;
@@ -77,21 +71,15 @@ gammas=x_opt(2*N_sat+1:3*N_sat);
 lambdas=x_opt(3*N_sat+1:4*N_sat);
 W=x_opt(4*N_sat+1:4*N_sat+5);
 rot_Gains=x_opt(4*N_sat+6:4*N_sat+8);
+[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
+Force_Vectors=Force_Vectors';
+Moment_Vectors=Moment_Vectors';
 
-out=sim('model_5_exact.slx');
+out=sim('model_5.slx');
 
 close all
 plot_sats
 plot_sim
-
-
-
-
-
-
-
-
-
 
 
 

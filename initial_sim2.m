@@ -1,4 +1,4 @@
-% clc; clear; close all
+clc; clear; close all
 % addpath OptimTraj
 % addpath chebfun
 load('params')
@@ -145,7 +145,7 @@ pqr_0=spin_speed*spin_vector/norm(spin_vector)';
 
 
 %%%%%%
-N_sat=30;
+N_sat=25;
 azimuths=rand_gen(1,N_sat,0,360);
 elevations=rand_gen(1,N_sat,-90,90);
 gammas=zeros(1,N_sat);
