@@ -16,7 +16,7 @@ for i=1:N_sat
     sin_gamma=sind(gammas(i));
     cos_lambda=cosd(lambdas(i));
     sin_lambda=sind(lambdas(i));
-    force_vec=cos_gamma*UP_vec+sin_gamma*cos_lambda*North_vec+sin_lambda*sin_lambda*Right_vec;
+    force_vec=cos_gamma*UP_vec+sin_gamma*cos_lambda*North_vec-sin_lambda*sin_lambda*Right_vec;
     
     Force_Vectors(i,:)=force_vec;
     Moment_Vectors(i,:)=cross(sat_pos,force_vec);
