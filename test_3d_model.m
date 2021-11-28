@@ -22,13 +22,13 @@ z=z-zc;
 V=[x y z];
 F=obj.f.v;
 
-azimuth=40;
-elevation=80;
+lambda=40;
+phi=80;
 
-sin_a=sind(azimuth);
-cos_a=cosd(azimuth);
-sin_e=sind(elevation);
-cos_e=cosd(elevation);
+sin_a=sind(lambda);
+cos_a=cosd(lambda);
+sin_e=sind(phi);
+cos_e=cosd(phi);
 
 xd=cos_e*cos_a;
 yd=cos_e*sin_a;

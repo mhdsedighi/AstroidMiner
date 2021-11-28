@@ -26,10 +26,10 @@ clc
 
 N_sat=40;
 
-azimuths=rand_gen(1,N_sat,0,360);
-elevations=rand_gen(1,N_sat,-90,90);
-gammas=rand_gen(1,N_sat,0,0);
-lambdas=rand_gen(1,N_sat,0,0);
+lambdas=rand_gen(1,N_sat,0,360);
+phis=rand_gen(1,N_sat,-90,90);
+alphas=rand_gen(1,N_sat,0,0);
+betas=rand_gen(1,N_sat,0,0);
 
 
 
@@ -42,7 +42,7 @@ b=[-79584462.7435692;65048412.8999741;92866167.7808756;0.0729940089421569;0.0736
 b=[-7.7435692;6.8941;7.7808756;0.0729940089421569;0.0736050284089622;0.0706280985260851].*rand_gen(6,1,0.8,1.2);
 
 
-[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
+[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
 c_mat=control_mat(Force_Vectors,Moment_Vectors,quat,N_sat);
 
 C=c_mat;

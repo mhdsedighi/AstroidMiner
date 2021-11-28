@@ -1,7 +1,7 @@
 function cost=positioning_cost(azi_ele,N_cube,a,b,c,F_cube)
 
-azimuths=azi_ele(1:N_cube);
-elevations=azi_ele(N_cube+1:end);
+lambdas=azi_ele(1:N_cube);
+phis=azi_ele(N_cube+1:end);
 
 F=[0 0 0];
 M=[0 0 0];
@@ -10,7 +10,7 @@ M_array=zeros(N_cube,3);
 
 for i=1:N_cube
     
-    [x,y,z,R,normal_vector]=ellip_deg(a,b,c,azimuths(i),elevations(i));
+    [x,y,z,R,normal_vector]=ellip_deg(a,b,c,lambdas(i),phis(i));
     
     F=F+normal_vector*F_cube;
     M=M+cross([x y z],F);

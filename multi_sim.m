@@ -19,14 +19,14 @@ end
 
 for i_par=1:N_par
     
-    azimuths=inputArg(i_par,1:N_sat);
-    elevations=inputArg(i_par,N_sat+1:2*N_sat);
-    gammas=inputArg(i_par,2*N_sat+1:3*N_sat);
-    lambdas=inputArg(i_par,3*N_sat+1:4*N_sat);
+    lambdas=inputArg(i_par,1:N_sat);
+    phis=inputArg(i_par,N_sat+1:2*N_sat);
+    alphas=inputArg(i_par,2*N_sat+1:3*N_sat);
+    betas=inputArg(i_par,3*N_sat+1:4*N_sat);
     
     %%%%%%%%%%%%%%%%%%%%%%%%
     
-    [Force_Vectors,Moment_Vectors]=rigid_positioning(sim_data.params,N_sat,azimuths,elevations,gammas,lambdas);
+    [Force_Vectors,Moment_Vectors]=rigid_positioning(sim_data.params,N_sat,lambdas,phis,alphas,betas);
     Force_Vectors=Force_Vectors';
     Moment_Vectors=Moment_Vectors';
     

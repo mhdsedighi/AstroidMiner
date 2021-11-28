@@ -1,9 +1,9 @@
 clc
 
-azimuths_0=rand_gen(1,N_sat,0,360);
-elevations_0=rand_gen(1,N_sat,-90,90);
-gammas_0=zeros(1,N_sat);
-lambdas_0=zeros(1,N_sat);
+lambdas_0=rand_gen(1,N_sat,0,360);
+phis_0=rand_gen(1,N_sat,-90,90);
+alphas_0=zeros(1,N_sat);
+betas_0=zeros(1,N_sat);
 
 
 sim_data.params=params;
@@ -13,7 +13,7 @@ sim_data.eul_0=eul_0;
 sim_data.N_sat=N_sat;
 sim_data.max_f=max_f;
 
-x0=[azimuths_0 elevations_0 gammas_0 lambdas_0];
+x0=[lambdas_0 phis_0 alphas_0 betas_0];
 LB=[zeros(1,N_sat) -90*ones(1,N_sat) -30*ones(1,N_sat) -30*ones(1,N_sat)];
 UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 30*ones(1,N_sat) 30*ones(1,N_sat)];
 
@@ -54,10 +54,10 @@ nvars=4*N_sat;
 cost_handle(x_opt)
 
 
-azimuths=x_opt(1:N_sat);
-elevations=x_opt(N_sat+1:2*N_sat);
-gammas=x_opt(2*N_sat+1:3*N_sat);
-lambdas=x_opt(3*N_sat+1:4*N_sat);
+lambdas=x_opt(1:N_sat);
+phis=x_opt(N_sat+1:2*N_sat);
+alphas=x_opt(2*N_sat+1:3*N_sat);
+betas=x_opt(3*N_sat+1:4*N_sat);
 
 plot_sats
 

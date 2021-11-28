@@ -1,4 +1,4 @@
-function [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas)
+function [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas)
 
 
 Force_Vectors=zeros(N_sat,3);
@@ -7,16 +7,16 @@ Moment_Vectors=zeros(N_sat,3);
 for i=1:N_sat
     
     if params.assume_ellipsoid  
-        [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape(params.a,params.b,params.c,azimuths(i),elevations(i));
+        [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape(params.a,params.b,params.c,lambdas(i),phis(i));
     else
-        [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(params.shape.V,params.shape.F,azimuths(i),elevations(i));
+        [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(params.shape.V,params.shape.F,lambdas(i),phis(i));
     end
     
-    cos_gamma=cosd(gammas(i));
-    sin_gamma=sind(gammas(i));
-    cos_lambda=cosd(lambdas(i));
-    sin_lambda=sind(lambdas(i));
-    force_vec=cos_gamma*UP_vec+sin_gamma*cos_lambda*North_vec-sin_lambda*sin_lambda*Right_vec;
+    cos_alpha=cosd(alphas(i));
+    sin_alpha=sind(alphas(i));
+    cos_beta=cosd(betas(i));
+    sin_beta=sind(betas(i));
+    force_vec=cos_alpha*UP_vec+sin_alpha*cos_beta*North_vec-sin_beta*sin_beta*Right_vec;
     
     Force_Vectors(i,:)=force_vec;
     Moment_Vectors(i,:)=cross(sat_pos,force_vec);

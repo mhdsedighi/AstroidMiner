@@ -41,13 +41,13 @@ force_vec=zeros(N_sat,3);
 for i=1:N_sat
     
     if assume_ellipsoid
-        [sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape(params.a,params.b,params.c,azimuths(i),elevations(i));     
+        [sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape(params.a,params.b,params.c,lambdas(i),phis(i));     
     else
-        [sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape_3d(shape.V,shape.F,azimuths(i),elevations(i));
+        [sat_pos(i,:),UP_vec(i,:),North_vec(i,:),Right_vec(i,:)]=ellip_shape_3d(shape.V,shape.F,lambdas(i),phis(i));
     end
     
     
-    force_vec(i,:)=cosd(gammas(i))*UP_vec(i,:)+sind(gammas(i))*cosd(lambdas(i))*North_vec(i,:)-sind(gammas(i))*sind(lambdas(i))*Right_vec(i,:);
+    force_vec(i,:)=cosd(alphas(i))*UP_vec(i,:)+sind(alphas(i))*cosd(betas(i))*North_vec(i,:)-sind(alphas(i))*sind(betas(i))*Right_vec(i,:);
     
 end
 

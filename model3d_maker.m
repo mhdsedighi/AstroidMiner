@@ -65,10 +65,10 @@ shape.F=F;
 % for i=1:m
 %     for j=1:n
 %         
-%         azimuth=AZI(i,j);
-%         elevation=ELE(i,j);
+%         lambda=AZI(i,j);
+%         phi=ELE(i,j);
 %         
-%         [pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(V,F,azimuth,elevation);
+%         [pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(V,F,lambda,phi);
 %         %
 %         %         pos_x
 %         %         pos_y

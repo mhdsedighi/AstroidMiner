@@ -6,10 +6,10 @@ clc
 N_sat=40;
 % C=rand_gen(6,N_sat,-10,10);
 % % % 
-azimuths=rand_gen(1,N_sat,0,360);
-elevations=rand_gen(1,N_sat,-90,90);
-gammas=rand_gen(1,N_sat,0,0);
-lambdas=rand_gen(1,N_sat,0,0);
+lambdas=rand_gen(1,N_sat,0,360);
+phis=rand_gen(1,N_sat,-90,90);
+alphas=rand_gen(1,N_sat,0,0);
+betas=rand_gen(1,N_sat,0,0);
 
 % params.a=435*2;
 % params.b=300*2;
@@ -17,17 +17,17 @@ lambdas=rand_gen(1,N_sat,0,0);
 
 
 % N_sat=N_sat*2;
-% azimuths=[azimuths azimuths];
-% elevations=[elevations -elevations];
-% gammas=[gammas gammas];
 % lambdas=[lambdas lambdas];
+% phis=[phis -phis];
+% alphas=[alphas alphas];
+% betas=[betas betas];
 
 
 % N_sat=8;
-% azimuths=[-45 45 180+45   180-45   100         90       30      0 30];
-% elevations=[0 0    0         0     90+30      90-30    -90+30 -90-30 -90];
-% gammas=azimuths*0;
-% lambdas=gammas;
+% lambdas=[-45 45 180+45   180-45   100         90       30      0 30];
+% phis=[0 0    0         0     90+30      90-30    -90+30 -90-30 -90];
+% alphas=lambdas*0;
+% betas=alphas;
 
 quat=eul2quat(deg2rad([rand_gen(1,1,-90,90) rand_gen(1,1,-90,90) rand_gen(1,1,0,360)]));
 % b=rand_gen(6,1,-100,100);
@@ -35,7 +35,7 @@ quat=eul2quat(deg2rad([rand_gen(1,1,-90,90) rand_gen(1,1,-90,90) rand_gen(1,1,0,
 b=[-79584462.7435692;65048412.8999741;92866167.7808756;0.0729940089421569;0.0736050284089622;0.0706280985260851].*rand_gen(6,1,0.8,1.2);
 
 
-[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
+[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
 c_mat=control_mat(Force_Vectors,Moment_Vectors,quat,N_sat);
 
 C=c_mat;
@@ -50,7 +50,7 @@ C=c_mat;
 % 
 % lb=zeros(N_sat,1);
 % ub=ones(N_sat,1)*inf;
-% [x,resnorm,residual,exitflag,output,lambda] = lsqlin(C,d,A,b,[],[],lb,ub);
+% [x,resnorm,residual,exitflag,output,beta] = lsqlin(C,d,A,b,[],[],lb,ub);
 
 
 % C=C(1:3,:);
@@ -79,7 +79,7 @@ C=c_mat;
 
 % options = optimset('TolX',1e-20);
 % options.MaxIter=1e5;
-% [x,resnorm,residual,exitflag,output,lambda] = lsqnonneg(C,b,options);
+% [x,resnorm,residual,exitflag,output,beta] = lsqnonneg(C,b,options);
 
 % % [x,flag,relres,iter,resvec,lsvec] = lsqr(C,b);
 % % lb=zeros(N_sat,1);

@@ -60,10 +60,10 @@ view(25,45)
 res=6;
 vec_length=3;
 points=[];
-for azimuth=0:res:360-res
-    for elevation=-90:res:90-res
+for lambda=0:res:360-res
+    for phi=-90:res:90-res
         
-[x,y,z,R,normal_vector]=ellip_deg(a,b,c,azimuth,elevation);
+[x,y,z,R,normal_vector]=ellip_deg(a,b,c,lambda,phi);
         points=[points; x y z];
         
         p1=[x y z];

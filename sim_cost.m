@@ -1,15 +1,15 @@
 function cost = sim_cost(inputArg,N_sat,params)
 
 
-azimuths=inputArg(1:N_sat);
-elevations=inputArg(N_sat+1:2*N_sat);
-gammas=inputArg(2*N_sat+1:3*N_sat);
-lambdas=inputArg(3*N_sat+1:4*N_sat);
+lambdas=inputArg(1:N_sat);
+phis=inputArg(N_sat+1:2*N_sat);
+alphas=inputArg(2*N_sat+1:3*N_sat);
+betas=inputArg(3*N_sat+1:4*N_sat);
 W=inputArg(4*N_sat+1:4*N_sat+5);
 rot_Gains=inputArg(4*N_sat+6:4*N_sat+8);
 
 
-[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
+[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
 Force_Vectors=Force_Vectors';
 Moment_Vectors=Moment_Vectors';
 

@@ -26,11 +26,11 @@ parfor idx=1:10
     assignin('base','max_f',max_f);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    azimuths=rand_gen(1,N_sat,0,360);
-    elevations=rand_gen(1,N_sat,-90,90);
-    gammas=zeros(1,N_sat);
-    lambdas=zeros(1,N_sat);
-    [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
+    lambdas=rand_gen(1,N_sat,0,360);
+    phis=rand_gen(1,N_sat,-90,90);
+    alphas=zeros(1,N_sat);
+    betas=zeros(1,N_sat);
+    [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
     Force_Vectors=Force_Vectors';
     Moment_Vectors=Moment_Vectors';
     

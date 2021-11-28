@@ -1,13 +1,13 @@
-function [x,y,z,UP_vec,North_vec,Right_vec]=ellip_deg(a,b,c,azimuth,elevation)
+function [x,y,z,UP_vec,North_vec,Right_vec]=ellip_deg(a,b,c,lambda,phi)
 
 %%% https://en.wikipedia.org/wiki/Ellipsoid
 %%%https://www.scielo.br/scielo.php?script=sci_arttext&pid=S1982-21702014000400970
 
 
-sin_a=sind(azimuth);
-cos_a=cosd(azimuth);
-sin_e=sind(elevation);
-cos_e=cosd(elevation);
+sin_a=sind(lambda);
+cos_a=cosd(lambda);
+sin_e=sind(phi);
+cos_e=cosd(phi);
 
 x=a*cos_e*cos_a;
 y=b*cos_e*sin_a;

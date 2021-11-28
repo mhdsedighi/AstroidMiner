@@ -19,14 +19,14 @@ F_cube=1;
 lb=[0*ones(1,N_sat) -90*ones(1,N_sat)];
 ub=[360*ones(1,N_sat) 90*ones(1,N_sat)]; 
 
-azimuths=rand(1,N_sat)*360;
-elevations=rand(1,N_sat)*180-90;
+lambdas=rand(1,N_sat)*360;
+phis=rand(1,N_sat)*180-90;
 
-azi_ele=[azimuths elevations];
+azi_ele=[lambdas phis];
 
 % for i=1:N_cube
 % 
-% [x,y,z,R,normal_vector]=ellip_deg(a,b,c,azimuths(i),elevations(i));
+% [x,y,z,R,normal_vector]=ellip_deg(a,b,c,lambdas(i),phis(i));
 % plot3(x,y,z,'b.')
 % plot_vector(x,y,z,normal_vector)
 % 
@@ -48,17 +48,17 @@ x0=rand(1,2*N_sat).*(ub-lb)+lb;
 % simulannealbnd(@(azi_ele)positioning_cost(azi_ele,N_sat,a,b,c,F_cube),x0,lb,ub,options);
 
 
-azimuths=[-45 45 180+45   180-45   90         90       0      0 30]
-elevations=[0 0    0         0     90+30      90-30    -90+30 -90-30 -90]
+lambdas=[-45 45 180+45   180-45   90         90       0      0 30]
+phis=[0 0    0         0     90+30      90-30    -90+30 -90-30 -90]
 
-% azimuths=[0]
-% elevations=[45]
-
-
+% lambdas=[0]
+% phis=[45]
 
 
 
-N_sat=length(azimuths);
+
+
+N_sat=length(lambdas);
 figure
 hold on
 axis equal
@@ -72,17 +72,17 @@ Moment_Vectors=[];
 plot_vector(0,0,0,[1 0 0])
 
 lamda=30;
-gamma=50;
+alpha=50;
 
 for i=1:N_sat
     
-    [x,y,z,UP_vec,North_vec,Right_vec]=ellip_deg(a,b,c,azimuths(i),elevations(i));
+    [x,y,z,UP_vec,North_vec,Right_vec]=ellip_deg(a,b,c,lambdas(i),phis(i));
     plot3(x,y,z,'b.')
     plot_vector(x,y,z,UP_vec*2)
     plot_vector(x,y,z,North_vec*2)
     
     
-    force_vec=cosd(gamma)*UP_vec+sind(gamma)*cosd(lamda)*North_vec+sind(gamma)*sind(lamda)*Right_vec;
+    force_vec=cosd(alpha)*UP_vec+sind(alpha)*cosd(lamda)*North_vec+sind(alpha)*sind(lamda)*Right_vec;
     plot_vector(x,y,z,Right_vec*2)
     plot_vector(x,y,z,force_vec*3)
     

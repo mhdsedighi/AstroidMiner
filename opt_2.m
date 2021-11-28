@@ -4,25 +4,25 @@ warning('off','all')
 params.max_f=max_f;
 
 N_sat=25;
-% azimuths=rand_gen(1,N_sat,0,360);
-% elevations=rand_gen(1,N_sat,-90,90);
-% gammas=zeros(1,N_sat);
-% lambdas=zeros(1,N_sat);
-% [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
+% lambdas=rand_gen(1,N_sat,0,360);
+% phis=rand_gen(1,N_sat,-90,90);
+% alphas=zeros(1,N_sat);
+% betas=zeros(1,N_sat);
+% [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
 % Force_Vectors=Force_Vectors';
 % Moment_Vectors=Moment_Vectors';
 
 
-azimuths_0=rand_gen(1,N_sat,0,360);
-elevations_0=rand_gen(1,N_sat,-90,90);
-gammas_0=zeros(1,N_sat);
-lambdas_0=zeros(1,N_sat);
+lambdas_0=rand_gen(1,N_sat,0,360);
+phis_0=rand_gen(1,N_sat,-90,90);
+alphas_0=zeros(1,N_sat);
+betas_0=zeros(1,N_sat);
 W_0=[1 1 1 1 1];
 rot_Gains_0=[1 1 1];
 
 
 
-x0=[azimuths_0 elevations_0 gammas_0 lambdas_0 W_0 rot_Gains_0];
+x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0];
 LB=[zeros(1,N_sat) -90*ones(1,N_sat) -30*ones(1,N_sat) -30*ones(1,N_sat) 0.5*ones(1,5) 0.5*ones(1,3)];
 UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 30*ones(1,N_sat) 30*ones(1,N_sat) 1.5*ones(1,5) 1.5*ones(1,3)];
 
@@ -65,13 +65,13 @@ sim_data.max_f=max_f;
 
 
 
-azimuths=x_opt(1:N_sat);
-elevations=x_opt(N_sat+1:2*N_sat);
-gammas=x_opt(2*N_sat+1:3*N_sat);
-lambdas=x_opt(3*N_sat+1:4*N_sat);
+lambdas=x_opt(1:N_sat);
+phis=x_opt(N_sat+1:2*N_sat);
+alphas=x_opt(2*N_sat+1:3*N_sat);
+betas=x_opt(3*N_sat+1:4*N_sat);
 W=x_opt(4*N_sat+1:4*N_sat+5);
 rot_Gains=x_opt(4*N_sat+6:4*N_sat+8);
-[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
+[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
 Force_Vectors=Force_Vectors';
 Moment_Vectors=Moment_Vectors';
 

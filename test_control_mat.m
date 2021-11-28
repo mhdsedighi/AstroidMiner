@@ -22,23 +22,23 @@ c=6;
 N_sat=20;
 
 
-% azimuths=[-45 45 180+45   180-45   90         90       0      0]
-% elevations=[0 0    0         0     90+30      90-30    -90+30 -90-30]
+% lambdas=[-45 45 180+45   180-45   90         90       0      0]
+% phis=[0 0    0         0     90+30      90-30    -90+30 -90-30]
 % pitchs=zeros(1,N_sat);
 % yaws=zeros(1,N_sat);
 
-azimuths=rand_gen(1,N_sat,0,360);
-elevations=rand_gen(1,N_sat,-90,90);
-% pitchs=zeros(1,N_sat);
-% yaws=zeros(1,N_sat);
-gammas=rand_gen(1,N_sat,0,30);
 lambdas=rand_gen(1,N_sat,0,360);
+phis=rand_gen(1,N_sat,-90,90);
+% pitchs=zeros(1,N_sat);
+% yaws=zeros(1,N_sat);
+alphas=rand_gen(1,N_sat,0,30);
+betas=rand_gen(1,N_sat,0,360);
 
 
 
 
 
-params=rigid_positioning(N_sat,a,b,c,azimuths,elevations,gammas,lambdas);
+params=rigid_positioning(N_sat,a,b,c,lambdas,phis,alphas,betas);
 
 
 

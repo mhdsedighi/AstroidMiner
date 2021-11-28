@@ -137,24 +137,24 @@ pqr_0=spin_speed*spin_vector/norm(spin_vector)';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % N_sat=8;
-% azimuths=[-45 45 180+45   180-45   90         90       0      0 30];
-% elevations=[0 0    0         0     90+30      90-30    -90+30 -90-30 -90];
-% gammas=zeros(1,N_sat);
-% lambdas=zeros(1,N_sat);
+% lambdas=[-45 45 180+45   180-45   90         90       0      0 30];
+% phis=[0 0    0         0     90+30      90-30    -90+30 -90-30 -90];
+% alphas=zeros(1,N_sat);
+% betas=zeros(1,N_sat);
 
 
 
 %%%%%%
 N_sat=25;
-azimuths=rand_gen(1,N_sat,0,360);
-elevations=rand_gen(1,N_sat,-90,90);
-gammas=zeros(1,N_sat);
-lambdas=zeros(1,N_sat);
+lambdas=rand_gen(1,N_sat,0,360);
+phis=rand_gen(1,N_sat,-90,90);
+alphas=zeros(1,N_sat);
+betas=zeros(1,N_sat);
 
 
 %%%%%%
 
-[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,azimuths,elevations,gammas,lambdas);
+[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
 Force_Vectors=Force_Vectors';
 Moment_Vectors=Moment_Vectors';
 

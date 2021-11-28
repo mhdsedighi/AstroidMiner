@@ -1,11 +1,11 @@
-function [pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(V,F,azimuth,elevation)
+function [pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(V,F,lambda,phi)
 
 
 
-sin_a=sind(azimuth);
-cos_a=cosd(azimuth);
-sin_e=sind(elevation);
-cos_e=cosd(elevation);
+sin_a=sind(lambda);
+cos_a=cosd(lambda);
+sin_e=sind(phi);
+cos_e=cosd(phi);
 
 xd=1*cos_e*cos_a;
 yd=1*cos_e*sin_a;
