@@ -47,7 +47,7 @@ for i=1:N_sat
     end
     
     
-    force_vec(i,:)=cosd(alphas(i))*UP_vec(i,:)+sind(alphas(i))*cosd(betas(i))*North_vec(i,:)-sind(alphas(i))*sind(betas(i))*Right_vec(i,:);
+    force_vec(i,:)=cosd(alphas(i))*UP_vec(i,:)+sind(alphas(i))*cosd(betas(i))*North_vec(i,:)+sind(alphas(i))*sind(betas(i))*Right_vec(i,:);
     
 end
 
