@@ -70,16 +70,16 @@ sin_beta=sind(beta);
 
 
 [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(params.shape.V,params.shape.F,lambda,phi);
-force_vec=cos_alpha*UP_vec+sin_alpha*cos_beta*North_vec+sin_beta*sin_beta*Right_vec;
+force_vec=cos_alpha*UP_vec+sin_alpha*cos_beta*North_vec+sin_alpha*sin_beta*Right_vec;
 
 plot3(0,0,0,'r.')
 plot3(sat_pos(1),sat_pos(2),sat_pos(3),'r.')
 
 p=[0 0 0];
-d=sqrt(norm(sat_pos))/2;
-plot_line(p,[1 0 0],d,'k','$x$',14)
-plot_line(p,[0 1 0],d,'k','$y$',14)
-plot_line(p,[0 0 1],d,'k','$z$',14)
+d=sqrt(norm(sat_pos))/1.5;
+plot_line(p,[1 0 0],d,'k','$x_b$',14)
+plot_line(p,[0 1 0],d,'k','$y_b$',14)
+plot_line(p,[0 0 1],d,'k','$z_b$',14)
 plot_line(p,sat_pos,1,'r','$ $',14)
 v_par=dot(sat_pos,[0 0 1])*[0 0 1];
 v_per=sat_pos-v_par;
@@ -102,7 +102,7 @@ v_per=force_vec-v_par;
 plot_line(sat_pos,v_per,2,'k:','$ $',14)
 
 plot_arc(sat_pos,North_vec,v_per,0.3,'$\beta$')
-plot_arc(sat_pos,v_per,force_vec,1,'$\alpha$')
+plot_arc(sat_pos,UP_vec,force_vec,0.6,'$\alpha$')
 
 
 plot_plane(sat_pos,UP_vec,1,'b',0.4)

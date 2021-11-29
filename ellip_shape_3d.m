@@ -7,9 +7,9 @@ cos_a=cosd(lambda);
 sin_e=sind(phi);
 cos_e=cosd(phi);
 
-xd=1*cos_e*cos_a;
-yd=1*cos_e*sin_a;
-zd=1*sin_e;
+xd=cos_e*cos_a;
+yd=cos_e*sin_a;
+zd=sin_e;
 
 
 dir   = [xd yd zd];
