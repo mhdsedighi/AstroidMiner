@@ -2,7 +2,7 @@ clc; clear; close all
 % addpath OptimTraj
 % addpath chebfun
 load('params')
-load('ref')
+% load('ref')
 
 
 assume_ellipsoid=0;   %%%% 0 or 1
@@ -145,6 +145,7 @@ pqr_0=spin_speed*spin_vector/norm(spin_vector)';
 
 
 %%%%%%
+max_f=1000;
 N_sat=25;
 lambdas=rand_gen(1,N_sat,0,360);
 phis=rand_gen(1,N_sat,-90,90);
@@ -199,7 +200,7 @@ Moment_Vectors=Moment_Vectors';
 % set_param('test_pid7', 'MinimalZcImpactIntegration', 'on')
 
 
-max_f=10;
+
 Thrust_max=max_f/params.mass;
 
 max_F_available=[0 0;0 0;0 0];

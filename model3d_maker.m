@@ -1,13 +1,18 @@
 % clear
 % close all
+clc
 
+% length_real=9*0.2617;
 
-length_real=9;
+% length_real=5.4938;
+
+length_real=10;
 
 
 addpath('geom3d/geom3d')
 addpath('geom3d/meshes3d')
 addpath('3dmodels')
+addpath('polyhedron')
 
 obj = readObj('10464_Asteroid_v1_Iterations-2.obj');
 
@@ -17,28 +22,35 @@ y=obj.v(:,2);
 z=obj.v(:,3);
 Np=length(x);
 
-% xc=(max(x)+min(x))/2;
-% yc=(max(y)+min(y))/2;
-zc=(max(z)+min(z))/2;
 
-[~,inx_pole]=max(z);
-xc=x(inx_pole);
-yc=y(inx_pole);
+F=obj.f.v;
 
-x=x-xc;
-y=y-yc;
-z=z-zc;
+
+
+% % % % xc=(max(x)+min(x))/2;
+% % % % yc=(max(y)+min(y))/2;
+% % % zc=(max(z)+min(z))/2;
+% % % 
+% % % [~,inx_pole]=max(z);
+% % % xc=x(inx_pole);
+% % % yc=y(inx_pole);
+
+[~,rc,~,~]=polhedrn(x,y,z,F);
+
+
+x=x-rc(1);
+y=y-rc(2);
+z=z-rc(3);
 
 scale=length_real/(max(x)-min(x));
+
 x=x*scale;
 y=y*scale;
 z=z*scale;
 
-V=[x y z];
-F=obj.f.v;
 
-shape.V=V;
-shape.F=F;
+
+
 
 
 
@@ -106,10 +118,15 @@ shape.F=F;
 % Vq = interp2(AZI,ELE,pos_x,0,0)
 
 
+[v,rc,vrr,irr]=polhedrn(x,y,z,F);
 
+V=[x y z];
+shape.V=V;
+shape.F=F;
+shape.volume=v;
+shape.MomentTensor=irr;
 
-
-
+% 169581/shape.volume*rho
 
 
 save shape shape

@@ -30,7 +30,7 @@ clear
 % params.c=0.4*params.a;
 
 
-
+load shape
 
 
 
@@ -45,9 +45,14 @@ params.a=4.5;
 params.b=3.45;
 params.c=1.5;
 
-params.mass=169581; %kg
+% % % params.mass=169581; %kg
 % params.R=435; %meters 
 
+density=2000;
+density=1380;
+params.mass=shape.volume*density;
+
+% rho=1.7385e+03;
 
 Ixx=480e3;
 Iyy=763116;
@@ -56,7 +61,10 @@ Ixy=0;
 Ixz=0;
 Iyz=0;
 
-params.Inertia =[Ixx -Ixy -Ixz;-Ixy Iyy -Iyz;-Ixz -Iyz Izz];
+% params.Inertia =[Ixx -Ixy -Ixz;-Ixy Iyy -Iyz;-Ixz -Iyz Izz];
+
+params.Inertia=params.mass*shape.MomentTensor;
+
 params.inv_Inertia=inv(params.Inertia);
 
 
