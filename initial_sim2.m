@@ -128,9 +128,9 @@ mee_f=oe2mee(oe_f,params.mu);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 eul_0=deg2rad([20 30 40]);
-% rotation_period=7.627; %hours
-% spin_speed=(2*pi)/(7.63*3600);
-spin_speed=1e-1;
+rotation_period=7.627; %hours
+spin_speed=(2*pi)/(7.63*3600);
+% spin_speed=1e-1;
 spin_vector=[2;1;0.3];
 pqr_0=spin_speed*spin_vector/norm(spin_vector)';
 
@@ -145,7 +145,7 @@ pqr_0=spin_speed*spin_vector/norm(spin_vector)';
 
 
 %%%%%%
-max_f=1000;
+max_f=10;
 N_sat=25;
 lambdas=rand_gen(1,N_sat,0,360);
 phis=rand_gen(1,N_sat,-90,90);
