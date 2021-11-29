@@ -6,7 +6,7 @@ clc
 
 % length_real=5.4938;
 
-length_real=10;
+length_real=10*0.997305;
 
 
 addpath('geom3d/geom3d')
@@ -127,6 +127,6 @@ shape.volume=v;
 shape.MomentTensor=irr;
 
 % 169581/shape.volume*rho
-
+shape.volume*1380
 
 save shape shape
