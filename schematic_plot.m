@@ -34,14 +34,14 @@ for i=1:n
 end
 
 astplt=drawMesh(shape.V, shape.F);
-astplt.FaceAlpha=0.06;
+astplt.FaceAlpha=0.3;
 astplt.EdgeAlpha=0.2;
 astplt.FaceColor=[0.3020 0.1529 0.0235];
 astplt.EdgeColor=[0.3020 0.1529 0];
-% lighting flat
-% material metal
-material dull
-camlight
+lighting flat
+material metal
+% material dull
+% camlight
 
 
 
@@ -58,9 +58,9 @@ view(30,40);
 % plot3(x0+[0, x_ref, nan, 0, 0, nan, 0, 0], y0+[0, 0, nan, 0, y_ref, nan, 0, 0], z0+[0, 0, nan, 0, 0, nan, 0, z_ref],'k' )
 % text([x0+.85, x0, x0], [y0, y0+.8, y0], [z0, z0, z0+.85], ['$x$';'$y$';'$z$'],'FontSize',14, 'Interpreter','latex');
 
-lambda=10;
+lambda=30;
 phi=40;
-alpha=20;
+alpha=25;
 beta=40;
 
 cos_alpha=cosd(alpha);
@@ -72,40 +72,47 @@ sin_beta=sind(beta);
 [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(params.shape.V,params.shape.F,lambda,phi);
 force_vec=cos_alpha*UP_vec+sin_alpha*cos_beta*North_vec+sin_alpha*sin_beta*Right_vec;
 
+force_vec=force_vec*0.5;
+
 plot3(0,0,0,'r.')
 plot3(sat_pos(1),sat_pos(2),sat_pos(3),'r.')
 
 p=[0 0 0];
 d=sqrt(norm(sat_pos))/1.5;
-plot_line(p,[1 0 0],d,'k','$x_b$',14)
-plot_line(p,[0 1 0],d,'k','$y_b$',14)
-plot_line(p,[0 0 1],d,'k','$z_b$',14)
-plot_line(p,sat_pos,1,'r','$ $',14)
+thickness=1;
+plot_line(p,[1 0 0],d,'k',thickness,'$x_b$',14)
+plot_line(p,[0 1 0],d,'k',thickness,'$y_b$',14)
+plot_line(p,[0 0 1],d,'k',thickness,'$z_b$',14)
+plot_line(p,sat_pos,1,'r',thickness,'$ $',14)
+plot_line(sat_pos,sat_pos*0.5,1,'r:',thickness,'$ r $',14)
+
 v_par=dot(sat_pos,[0 0 1])*[0 0 1];
 v_per=sat_pos-v_par;
-plot_line(p,v_per,0.5,'k:','$ $',14);
+plot_line(p,v_per,0.5,'k:',thickness,'$ $',14);
 plot_arc(p,v_per,sat_pos,0.3,'$\phi$')
 plot_arc(p,[1 0 0],v_per,0.6,'$\lambda$')
 
 
-plot_line(sat_pos,UP_vec,d,'b','$n$',14)
-plot_line(sat_pos,Right_vec,d,'k','$East$',7)
-plot_line(sat_pos,North_vec,d,'k','$North$',7)
+plot_line(sat_pos,UP_vec,d,'b',thickness,'$n$',14)
+plot_line(sat_pos,Right_vec,d,'b',thickness,'$East$',7)
+plot_line(sat_pos,North_vec,d,'b',thickness,'$North$',7)
 
-plot_vec(sat_pos,force_vec,2,'$F$')
+plot_vec(sat_pos,force_vec,3,3,'$F$')
 
 F=sat_pos+force_vec;
 
 v_par=dot(force_vec,UP_vec)*UP_vec;
 v_per=force_vec-v_par;
 
-plot_line(sat_pos,v_per,2,'k:','$ $',14)
+plot_line(sat_pos,v_per,6,'k:',thickness*2,'$ $',14)
 
 plot_arc(sat_pos,North_vec,v_per,0.3,'$\beta$')
 plot_arc(sat_pos,UP_vec,force_vec,0.6,'$\alpha$')
 
 
-plot_plane(sat_pos,UP_vec,1,'b',0.4)
+% plot_plane(sat_pos,UP_vec,1,'b',0.4)
+
+plot_plane_2vec(sat_pos,Right_vec,North_vec,1,'b',0.4)
 
 
 sin_a=sind(lambda);
@@ -117,7 +124,7 @@ yd=1*cos_e*sin_a;
 zd=1*sin_e;
 
 dir   = [xd yd zd];
-plot_plane(sat_pos,dir,0.5,'r',0.4)
+% plot_plane(sat_pos,dir,0.5,'r',0.4)
 
 
 
@@ -208,24 +215,26 @@ end
 end
 
 
-function plot_line(p,dir,d,style,name,font_size)
+function plot_line(p,dir,d,style,thickness,name,font_size)
 
 p2=p+d*dir;
 XYZ=[p;p2];
-plot3(XYZ(:,1),XYZ(:,2),XYZ(:,3),style);
+plt=plot3(XYZ(:,1),XYZ(:,2),XYZ(:,3),style);
+plt.LineWidth=thickness,
 
 p2=p+1.1*d*dir;
 text(p2(1),p2(2),p2(3),name,'FontSize',font_size, 'Interpreter','latex')
 
 end
 
-function plot_vec(p,dir,d,name)
+function plot_vec(p,dir,d,thickness,name)
 
 p2=p+d*dir;
 % XYZ=[p;p2];
 plt=quiver3(p(1),p(2),p(3),d*dir(1),d*dir(2),d*dir(3));
 
-% plt.LineWidth=1.5;
+plt.LineWidth=thickness;
+plt.MaxHeadSize=1
 % 
 % p2=p+1.1*d*dir;
 text(p2(1),p2(2),p2(3),name,'FontSize',14, 'Interpreter','latex')
@@ -274,10 +283,22 @@ end
 function plot_plane(p0,normal_vec,plane_size,color,face_alpha)
 
 w = null(normal_vec); % Find two orthonormal vectors which are orthogonal to v
-   [P,Q] = meshgrid(-plane_size:plane_size); % Provide a gridwork (you choose the size)
-   X = p0(1)+w(1,1)*P+w(1,2)*Q; % Compute the corresponding cartesian coordinates
-   Y = p0(2)+w(2,1)*P+w(2,2)*Q; %   using the two vectors in w
-   Z = p0(3)+w(3,1)*P+w(3,2)*Q;
-   plt_pln=surf(X,Y,Z,FaceColor=color,FaceAlpha=face_alpha,EdgeColor='none');
+[P,Q] = meshgrid(-plane_size:plane_size); % Provide a gridwork (you choose the size)
+X = p0(1)+w(1,1)*P+w(1,2)*Q; % Compute the corresponding cartesian coordinates
+Y = p0(2)+w(2,1)*P+w(2,2)*Q; %   using the two vectors in w
+Z = p0(3)+w(3,1)*P+w(3,2)*Q;
+plt_pln=surf(X,Y,Z,FaceColor=color,FaceAlpha=face_alpha,EdgeColor='none');
+
+end
+
+function plot_plane_2vec(p0,vec1,vec2,plane_size,color,face_alpha)
+
+% w = null(normal_vec); % Find two orthonormal vectors which are orthogonal to v
+w=[vec1' vec2'];
+[P,Q] = meshgrid(-plane_size:plane_size); % Provide a gridwork (you choose the size)
+X = p0(1)+w(1,1)*P+w(1,2)*Q; % Compute the corresponding cartesian coordinates
+Y = p0(2)+w(2,1)*P+w(2,2)*Q; %   using the two vectors in w
+Z = p0(3)+w(3,1)*P+w(3,2)*Q;
+plt_pln=surf(X,Y,Z,FaceColor=color,FaceAlpha=face_alpha,EdgeColor='none');
 
 end
