@@ -48,8 +48,8 @@ params.c=1.5;
 % % % params.mass=169581; %kg
 % params.R=435; %meters 
 
-density=2000;
-density=1380;
+% density=2000;
+density=1.27e3;
 params.mass=shape.volume*density;
 
 % rho=1.7385e+03;
