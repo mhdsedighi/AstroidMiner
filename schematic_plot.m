@@ -45,7 +45,7 @@ material metal
 
 
 
-view(30,40);
+view(59,11);
 % r =1;
 % phi = pi/4;
 % theta = pi/4;
@@ -94,8 +94,8 @@ plot_arc(p,[1 0 0],v_per,0.6,'$\lambda$')
 
 
 plot_line(sat_pos,UP_vec,d,'b',thickness,'$n$',14)
-plot_line(sat_pos,Right_vec,d,'b',thickness,'$East$',7)
-plot_line(sat_pos,North_vec,d,'b',thickness,'$North$',7)
+plot_line(sat_pos,Right_vec,d,'b',thickness,'$East$',10)
+plot_line(sat_pos,North_vec,d,'b',thickness,'$North$',10)
 
 plot_vec(sat_pos,force_vec,3,3,'$F$')
 
@@ -104,9 +104,9 @@ F=sat_pos+force_vec;
 v_par=dot(force_vec,UP_vec)*UP_vec;
 v_per=force_vec-v_par;
 
-plot_line(sat_pos,v_per,6,'k:',thickness*2,'$ $',14)
+plot_line(sat_pos,v_per,3,'c:',thickness*2,'$ $',14)
 
-plot_arc(sat_pos,North_vec,v_per,0.3,'$\beta$')
+plot_arc(sat_pos,North_vec,v_per,0.6,'$\beta$')
 plot_arc(sat_pos,UP_vec,force_vec,0.6,'$\alpha$')
 
 
@@ -234,7 +234,8 @@ p2=p+d*dir;
 plt=quiver3(p(1),p(2),p(3),d*dir(1),d*dir(2),d*dir(3));
 
 plt.LineWidth=thickness;
-plt.MaxHeadSize=1
+plt.MaxHeadSize=1;
+plt.Color='c';
 % 
 % p2=p+1.1*d*dir;
 text(p2(1),p2(2),p2(3),name,'FontSize',14, 'Interpreter','latex')
