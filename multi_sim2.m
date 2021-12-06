@@ -21,53 +21,58 @@ end
 
 for i_par=1:N_par
 
-    %     lambdas=inputArg(i_par,1:N_sat);
-    %     phis=inputArg(i_par,N_sat+1:2*N_sat);
-    %     alphas=inputArg(i_par,2*N_sat+1:3*N_sat);
-    %     betas=inputArg(i_par,3*N_sat+1:4*N_sat);
+    lambdas=inputArg(i_par,1:N_sat);
+    phis=inputArg(i_par,N_sat+1:2*N_sat);
+    alphas=inputArg(i_par,2*N_sat+1:3*N_sat);
+    betas=inputArg(i_par,3*N_sat+1:4*N_sat);
     W=inputArg(i_par,4*N_sat+1:4*N_sat+5);
+    rot_Gains=inputArg(i_par,4*N_sat+6:4*N_sat+8);
+    t_wait=inputArg(i_par,end);
 
     %%%%%%%%%%%%%%%%%%%%%%%%
 
-    %     [Force_Vectors,Moment_Vectors]=rigid_positioning(sim_data.params,N_sat,lambdas,phis,alphas,betas);
-    %     Force_Vectors=Force_Vectors';
-    %     Moment_Vectors=Moment_Vectors';
+    [Force_Vectors,Moment_Vectors]=rigid_positioning(sim_data.params,N_sat,lambdas,phis,alphas,betas);
+    Force_Vectors=Force_Vectors';
+    Moment_Vectors=Moment_Vectors';
 
-    %     max_f_available=[0 0;0 0;0 0];
-    %     max_M_available=[0 0;0 0;0 0];
-    %
-    %
-    %     for j=1:3
-    %         for i=1:N_sat
-    %             if Force_Vectors(j,i)>0
-    %                 max_f_available(j,1)=max_f_available(j,1)+sim_data.max_f*Force_Vectors(j,i);
-    %             else
-    %                 max_f_available(j,2)=max_f_available(j,2)+sim_data.max_f*Force_Vectors(j,i);
-    %             end
-    %         end
-    %     end
-    %
-    %     for j=1:3
-    %         for i=1:N_sat
-    %             if Moment_Vectors(j,i)>0
-    %                 max_M_available(j,1)=max_M_available(j,1)+sim_data.max_f*Moment_Vectors(j,i);
-    %             else
-    %                 max_M_available(j,2)=max_M_available(j,2)+sim_data.max_f*Moment_Vectors(j,i);
-    %             end
-    %         end
-    %     end
-    %
-    %     max_f_available=max_f_available*0.7;
-    %     max_M_available=max_M_available*0.7;
+    max_f_available=[0 0;0 0;0 0];
+    max_M_available=[0 0;0 0;0 0];
+
+
+    for j=1:3
+        for i=1:N_sat
+            if Force_Vectors(j,i)>0
+                max_f_available(j,1)=max_f_available(j,1)+sim_data.max_f*Force_Vectors(j,i);
+            else
+                max_f_available(j,2)=max_f_available(j,2)+sim_data.max_f*Force_Vectors(j,i);
+            end
+        end
+    end
+
+    for j=1:3
+        for i=1:N_sat
+            if Moment_Vectors(j,i)>0
+                max_M_available(j,1)=max_M_available(j,1)+sim_data.max_f*Moment_Vectors(j,i);
+            else
+                max_M_available(j,2)=max_M_available(j,2)+sim_data.max_f*Moment_Vectors(j,i);
+            end
+        end
+    end
+
+    max_f_available=max_f_available*0.7;
+    max_M_available=max_M_available*0.7;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
     simIn(i_par) = simIn(i_par).setVariable('W',W);
-    %     simIn(i_par) = simIn(i_par).setVariable('Moment_Vectors',Moment_Vectors);
-    %     simIn(i_par) = simIn(i_par).setVariable('max_f_available',max_f_available);
-    %     simIn(i_par) = simIn(i_par).setVariable('max_M_available',max_M_available);
+    simIn(i_par) = simIn(i_par).setVariable('Force_Vectors',Force_Vectors);
+    simIn(i_par) = simIn(i_par).setVariable('Moment_Vectors',Moment_Vectors);
+    simIn(i_par) = simIn(i_par).setVariable('rot_Gains',rot_Gains);
+    simIn(i_par) = simIn(i_par).setVariable('t_wait',t_wait);
+    simIn(i_par) = simIn(i_par).setVariable('max_f_available',max_f_available);
+    simIn(i_par) = simIn(i_par).setVariable('max_M_available',max_M_available);
 
 end
 
@@ -139,7 +144,7 @@ parfor i_par=1:N_par
 
 
 end
-% 
+%
 % if sim_data.finalrun
 % assignin('base','out',)
 % end
