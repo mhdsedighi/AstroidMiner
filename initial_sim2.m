@@ -1,4 +1,4 @@
-clc; clear; close all
+% clc; clear; close all
 % addpath OptimTraj
 % addpath chebfun
 load('params')
@@ -233,6 +233,7 @@ max_M_available=max_M_available*0.7
 
 W=[1 1 1 1 1];
 rot_Gains=[1 1 1];
+t_wait=10000;
 
 
 

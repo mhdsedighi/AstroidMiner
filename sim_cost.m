@@ -7,6 +7,7 @@ alphas=inputArg(2*N_sat+1:3*N_sat);
 betas=inputArg(3*N_sat+1:4*N_sat);
 W=inputArg(4*N_sat+1:4*N_sat+5);
 rot_Gains=inputArg(4*N_sat+6:4*N_sat+8);
+t_wait=inputArg(end);
 
 
 [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
@@ -52,6 +53,7 @@ simIn= Simulink.SimulationInput('model_5_exact');
 
 assignin('base','W',W);
 assignin('base','rot_Gains',rot_Gains);
+assignin('base','t_wait',t_wait);
 
 simOut=sim(simIn);
 
