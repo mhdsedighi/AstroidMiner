@@ -92,7 +92,7 @@ a_f=149598023;
 e_f=0.0167086;
 incl_f=deg2rad(7.155);
 omega_f=deg2rad(114.20783);
-RA_f=deg2rad(-11.26064);
+RA_f=deg2rad(-11.26064)+2*pi;
 theta_f=deg2rad(0);
 % 
 % e_f=e_0;
@@ -118,11 +118,9 @@ max_days=700;
 
 oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
 oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
-mee_0=oe2mee(oe_0,params.mu);
-mee_f=oe2mee(oe_f,params.mu);
+mee_0=oe2mp(oe_0);
+mee_f=oe2mp(oe_f);
 
-% oe_0=mee2oe(mp_0,params.mu)
-% oe_f=mee2oe(mp_f,params.mu)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

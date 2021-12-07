@@ -1,6 +1,5 @@
 function oe=mp2oe(mp)
 
-%%%% note: does not support inc<0 !!!
 
 oe=mp;
 
@@ -11,6 +10,8 @@ zig1=mp(4);
 zig2=mp(5);
 lambda=mp(6);
 
+two_pi=6.283185307179586;
+
 
 % % ep1=e*sin(omega+OMEGA);
 % % ep2=e*cos(omega+OMEGA);
@@ -20,7 +21,6 @@ lambda=mp(6);
 % % 
 % % mp=[a;ep1;ep2;zig1;zig2;lambda];
 
-%%% to be optimized
 e=sqrt(ep1^2+ep2^2);
 inc=2*atan(sqrt(zig1^2+zig2^2));
 
@@ -31,17 +31,10 @@ else
     OMEGA=atan3(zig1/tan1,zig2/tan1);
 end
 
-
-% if sign(zig2)*sign(cos(OMEGA))<0 || sign(zig1)*sign(sin(OMEGA))<0 
-%     inc=-inc;
-% end
-
-
-if OMEGA>pi
-    OMEGA=OMEGA-2*pi;
+if OMEGA<0
+    OMEGA=OMEGA+two_pi;
 end
 
-% inc=inc*(sign(zig2)*sign(cos(OMEGA)));
 
 if e==0
     omega=0;
@@ -49,14 +42,16 @@ else
     omega=atan3(ep1/e,ep2/e)-OMEGA;
 end
 
+if omega<0
+    omega=omega+two_pi;
+end
+
 
 theta=lambda-omega-OMEGA;
 if theta<0
-    theta=theta+2*pi;
-end
-
-if theta>2*pi
-    theta=rem(theta,2*pi);
+    theta=theta+two_pi;
+elseif theta>two_pi
+    theta=rem(theta,two_pi);
 end
 
 oe(1)=a;
