@@ -18,6 +18,8 @@ figure
 hold on
 axis equal
 view(25,45)
+set(gca, 'XTick', [], 'YTick', [], 'ZTick', [])
+set(gca, 'xcolor', 'w', 'ycolor', 'w','zcolor', 'w') ;
 
 load shape
 
@@ -87,7 +89,7 @@ scale=1*params.a/5;
 UP_vec=UP_vec*scale;
 North_vec=North_vec*scale;
 Right_vec=Right_vec*scale;
-force_vec=1*force_vec*scale;
+force_vec=1.5*force_vec*scale;
 
 
 plt1=quiver3(sat_pos(:,1),sat_pos(:,2),sat_pos(:,3),North_vec(:,1),North_vec(:,2),North_vec(:,3));
@@ -109,10 +111,10 @@ plt4.Color=[0.25, 0.25, 0.25];
 plt1.ShowArrowHead=0;
 plt2.ShowArrowHead=0;
 plt3.ShowArrowHead=0;
-plt1.LineWidth=0.9;
-plt2.LineWidth=0.9;
-plt3.LineWidth=0.9;
-plt4.LineWidth=0.5;
+plt1.LineWidth=0.2;
+plt2.LineWidth=0.2;
+plt3.LineWidth=0.2;
+plt4.LineWidth=1.3;
 
 
 plt1.AutoScale=0;

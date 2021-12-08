@@ -34,7 +34,7 @@ Rz_omega = [ ...
 
 
 
-Evals = 0:pi/1000:2*pi; % [deg] values of the eccentric anomaly around orbit
+Evals = 0:pi/100:2*pi; % [deg] values of the eccentric anomaly around orbit
 Orbit_p = a*(cos(Evals)-e); % [m] orbit positions
 Orbit_q = a*sqrt(1 - e^2)*sin(Evals); % [m] orbit positions
 % % % deltaT_s = ((Evals-E_deg_epoch) - e*sin(Evals-E_deg_epoch))/n_deg_per_s; % [s] time since epoch along orbit

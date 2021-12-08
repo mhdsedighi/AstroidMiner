@@ -109,7 +109,10 @@ astplt.LineWidth=0.1;
 
 % exportgraphics(gca,'test.emf','ContentType','vector')
 % print('test3','-dsvg','-vector')
-print('test4','-dmeta','-vector')
+% print('ast_view','-dmeta','-vector')
+print('ast_view','-r500','-dpng')
+
+
 
 
 

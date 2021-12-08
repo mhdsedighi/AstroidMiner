@@ -84,20 +84,21 @@ plot_line(p,[1 0 0],d,'k',thickness,'$x_b$',14)
 plot_line(p,[0 1 0],d,'k',thickness,'$y_b$',14)
 plot_line(p,[0 0 1],d,'k',thickness,'$z_b$',14)
 plot_line(p,sat_pos,1,'r',thickness,'$ $',14)
-plot_line(sat_pos,sat_pos*0.5,1,'r:',thickness,'$ r $',14)
+text(0.5*sat_pos(1),0.5*sat_pos(2),0.6*sat_pos(3),'$r_i$','FontSize',14,'Interpreter','latex')
+plot_line(sat_pos,sat_pos*0.5,1,'r:',thickness,'$ $',14)
 
 v_par=dot(sat_pos,[0 0 1])*[0 0 1];
 v_per=sat_pos-v_par;
 plot_line(p,v_per,0.5,'k:',thickness,'$ $',14);
-plot_arc(p,v_per,sat_pos,0.3,'$\phi$')
-plot_arc(p,[1 0 0],v_per,0.6,'$\lambda$')
+plot_arc(p,v_per,sat_pos,0.3,'$\phi_i$')
+plot_arc(p,[1 0 0],v_per,0.6,'$\lambda_i$')
 
 
 plot_line(sat_pos,UP_vec,d,'b',thickness,'$n$',14)
 plot_line(sat_pos,Right_vec,d,'b',thickness,'$East$',10)
 plot_line(sat_pos,North_vec,d,'b',thickness,'$North$',10)
 
-plot_vec(sat_pos,force_vec,3,3,'$F$')
+plot_vec(sat_pos,force_vec,3,3,'$F_i$')
 
 F=sat_pos+force_vec;
 
@@ -106,8 +107,8 @@ v_per=force_vec-v_par;
 
 plot_line(sat_pos,v_per,3,'c:',thickness*2,'$ $',14)
 
-plot_arc(sat_pos,North_vec,v_per,0.6,'$\beta$')
-plot_arc(sat_pos,UP_vec,force_vec,0.6,'$\alpha$')
+plot_arc(sat_pos,North_vec,v_per,0.6,'$\beta_i$')
+plot_arc(sat_pos,UP_vec,force_vec,0.6,'$\alpha_i$')
 
 
 % plot_plane(sat_pos,UP_vec,1,'b',0.4)
@@ -220,7 +221,7 @@ function plot_line(p,dir,d,style,thickness,name,font_size)
 p2=p+d*dir;
 XYZ=[p;p2];
 plt=plot3(XYZ(:,1),XYZ(:,2),XYZ(:,3),style);
-plt.LineWidth=thickness,
+plt.LineWidth=thickness;
 
 p2=p+1.1*d*dir;
 text(p2(1),p2(2),p2(3),name,'FontSize',font_size, 'Interpreter','latex')
@@ -274,8 +275,6 @@ loc_text=v_tran(idx,:)+0.1*(v_tran(idx,:)-p)./norm(v_tran(idx,:)-p);
 
 plot3(v_tran(:,1),v_tran(:,2),v_tran(:,3),'k');
 text(loc_text(1),loc_text(2),loc_text(3),name,'FontSize',14, 'Interpreter','latex')
-
-
 
 
 end
