@@ -55,7 +55,7 @@ e_0=0.1902;
 incl_0=deg2rad(5.8837);
 omega_0=deg2rad(211.43);
 RA_0=deg2rad(251.62);
-theta_0=deg2rad(180);
+theta_0=2.3480;
 
 
 % a_0=1.1896*AU;
@@ -110,11 +110,11 @@ theta_f=deg2rad(0);
 % RA_f=deg2rad(0);
 % theta_f=deg2rad(0);
 
-min_revolution=1;
-max_revolution=10;
-
-min_days=0;
-max_days=700;
+% min_revolution=1;
+% max_revolution=10;
+% 
+% min_days=0;
+% max_days=700;
 
 oe_0=[a_0 e_0 incl_0 omega_0 RA_0 theta_0];
 oe_f=[a_f e_f incl_f omega_f RA_f theta_f];
@@ -229,9 +229,12 @@ max_F_available=max_F_available*0.7
 max_M_available=max_M_available*0.7
 
 
-W=[1 1 1 1 1];
+% W=[1 1 1 1 1];
+W=[6.4966    2.6843    0.7051    1.8764    3.9369];
 rot_Gains=[1 1 1];
-t_wait=10000;
+att_Gains=[1 1 1];
+target_angles=deg2rad([0 45 190]);
+R_stop=1e-2;
 
 
 
