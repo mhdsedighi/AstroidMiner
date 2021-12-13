@@ -1,4 +1,4 @@
-% clc; clear; close all
+clc; clear; close all
 % % addpath OptimTraj
 % % addpath chebfun
 % load('params')
@@ -94,11 +94,11 @@ plot_arc(p,v_per,sat_pos,0.3,'$\phi_i$')
 plot_arc(p,[1 0 0],v_per,0.6,'$\lambda_i$')
 
 
-plot_line(sat_pos,UP_vec,d,'b',thickness,'$n$',14)
+plot_line(sat_pos,UP_vec,d,'b',thickness,'$Up$',10)
 plot_line(sat_pos,Right_vec,d,'b',thickness,'$East$',10)
 plot_line(sat_pos,North_vec,d,'b',thickness,'$North$',10)
 
-plot_vec(sat_pos,force_vec,3,3,'$F_i$')
+plot_vec(sat_pos,force_vec,3,3,'$T_i$')
 
 F=sat_pos+force_vec;
 

@@ -20,9 +20,9 @@ hold on
 axis equal
 % set(gca, 'XTick', [], 'YTick', [], 'ZTick', [])
 % set(gca, 'xcolor', 'w', 'ycolor', 'w','zcolor', 'w') ;
-xlabel('x')
-ylabel('y')
-zlabel('z')
+xlabel('x   (m)')
+ylabel('y   (m)')
+zlabel('z   (m)')
 view(30,45);
 grid minor
 astplt=drawMesh(shape.V, shape.F);
@@ -44,11 +44,12 @@ astplt.LineWidth=0.06;
 nexttile
 hold on
 axis equal
-xlabel('x')
-ylabel('y')
-zlabel('z')
+xlabel('x   (m)')
+ylabel('y   (m)')
+zlabel('z   (m)')
 view(90,90);
 grid minor
+axis tight
 
 
 astplt=drawMesh(shape.V, shape.F);
@@ -66,11 +67,12 @@ astplt.FaceColor='w';
 nexttile
 hold on
 axis equal
-xlabel('x')
-ylabel('y')
-zlabel('z')
+xlabel('x   (m)')
+ylabel('y   (m)')
+zlabel('z   (m)')
 view(0,0);
 grid minor
+axis tight
 
 
 
@@ -89,11 +91,12 @@ astplt.LineWidth=0.1;
 nexttile
 hold on
 axis equal
-xlabel('x')
-ylabel('y')
-zlabel('z')
+xlabel('x   (m)')
+ylabel('y   (m)')
+zlabel('z   (m)')
 view(90,0);
 grid minor
+axis tight
 astplt=drawMesh(shape.V, shape.F);
 % astplt.FaceAlpha=0.2;
 % astplt.EdgeAlpha=0.2;
@@ -110,7 +113,7 @@ astplt.LineWidth=0.1;
 % exportgraphics(gca,'test.emf','ContentType','vector')
 % print('test3','-dsvg','-vector')
 % print('ast_view','-dmeta','-vector')
-print('ast_view','-r500','-dpng')
+print('ast_view','-r800','-dpng')
 
 
 
