@@ -1,12 +1,14 @@
 clc
+initial_sim2
 warning('off','all')
 
 params.max_f=max_f;
 params.mee_0=mee_0;
+params.oe_0=oe_0;
 
 pqr_0=[0;0;0];
 att_Gains=[0 0 0];
-R_stop=1e-1;
+R_stop=1e-2;
 
 % N_sat=25;
 % lambdas=rand_gen(1,N_sat,0,360);
@@ -22,15 +24,27 @@ R_stop=1e-1;
 % phis_0=rand_gen(1,N_sat,-90,90);
 % alphas_0=zeros(1,N_sat);
 % betas_0=zeros(1,N_sat);
+
 W_0=[1 1 1 1 1];
+theta_0=pi;
+
+% min time
+% W_0=[15.7691   19.1673   10.3197   18.2571   10.5895]/100;
+% theta_0=5.4986;
+
+% % % min energy
+% W_0=[0.6501    1.0000    0.6004    0.1966    0.2241];
+% theta_0=0.1973;
+
+W_0=W_0./max(W_0);
 rot_Gains_0=[1 1 1];
 
 
 period0=2*pi*sqrt(mee_0(1)^3/params.mu);
-max_w=10;
-min_w=0.01;
+max_w=1;
+min_w=0.001;
 
-x0=[W_0 3];
+x0=[W_0 theta_0];
 LB=[min_w*ones(1,5) 0];
 UB=[max_w*ones(1,5) 2*pi];
 
@@ -42,7 +56,7 @@ options.PlotFcns={@saplotbestf,@saplotbestx };
 options.MaxIter=1e6;
 options.InitialTemperature=700;
 [x_opt,cost_opt,exitflag,output] = simulannealbnd(cost_handle,x0,LB,UB,options);
-cost_handle(x_opt)
+
 % 
 
 % sim_data.params=params;
@@ -63,28 +77,26 @@ cost_handle(x_opt)
 
 
 
-% lambdas=x_opt(1:N_sat);
-% phis=x_opt(N_sat+1:2*N_sat);
-% alphas=x_opt(2*N_sat+1:3*N_sat);
-% betas=x_opt(3*N_sat+1:4*N_sat);
-W=x_opt(1:5)
-% rot_Gains=x_opt(4*N_sat+6:4*N_sat+8);
+
+W=x_opt(1:5);
+W=W./max(W)
 theta_0=x_opt(end)
-% [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
-% Force_Vectors=Force_Vectors';
-% Moment_Vectors=Moment_Vectors';
+
+mee_0=params.mee_0;
+mee_0(6)=mee_0(6)-params.oe_0(6)+theta_0;
 
 
 
 
 out=sim('model_5_exact.slx');
+T_end=out.F_req_B.Time(end)/31536000
+effort=out.effort.Data
 
 
 ylabel('Cost Function Value')
 title('')
 set(gca,'Yscale','log','Xgrid','on','Ygrid','on')
 
-plot_sats
 plot_sim
 
 
