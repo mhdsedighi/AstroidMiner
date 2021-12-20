@@ -25,23 +25,23 @@ R_stop=1e-2;
 % alphas_0=zeros(1,N_sat);
 % betas_0=zeros(1,N_sat);
 
-W_0=[1 1 1 1 1];
-theta_0=pi;
+% W_0=[1 1 1 1 1];
+% theta_0=pi;
 
 % min time
 % W_0=[15.7691   19.1673   10.3197   18.2571   10.5895]/100;
 % theta_0=5.4986;
 
 % % % min energy
-% W_0=[0.6501    1.0000    0.6004    0.1966    0.2241];
-% theta_0=0.1973;
+W_0=[1.0000    0.2350    0.1476    0.4439    0.3023];
+theta_0=6.0565;
 
 W_0=W_0./max(W_0);
 rot_Gains_0=[1 1 1];
 
 
 period0=2*pi*sqrt(mee_0(1)^3/params.mu);
-max_w=1;
+max_w=30;
 min_w=0.001;
 
 x0=[W_0 theta_0];
