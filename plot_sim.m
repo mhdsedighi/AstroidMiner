@@ -3,8 +3,6 @@ XYZ=out.r.Data;
 
 
 
-close all
-
 figure
 hold on
 axis equal

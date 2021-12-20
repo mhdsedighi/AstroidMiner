@@ -7,9 +7,10 @@ alphas=inputArg(2*N_sat+1:3*N_sat);
 betas=inputArg(3*N_sat+1:4*N_sat);
 W=inputArg(4*N_sat+1:4*N_sat+5);
 rot_Gains=inputArg(4*N_sat+6:4*N_sat+8);
-t_wait=inputArg(end);
+target_angles=inputArg(4*N_sat+9:end);
 
 
+rotm_target = eul2rotm(target_angles);
 [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
 Force_Vectors=Force_Vectors';
 Moment_Vectors=Moment_Vectors';
@@ -53,7 +54,7 @@ simIn= Simulink.SimulationInput('model_5_exact');
 
 assignin('base','W',W);
 assignin('base','rot_Gains',rot_Gains);
-assignin('base','t_wait',t_wait);
+assignin('base','rotm_target',rotm_target);
 
 simOut=sim(simIn);
 
@@ -96,7 +97,7 @@ int_Fs=trapz(T_vec,Uss,2);
 reach_fac=norm(simOut.R.Data(1:5));
 detumble_fac=simOut.omega.Data;
 
-cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^2*(1+detumble_fac)^2*T_end*1e-8;
+cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.8;
 
 
 

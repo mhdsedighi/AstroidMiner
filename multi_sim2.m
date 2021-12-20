@@ -19,7 +19,7 @@ for i_par=1:N_par
     simIn(i_par) = Simulink.SimulationInput('model_5_exact');
 end
 
-for i_par=1:N_par
+parfor i_par=1:N_par
 
     lambdas=inputArg(i_par,1:N_sat);
     phis=inputArg(i_par,N_sat+1:2*N_sat);
@@ -27,10 +27,10 @@ for i_par=1:N_par
     betas=inputArg(i_par,3*N_sat+1:4*N_sat);
     W=inputArg(i_par,4*N_sat+1:4*N_sat+5);
     rot_Gains=inputArg(i_par,4*N_sat+6:4*N_sat+8);
-    t_wait=inputArg(i_par,end);
+    target_angles=inputArg(i_par,4*N_sat+9:4*N_sat+11);
 
     %%%%%%%%%%%%%%%%%%%%%%%%
-
+    rotm_target = eul2rotm(target_angles);
     [Force_Vectors,Moment_Vectors]=rigid_positioning(sim_data.params,N_sat,lambdas,phis,alphas,betas);
     Force_Vectors=Force_Vectors';
     Moment_Vectors=Moment_Vectors';
@@ -67,10 +67,10 @@ for i_par=1:N_par
 
 
     simIn(i_par) = simIn(i_par).setVariable('W',W);
-    simIn(i_par) = simIn(i_par).setVariable('Force_Vectors',Force_Vectors);
-    simIn(i_par) = simIn(i_par).setVariable('Moment_Vectors',Moment_Vectors);
+%     simIn(i_par) = simIn(i_par).setVariable('Force_Vectors',Force_Vectors);
+%     simIn(i_par) = simIn(i_par).setVariable('Moment_Vectors',Moment_Vectors);
     simIn(i_par) = simIn(i_par).setVariable('rot_Gains',rot_Gains);
-    simIn(i_par) = simIn(i_par).setVariable('t_wait',t_wait);
+    simIn(i_par) = simIn(i_par).setVariable('rotm_target',rotm_target);
     simIn(i_par) = simIn(i_par).setVariable('max_f_available',max_f_available);
     simIn(i_par) = simIn(i_par).setVariable('max_M_available',max_M_available);
 
@@ -85,7 +85,7 @@ simOut=parsim(simIn,'TransferBaseWorkspaceVariables','on');
 
 
 cost_array=zeros(N_par,1);
-parfor i_par=1:N_par
+for i_par=1:N_par
 
     lambdas=inputArg(i_par,1:N_sat);
     phis=inputArg(i_par,N_sat+1:2*N_sat);
@@ -136,8 +136,9 @@ parfor i_par=1:N_par
     int_Fs=trapz(T_vec,Uss,2);
     reach_fac=norm(simOut(i_par).R.Data(1:5));
     detumble_fac=simOut(i_par).omega.Data;
+    T_end=T_vec(end);
 
-    cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+mark_err/N_t)*(1+reach_fac)^2*(1+detumble_fac)^2;
+    cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.8;
     if reach_fac>1
         cost_array(i_par)=cost_array(i_par)*10;
     end
