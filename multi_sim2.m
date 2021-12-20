@@ -19,7 +19,7 @@ for i_par=1:N_par
     simIn(i_par) = Simulink.SimulationInput('model_5_exact');
 end
 
-parfor i_par=1:N_par
+for i_par=1:N_par
 
     lambdas=inputArg(i_par,1:N_sat);
     phis=inputArg(i_par,N_sat+1:2*N_sat);
@@ -85,7 +85,7 @@ simOut=parsim(simIn,'TransferBaseWorkspaceVariables','on');
 
 
 cost_array=zeros(N_par,1);
-for i_par=1:N_par
+parfor i_par=1:N_par
 
     lambdas=inputArg(i_par,1:N_sat);
     phis=inputArg(i_par,N_sat+1:2*N_sat);
