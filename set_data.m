@@ -54,13 +54,12 @@ params.mass=shape.volume*density;
 
 % rho=1.7385e+03;
 
-Ixx=480e3;
-Iyy=763116;
-Izz=1090492;
-Ixy=0;
-Ixz=0;
-Iyz=0;
-
+% Ixx=480e3;
+% Iyy=763116;
+% Izz=1090492;
+% Ixy=0;
+% Ixz=0;
+% Iyz=0;
 % params.Inertia =[Ixx -Ixy -Ixz;-Ixy Iyy -Iyz;-Ixz -Iyz Izz];
 
 params.Inertia=params.mass*shape.MomentTensor;
