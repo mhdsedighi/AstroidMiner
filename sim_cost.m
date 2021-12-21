@@ -11,7 +11,7 @@ target_angles=inputArg(4*N_sat+9:end);
 
 
 rotm_target = eul2rotm(target_angles);
-[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
+[Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(params,N_sat,lambdas,phis,alphas,betas);
 Force_Vectors=Force_Vectors';
 Moment_Vectors=Moment_Vectors';
 
@@ -35,11 +35,11 @@ Moment_Vectors=Moment_Vectors';
 % % %         end
 % % %     end
 % % % end
-% % % 
-% % % 
-% % % 
-% % % 
-% % % 
+% % %
+% % %
+% % %
+% % %
+% % %
 % % % assignin('base','Force_Vectors',Force_Vectors);
 % % % assignin('base','Moment_Vectors',Moment_Vectors);
 % % % assignin('base','max_f_available',max_f_available);
@@ -99,6 +99,8 @@ detumble_fac=simOut.omega.Data;
 
 cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.8;
 
-
+if min_dis<0.3
+    cost=cost*(2+min_dis)^-4;
+end
 
 end

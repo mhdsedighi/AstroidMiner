@@ -234,6 +234,7 @@ W=[6.4966    2.6843    0.7051    1.8764    3.9369];
 rot_Gains=[1 1 1];
 att_Gains=[1 1 1];
 target_angles=deg2rad([0 45 190]);
+rotm_target = eul2rotm(target_angles);
 R_stop=1e-2;
 
 

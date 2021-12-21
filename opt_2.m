@@ -1,3 +1,6 @@
+% mode='single'
+mode='multi'
+
 clc
 warning('off','all')
 
@@ -30,16 +33,25 @@ x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
 LB=[zeros(1,N_sat) -90*ones(1,N_sat) -45*ones(1,N_sat) 0*ones(1,N_sat) 1*W_0 1*ones(1,3) -pi*ones(1,3)];
 UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 45*ones(1,N_sat) 180*ones(1,N_sat) 1*W_0 1*ones(1,3) pi*ones(1,3)];
 
+if strcmp(mode,'single')
 
-% % % cost_handle=@(inputArg)sim_cost(inputArg,N_sat,params);
-% % % options = optimoptions('simulannealbnd');
-% % % % options.Display='Iter';
-% % % % options.PlotFcns={@saplotbestf,@saplotbestx };
-% % % options.PlotFcns={@saplotbestf};
-% % % options.MaxIter=1e6;
-% % % options.InitialTemperature=700;
-% % % [x_opt,cost_opt,exitflag,output] = simulannealbnd(cost_handle,x0,LB,UB,options);
-% 
+cost_handle=@(inputArg)sim_cost(inputArg,N_sat,params);
+options = optimoptions('simulannealbnd');
+% options.Display='Iter';
+% options.PlotFcns={@saplotbestf,@saplotbestx };
+options.PlotFcns={@saplotbestf};
+options.MaxIter=1e6;
+options.InitialTemperature=700;
+[x_opt,cost_opt,exitflag,output] = simulannealbnd(cost_handle,x0,LB,UB,options);
+
+
+
+
+
+elseif strcmp(mode,'multi')
+
+
+
 
 sim_data.params=params;
 sim_data.mee_0=mee_0;
@@ -57,6 +69,7 @@ options = optimoptions('particleswarm','UseParallel', true, 'UseVectorized', tru
 nvars=4*N_sat+5+3+3;
 [x_opt,cost_opt,exitflag,output]=particleswarm(cost_handle_multi,nvars,LB,UB,options)
 
+end
 
 
 
@@ -67,7 +80,8 @@ betas=x_opt(3*N_sat+1:4*N_sat);
 W=x_opt(4*N_sat+1:4*N_sat+5);
 rot_Gains=x_opt(4*N_sat+6:4*N_sat+8);
 target_angles=x_opt(4*N_sat+9:end);
-[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
+rotm_target = eul2rotm(target_angles);
+[Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(params,N_sat,lambdas,phis,alphas,betas);
 Force_Vectors=Force_Vectors';
 Moment_Vectors=Moment_Vectors';
 

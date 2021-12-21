@@ -93,7 +93,7 @@ parfor i_par=1:N_par
     betas=inputArg(i_par,3*N_sat+1:4*N_sat);
 
 
-    [Force_Vectors,Moment_Vectors]=rigid_positioning(sim_data.params,N_sat,lambdas,phis,alphas,betas);
+    [Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
     Force_Vectors=Force_Vectors';
     Moment_Vectors=Moment_Vectors';
 
@@ -139,8 +139,8 @@ parfor i_par=1:N_par
     T_end=T_vec(end);
 
     cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.8;
-    if reach_fac>1
-        cost_array(i_par)=cost_array(i_par)*10;
+    if min_dis<0.3
+        cost_array(i_par)=cost_array(i_par)*(2+min_dis)^-4;
     end
 
 
