@@ -2,7 +2,12 @@
 % clear
 close all
 
+% initial_sim2
 
+set_param('model_5/Actuation/actuators/thrusters','Commented','through')
+% set_param('model_5/Actuation/actuators/thrusters','Commented','off')
+
+out1=sim('model_5.slx');
 
 sample_time=1;
 min_on_off_time=0.5;
@@ -25,7 +30,7 @@ scale=order_force/max_Thrust_analog;
 
 % t_sim=min_on_off_time*5;
 % t_sim=600;
-t_sim=2000;
+t_sim=1e4;
 
 % Tm_d=2;
 % Km_d=5;
