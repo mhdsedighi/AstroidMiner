@@ -16,7 +16,7 @@ for i=1:N_sat
     sin_alpha=sind(alphas(i));
     cos_beta=cosd(betas(i));
     sin_beta=sind(betas(i));
-    force_vec=cos_alpha*UP_vec+sin_alpha*cos_beta*North_vec+sin_alpha*sin_beta*Right_vec;
+    force_vec=sin_alpha*UP_vec+cos_alpha*cos_beta*North_vec+cos_alpha*sin_beta*Right_vec;
     
     Force_Vectors(i,:)=force_vec;
     Moment_Vectors(i,:)=cross(sat_pos,force_vec);

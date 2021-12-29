@@ -105,10 +105,10 @@ F=sat_pos+force_vec;
 v_par=dot(force_vec,UP_vec)*UP_vec;
 v_per=force_vec-v_par;
 
-plot_line(sat_pos,v_per,3,'c:',thickness*2,'$ $',14)
+plot_line(sat_pos,v_per,4.5,'c:',thickness*2,'$ $',14)
 
-plot_arc(sat_pos,North_vec,v_per,0.6,'$\beta_i$')
-plot_arc(sat_pos,UP_vec,force_vec,0.6,'$\alpha_i$')
+plot_arc(sat_pos,North_vec,v_per,0.9,'$\beta_i$')
+plot_arc(sat_pos,v_per,force_vec,3.6,'$\alpha_i$')
 
 
 % plot_plane(sat_pos,UP_vec,1,'b',0.4)

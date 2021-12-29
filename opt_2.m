@@ -19,7 +19,7 @@ N_sat=25;
 
 lambdas_0=rand_gen(1,N_sat,0,360);
 phis_0=rand_gen(1,N_sat,-90,90);
-alphas_0=zeros(1,N_sat);
+alphas_0=90*ones(1,N_sat);
 betas_0=zeros(1,N_sat);
 % W_0=[1 1 1 1 1];
 W_0=[1.0000    0.2350    0.1476    0.4439    0.3023];
@@ -30,8 +30,8 @@ target_angles_0=[0 0 0];
 
 
 x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
-LB=[zeros(1,N_sat) -90*ones(1,N_sat) -45*ones(1,N_sat) 0*ones(1,N_sat) 1*W_0 1*ones(1,3) -pi*ones(1,3)];
-UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 45*ones(1,N_sat) 180*ones(1,N_sat) 1*W_0 1*ones(1,3) pi*ones(1,3)];
+LB=[zeros(1,N_sat) -90*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 1*W_0 1*ones(1,3) -pi*ones(1,3)];
+UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 135*ones(1,N_sat) 180*ones(1,N_sat) 1*W_0 1*ones(1,3) pi*ones(1,3)];
 
 if strcmp(mode,'single')
 
