@@ -64,7 +64,7 @@ for i=1:N_sat
     end
     
     
-    force_vec(i,:)=cosd(alphas(i))*UP_vec(i,:)+sind(alphas(i))*cosd(betas(i))*North_vec(i,:)+sind(alphas(i))*sind(betas(i))*Right_vec(i,:);
+    force_vec(i,:)=sind(alphas(i))*UP_vec(i,:)+cosd(alphas(i))*cosd(betas(i))*North_vec(i,:)+cosd(alphas(i))*sind(betas(i))*Right_vec(i,:);
 
 
 
@@ -100,20 +100,20 @@ plt4=quiver3(sat_pos(:,1),sat_pos(:,2),sat_pos(:,3),force_vec(:,1),force_vec(:,2
 % plt1.Color=[0.6350, 0.0780, 0.1840];
 % plt2.Color=[0.4660, 0.6740, 0.1880];
 % plt3.Color=[0, 0.4470, 0.7410];
-plt1.Color='r';
-plt2.Color='g';
-plt3.Color='b';
+plt1.Color='k';
+plt2.Color='k';
+plt3.Color='k';
 plt4.Color=[0.25, 0.25, 0.25];
 
-% plt1.LineStyle=':';
-% plt2.LineStyle=':';
-% plt3.LineStyle=':';
+plt1.LineStyle=':';
+plt2.LineStyle=':';
+plt3.LineStyle=':';
 plt1.ShowArrowHead=0;
 plt2.ShowArrowHead=0;
 plt3.ShowArrowHead=0;
-plt1.LineWidth=0.2;
-plt2.LineWidth=0.2;
-plt3.LineWidth=0.2;
+plt1.LineWidth=0.5;
+plt2.LineWidth=0.5;
+plt3.LineWidth=0.5;
 plt4.LineWidth=1.3;
 
 

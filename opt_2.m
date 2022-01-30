@@ -1,5 +1,5 @@
-% mode='single'
-mode='multi'
+mode='single'
+% mode='multi'
 
 clc
 warning('off','all')
@@ -97,6 +97,7 @@ set(gca,'Yscale','log','Xgrid','on','Ygrid','on')
 
 plot_sats
 plot_sim
+plot_motion
 
 
 
