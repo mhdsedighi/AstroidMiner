@@ -1,11 +1,15 @@
 mode='single'
 % mode='multi'
+strategy=1;
+% strategy=2;
 
 clc
 warning('off','all')
 
+params.final_test=0;
 params.max_f=max_f;
 params.mee_0=mee_0;
+params.strategy=strategy;
 
 N_sat=25;
 % lambdas=rand_gen(1,N_sat,0,360);
@@ -22,8 +26,14 @@ phis_0=rand_gen(1,N_sat,-90,90);
 alphas_0=90*ones(1,N_sat);
 betas_0=zeros(1,N_sat);
 % W_0=[1 1 1 1 1];
-W_0=[1.0000    0.2350    0.1476    0.4439    0.3023];
-oe_0(6)=6.0565;
+if strategy==1
+    W_0=[15.7691   19.1673   10.3197   18.2571   10.5895]/100;
+    theta_0=5.4986;
+elseif strategy==2
+    W_0=[1.0000    0.2350    0.1476    0.4439    0.3023];
+    theta_0=6.0565;
+end
+oe_0(6)=theta_0;
 mee_0=oe2mp(oe_0);
 rot_Gains_0=[1 1 1];
 target_angles_0=[0 0 0];
@@ -50,7 +60,7 @@ options.InitialTemperature=700;
 
 elseif strcmp(mode,'multi')
 
-
+%%% must be updated
 
 
 sim_data.params=params;
@@ -59,6 +69,7 @@ sim_data.pqr_0=pqr_0;
 sim_data.eul_0=eul_0;
 sim_data.N_sat=N_sat;
 sim_data.max_f=max_f;
+sim_data.strategy=strategy;
 cost_handle_multi=@(inputArg)multi_sim2(inputArg,sim_data);
 poolobj = gcp;
 addAttachedFiles(poolobj,{'model_5_exact.slx','multi_sim2.m'});
@@ -80,15 +91,19 @@ betas=x_opt(3*N_sat+1:4*N_sat);
 W=x_opt(4*N_sat+1:4*N_sat+5);
 rot_Gains=x_opt(4*N_sat+6:4*N_sat+8);
 target_angles=x_opt(4*N_sat+9:end);
-rotm_target = eul2rotm(target_angles);
-[Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(params,N_sat,lambdas,phis,alphas,betas);
-Force_Vectors=Force_Vectors';
-Moment_Vectors=Moment_Vectors';
 
 
+params.final_test=1;
+cost_opt=sim_cost(x_opt,N_sat,params);
 
+mark_err
+reach_fac
+detumble_fac
+min_dis
+int_Fs
+var_int_Fs
+sum_int_Fs
 
-out=sim('model_5_exact.slx');
 
 
 ylabel('Cost Function Value')

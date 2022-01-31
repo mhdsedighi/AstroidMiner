@@ -147,7 +147,7 @@ max_f=10;
 N_sat=25;
 lambdas=rand_gen(1,N_sat,0,360);
 phis=rand_gen(1,N_sat,-90,90);
-alphas=zeros(1,N_sat);
+alphas=90*ones(1,N_sat);
 betas=zeros(1,N_sat);
 
 

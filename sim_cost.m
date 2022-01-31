@@ -65,7 +65,7 @@ T_end=T_vec(end);
 
 FM=[simOut.F_req_B.Data';simOut.M_req.Data'];
 C=[Force_Vectors;Moment_Vectors];
-maxIter=10;
+maxIter=20;
 options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','MaxIterations',maxIter,'Display','none');
 LB=zeros(N_sat,1);
 UB=params.max_f*ones(N_sat,1);
@@ -96,11 +96,35 @@ end
 int_Fs=trapz(T_vec,Uss,2);
 reach_fac=norm(simOut.R.Data(1:5));
 detumble_fac=simOut.omega.Data;
+sum_int_Fs=sum(int_Fs);
 
-cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.8;
+% cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.8;
+
+if params.strategy==1
+
+    cost=(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8);
+
+else
+
+    cost=(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*sum_int_Fs*(1+T_end*3.171e-8)^0.2*(1+var(int_Fs)/1e10);
+
+end
 
 if min_dis<0.3
     cost=cost*(2+min_dis)^-4;
+end
+
+
+if params.final_test
+
+assignin('base','mark_err',mark_err);
+assignin('base','reach_fac',reach_fac);
+assignin('base','detumble_fac',detumble_fac);
+assignin('base','min_dis',min_dis);
+assignin('base','int_Fs',int_Fs);
+assignin('base','sum_int_Fs',sum_int_Fs);
+assignin('base','var_int_Fs',var(int_Fs));
+
 end
 
 end
