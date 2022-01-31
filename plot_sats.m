@@ -100,14 +100,14 @@ plt4=quiver3(sat_pos(:,1),sat_pos(:,2),sat_pos(:,3),force_vec(:,1),force_vec(:,2
 % plt1.Color=[0.6350, 0.0780, 0.1840];
 % plt2.Color=[0.4660, 0.6740, 0.1880];
 % plt3.Color=[0, 0.4470, 0.7410];
-plt1.Color='k';
-plt2.Color='k';
-plt3.Color='k';
+plt1.Color=[0.4940, 0.1840, 0.5560];
+plt2.Color=[0.4940, 0.1840, 0.5560];
+plt3.Color=[0.4940, 0.1840, 0.5560];
 plt4.Color=[0.25, 0.25, 0.25];
 
-plt1.LineStyle=':';
-plt2.LineStyle=':';
-plt3.LineStyle=':';
+% plt1.LineStyle=':';
+% plt2.LineStyle=':';
+% plt3.LineStyle=':';
 plt1.ShowArrowHead=0;
 plt2.ShowArrowHead=0;
 plt3.ShowArrowHead=0;
@@ -128,8 +128,8 @@ plot_line([0 0 0],[0 1 0],2,'g-','$y_b$',10)
 plot_line([0 0 0],[0 0 1],2,'b-','$z_b$',10)
 
 [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(params.shape.V,params.shape.F,0,90);
-plot3(sat_pos(1),sat_pos(2),sat_pos(3),'k.')
-text(sat_pos(1),sat_pos(2),1.1*sat_pos(3),'\uparrow N','FontSize',10)
+plot3(sat_pos(1),sat_pos(2),sat_pos(3),'b.')
+text(sat_pos(1),sat_pos(2),1.1*sat_pos(3),'\uparrow N','FontSize',14,'Color','b')
 
 
 
