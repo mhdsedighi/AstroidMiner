@@ -1,4 +1,4 @@
-close all
+% close all
 addpath('plotlib')
 
 T=out.r.Time./(24*3600);
@@ -18,73 +18,93 @@ oe=out.oe.Data;
 
 
 
-% figure
-% 
+figure
+ha = tight_subplot(3,1,[0.017 0.035],[.12 .04],[.033 .01]);
+
 % subplot(3,1,1)
-% plot(T,eul(:,1))
-% xlabel('time (days)')
-% ylabel('\phi (deg)')
-% xticks(xtick_time)
-% xlim([0 T(end)])
-% ylim([-180 180])
-% yticks(yticks_180)
-% grid
-% 
+ii=1;
+axes(ha(ii))
+plot(T,eul(:,1))
+xlabel('time (days)')
+ylabel('\phi (deg)')
+xticks(xtick_time)
+xlim([0 T(end)])
+ylim([-180 180])
+yticks(yticks_180)
+grid
+
 % subplot(3,1,2)
-% plot(T,eul(:,2))
-% xlabel('time (days)')
-% ylabel('\theta (deg)')
-% xlim([0 T(end)])
-% xticks(xtick_time)
-% ylim([-180 180])
-% yticks(yticks_180)
-% grid
-% 
+ii=2;
+axes(ha(ii))
+plot(T,eul(:,2))
+xlabel('time (days)')
+ylabel('\theta (deg)')
+xlim([0 T(end)])
+xticks(xtick_time)
+ylim([-180 180])
+yticks(yticks_180)
+grid
+
 % subplot(3,1,3)
-% plot(T,eul(:,3))
-% xlabel('time (days)')
-% ylabel('\psi (deg)')
-% xlim([0 T(end)])
-% xticks(xtick_time)
-% ylim([-180 180])
-% yticks(yticks_180)
-% grid
+ii=3;
+axes(ha(ii))
+plot(T,eul(:,3))
+xlabel('time (days)')
+ylabel('\psi (deg)')
+xlim([0 T(end)])
+xticks(xtick_time)
+ylim([-180 180])
+yticks(yticks_180)
+grid
+
+set(ha(1:2),'XTickLabel','')
 % 
-% 
-% 
-% 
-% figure
-% 
+
+
+
+figure
+
+ha = tight_subplot(3,1,[0.033 0.035],[.12 .04],[.03 .01]);
+
+
 % subplot(3,1,1)
-% plot(T,pqr(:,1))
+ii=1;
+axes(ha(ii))
+plot(T,pqr(:,1))
 % xlabel('time (days)')
-% ylabel('p (rad/s)')
-% xlim([0 T(end)])
-% xticks(xtick_time)
-% grid
-% 
+ylabel('p (rad/s)')
+xlim([0 T(end)])
+xticks(xtick_time)
+grid
+
 % subplot(3,1,2)
-% plot(T,pqr(:,2))
+ii=2;
+axes(ha(ii))
+plot(T,pqr(:,2))
 % xlabel('time (days)')
-% ylabel('q (rad/s)')
-% xlim([0 T(end)])
-% xticks(xtick_time)
-% grid
-% 
+ylabel('q (rad/s)')
+xlim([0 T(end)])
+xticks(xtick_time)
+grid
+
 % subplot(3,1,3)
-% plot(T,pqr(:,3))
-% xlabel('time (days)')
-% ylabel('r (rad/s)')
-% xlim([0 T(end)])
-% xticks(xtick_time)
-% grid
+ii=3;
+axes(ha(ii))
+plot(T,pqr(:,3))
+xlabel('time (days)')
+ylabel('r (rad/s)')
+xlim([0 T(end)])
+xticks(xtick_time)
+grid
+
+set(ha(1:2),'XTickLabel','');
 
 
 
 figure
 
 
-ha = tight_subplot(3,2,[0.017 0.035],[.12 .04],[.03 .01]);
+ha = tight_subplot(3,2,[0.017 0.035],[.12 .04],[.032 .01]);
 
 
 ii=1;
