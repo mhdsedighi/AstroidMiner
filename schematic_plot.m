@@ -78,7 +78,7 @@ plot3(0,0,0,'r.')
 plot3(sat_pos(1),sat_pos(2),sat_pos(3),'r.')
 
 p=[0 0 0];
-d=sqrt(norm(sat_pos))/1.5;
+d=sqrt(norm(sat_pos))/1.2;
 thickness=1;
 plot_line(p,[1 0 0],d,'k',thickness,'$x_b$',14)
 plot_line(p,[0 1 0],d,'k',thickness,'$y_b$',14)

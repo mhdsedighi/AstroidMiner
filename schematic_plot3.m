@@ -72,8 +72,16 @@ plot_vec(r,h,l_axis,'K','-',2,'$e_w$',14)
 % figure
 hold on
 view(-29,37);
-plot_planet(a_0/10)
+scale=0.2;
+[X,Y,Z] = sphere;
+% globe=surf(X*scale,Y*scale,Z*scale,'EdgeColor','none','FaceColor',[0.9290, 0.6940, 0.1250],'FaceAlpha','0.5');
+globe=surf(X*scale,Y*scale,Z*scale,'EdgeColor','none','FaceColor',[0.9290, 0.6940, 0.1250]);
 % plot_orbit(oe_0,'k:')
+
+globe.FaceLighting = 'gouraud';
+globe.AmbientStrength = 0.5;
+globe.FaceAlpha = 0.9;
+
 
 
 
