@@ -2,6 +2,9 @@ clc
 initial_sim2
 warning('off','all')
 
+params.strategy=1;
+% params.strategy=2;
+
 params.max_f=max_f;
 params.mee_0=mee_0;
 params.oe_0=oe_0;
@@ -35,6 +38,10 @@ R_stop=1e-2;
 % % % min energy
 W_0=[1.0000    0.2350    0.1476    0.4439    0.3023];
 theta_0=6.0565;
+
+
+% W_0=[1    1    1    1    1];
+% theta_0=4;
 
 W_0=W_0./max(W_0);
 rot_Gains_0=[1 1 1];

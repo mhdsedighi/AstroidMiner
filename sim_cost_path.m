@@ -37,11 +37,11 @@ mee_0(6)=mee_0(6)-params.oe_0(6)+theta_0;
 % % %         end
 % % %     end
 % % % end
-% % % 
-% % % 
-% % % 
-% % % 
-% % % 
+% % %
+% % %
+% % %
+% % %
+% % %
 % % % assignin('base','Force_Vectors',Force_Vectors);
 % % % assignin('base','Moment_Vectors',Moment_Vectors);
 % % % assignin('base','max_f_available',max_f_available);
@@ -71,32 +71,32 @@ T_end=T_vec(end);
 % options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','MaxIterations',maxIter,'Display','none');
 % LB=zeros(N_sat,1);
 % UB=params.max_f*ones(N_sat,1);
-% 
+%
 % guess=zeros(N_sat,1);
-% 
+%
 % Uss=zeros(N_sat,N_t);
-% 
+%
 % mark_err=0;
 
 % for i=1:N_t
-% 
+%
 %     b=FM(:,i);
-% 
+%
 %     x0=guess;
-% 
+%
 %     fun=@(x)(C*x-b);
-% 
+%
 %     [Uss(:,i),error]=lsqnonlin(fun,x0,LB,UB,options);
 %     if error>1e-2
 %         mark_err=mark_err+1;
 %     end
-% 
+%
 %     guess=Uss(:,i);
-% 
+%
 % end
 
 % int_Fs=trapz(T_vec,FM,2);
-effort=simOut.effort.Data;
+% effort=simOut.effort.Data;
 % reach_fac=norm(simOut.R.Data(1:5));
 % detumble_fac=simOut.omega.Data;
 % detumble_fac=0;
@@ -107,17 +107,32 @@ effort=simOut.effort.Data;
 % cost=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.8;
 
 
-time_cost=1;
-max_year=5;
-T_end_year=T_end/31536000;
-if T_end_year>max_year
-    time_cost=1+(T_end-max_year);
+if params.strategy==1
+
+
+    % cost=effort*time_cost^0.2;
+
+    cost=T_end/31536000;
+
+elseif params.strategy==2
+
+    effort=simOut.effort.Data;
+
+    time_cost=1;
+
+    %%%%
+    max_year=5;
+    T_end_year=T_end/31536000;
+    if T_end_year>max_year
+        time_cost=1+(T_end-max_year);
+    end
+    %%%%%
+
+    cost=effort*time_cost^0.2;
 end
-cost=effort*time_cost^0.2;
 
 
 
-% cost=T_end/31536000;
 
 
 

@@ -65,10 +65,7 @@ T_end=T_vec(end);
 
 FM=[simOut.F_req_B.Data';simOut.M_req.Data'];
 C=[Force_Vectors;Moment_Vectors];
-maxIter=20;
-options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','MaxIterations',maxIter,'Display','none');
-LB=zeros(N_sat,1);
-UB=params.max_f*ones(N_sat,1);
+
 
 guess=zeros(N_sat,1);
 
@@ -84,7 +81,7 @@ for i=1:N_t
 
     fun=@(x)(C*x-b);
 
-    [Uss(:,i),error]=lsqnonlin(fun,x0,LB,UB,options);
+    [Uss(:,i),error]=lsqnonlin(fun,x0,params.LB,params.UB,params.options);
     if error>1e-2
         mark_err=mark_err+1;
     end
@@ -106,13 +103,14 @@ if params.strategy==1
 
 else
 
-    cost=(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*sum_int_Fs*(1+T_end*3.171e-8)^0.2*(1+var(int_Fs)/1e10);
+%     cost=(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*sum_int_Fs*(1+T_end*3.171e-8)^0.2*(1+var(int_Fs)/1e10);
+ cost=(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*sum_int_Fs;
 
 end
 
-if min_dis<0.3
-    cost=cost*(2+min_dis)^-4;
-end
+% if min_dis<0.3
+%     cost=cost*(2+min_dis)^-4;
+% end
 
 
 if params.final_test

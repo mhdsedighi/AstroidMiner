@@ -135,12 +135,13 @@ parfor i_par=1:N_par
 
     int_Fs=trapz(T_vec,Uss,2);
     reach_fac=norm(simOut(i_par).R.Data(1:5));
-    detumble_fac=simOut(i_par).omega.Data;
+    detumble_fac=simOut(i_par).omega.Data(end);
     T_end=T_vec(end);
 
-    cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.8;
+    cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
     if min_dis<0.3
-        cost_array(i_par)=cost_array(i_par)*(2+min_dis)^-4;
+        cost_array(i_par)=cost_array(i_par)*(1+min_dis^(-2));
+%         cost_array(i_par)=cost_array(i_par)*(10/(min_dis+1));
     end
 
 
