@@ -12,10 +12,13 @@ addpath('plotlib')
 
 mu=1.3271e+11;
 
+
+
 close all
 figure
 hold on
 axis equal
+view(-31,9);
 set(gca, 'XTick', [], 'YTick', [], 'ZTick', [])
 set(gca, 'xcolor', 'w', 'ycolor', 'w','zcolor', 'w') ;
 
@@ -99,9 +102,7 @@ plot_arc(r,v_per,F,0.5,'$\alpha$')
 
 
 
-% figure
-hold on
-view(-31,9);
+
 scale=0.1;
 [X,Y,Z] = sphere;
 % globe=surf(X*scale,Y*scale,Z*scale,'EdgeColor','none','FaceColor',[0.9290, 0.6940, 0.1250],'FaceAlpha','0.5');
