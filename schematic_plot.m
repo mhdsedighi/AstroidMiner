@@ -7,6 +7,7 @@ load('shape');
 params.shape=shape;
 addpath('geom3d/geom3d')
 addpath('geom3d/meshes3d')
+addpath('plotlib')
 
 
 close all
@@ -275,6 +276,20 @@ loc_text=v_tran(idx,:)+0.1*(v_tran(idx,:)-p)./norm(v_tran(idx,:)-p);
 
 plot3(v_tran(:,1),v_tran(:,2),v_tran(:,3),'k');
 text(loc_text(1),loc_text(2),loc_text(3),name,'FontSize',14, 'Interpreter','latex')
+
+pp=v_tran(end-1,:);
+% dir=v_tran(end,:)-v_tran(end-1,:);
+pp_end=v_tran(end,:);
+% d=10;
+% plt=quiver3(pp(1),pp(2),pp(3),d*dir(1),d*dir(2),d*dir(3));
+% plt.AutoScale=0;
+% % plt.ShowArrowHead=1;
+% plt.MaxHeadSize=100;
+% plt.MarkerSize=100;
+% plt.AlignVertexCenters='on';
+
+arrow(pp,pp_end,4,'BaseAngle',60);% 'NormalDir',[0 0 1]);
+
 
 
 end
