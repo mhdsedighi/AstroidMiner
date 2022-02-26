@@ -4,6 +4,9 @@
 load('params')
 % load('ref')
 
+params.mass_sat_empty=15;
+params.Isp=3000;
+
 
 assume_ellipsoid=0;   %%%% 0 or 1
 
@@ -145,6 +148,9 @@ pqr_0=spin_speed*spin_vector/norm(spin_vector)';
 %%%%%%
 max_f=10;
 N_sat=25;
+Sat_mass_vec=30*ones(N_sat,1);
+
+
 lambdas=rand_gen(1,N_sat,0,360);
 phis=rand_gen(1,N_sat,-90,90);
 alphas=90*ones(1,N_sat);
@@ -153,12 +159,15 @@ betas=zeros(1,N_sat);
 
 %%%%%%
 
-[Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
+[sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(params,N_sat,lambdas,phis,alphas,betas);
 Force_Vectors=Force_Vectors';
 Moment_Vectors=Moment_Vectors';
 
 
-
+mass_sats=sum(Sat_mass_vec);
+mass_total=params.mass+mass_sats;
+Inertia_sats=point_mass_Inertia(sat_pos,Sat_mass_vec);
+Inertia_total=params.Inertia+Inertia_sats;
 
 
 % % % load solve_path
@@ -251,6 +260,9 @@ R_stop=1e-2;
 
 % sim('model_new_3');
 % out.Rdots.Data(end,:)
+
+
+
 
 
 

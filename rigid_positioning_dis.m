@@ -1,4 +1,4 @@
-function [Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(params,N_sat,lambdas,phis,alphas,betas)
+function [sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(params,N_sat,lambdas,phis,alphas,betas)
 
 sat_pos=zeros(N_sat,3);
 Force_Vectors=zeros(N_sat,3);

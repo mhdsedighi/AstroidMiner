@@ -1,3 +1,4 @@
+params.final_test=0;
 close all
 % mode='single'
 mode='multi'
@@ -10,8 +11,9 @@ pqr_0=[1 2 3]*1e-4;
 clc
 warning('off','all')
 
-params.final_test=0;
-params.max_f=max_f;
+params.mass_sat_empty=15;
+params.Isp=3000;
+params.max_f=10;
 params.mee_0=mee_0;
 params.strategy=strategy;
 
@@ -28,6 +30,12 @@ N_sat=25;
 % [Force_Vectors,Moment_Vectors]=rigid_positioning(params,N_sat,lambdas,phis,alphas,betas);
 % Force_Vectors=Force_Vectors';
 % Moment_Vectors=Moment_Vectors';
+
+%%% all sats are the same weight
+MFuel_0=30;
+MFuel_min=30;
+MFuel_max=30;
+
 
 
 lambdas_0=rand_gen(1,N_sat,0,360);
@@ -48,13 +56,15 @@ rot_Gains_0=[1 1 1];
 target_angles_0=[0 0 0];
 
 
-x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
-LB=[zeros(1,N_sat) -90*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 0.1*W_0 0.7*ones(1,3) -pi/2*ones(1,3)];
-UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 135*ones(1,N_sat) 180*ones(1,N_sat) 10*W_0 1.3*ones(1,3) pi/2*ones(1,3)];
+x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0 MFuel_0];
+LB=[zeros(1,N_sat) -90*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 0.1*W_0 0.7*ones(1,3) -pi/2*ones(1,3) MFuel_min];
+UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 135*ones(1,N_sat) 180*ones(1,N_sat) 10*W_0 1.3*ones(1,3) pi/2*ones(1,3) MFuel_max];
 
 % x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
 % LB=[lambdas_0 phis_0 alphas_0 betas_0 1*W_0 0.7*ones(1,3) -pi/2*ones(1,3)];
 % UB=[lambdas_0 phis_0 alphas_0 betas_0 1*W_0 1.3*ones(1,3) pi/2*ones(1,3)];
+
+if params.final_test==0
 
 if strcmp(mode,'single')
 
@@ -90,7 +100,7 @@ pctRunOnAll('initial_sim2')
 
 parfevalOnAll(@load_system,0,'model_5_exact');
 options = optimoptions('particleswarm','UseParallel', true, 'UseVectorized', true,'Display','iter','PlotFcn','pswplotbestf','SwarmSize',4);
-nvars=4*N_sat+5+3+3;
+nvars=4*N_sat+5+3+3+1;
 [x_opt,cost_opt,exitflag,output]=particleswarm(cost_handle_multi,nvars,LB,UB,options)
 
 end
@@ -107,17 +117,31 @@ target_angles=x_opt(4*N_sat+9:end);
 
 
 params.final_test=1;
+sim_data.params.final_test=1;
+
+%%%% why I Must write it again?
+params.max_f=max_f;
+params.mee_0=mee_0;
+params.strategy=strategy;
+
+maxIter=20;
+params.options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','MaxIterations',maxIter,'Display','none');
+params.LB=zeros(N_sat,1);
+params.UB=params.max_f*ones(N_sat,1);
+%%%%
+end
 % params.max_f=max_f;
 cost_opt=sim_cost(x_opt,N_sat,params);
+
 
 mark_err
 reach_fac
 detumble_fac
 min_dis
 int_Fs
-var_int_Fs
+std_int_Fs
 sum_int_Fs
-
+res_fuels
 
 
 ylabel('Cost Function Value')
