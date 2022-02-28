@@ -28,19 +28,20 @@ for i_par=1:N_par
     W=inputArg(i_par,4*N_sat+1:4*N_sat+5);
     rot_Gains=inputArg(i_par,4*N_sat+6:4*N_sat+8);
     target_angles=inputArg(i_par,4*N_sat+9:4*N_sat+11);
-    mass_one_fuel=inputArg(i_par,end);
+%     mass_one_fuel=inputArg(i_par,end);
 
     %%%%%%%%%%%%%%%%%%%%%%%%
     rotm_target = eul2rotm(target_angles);
-    [sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
+%     [sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
+    [~,Force_Vectors,Moment_Vectors,~]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
     Force_Vectors=Force_Vectors';
     Moment_Vectors=Moment_Vectors';
 
-    Sat_mass_vec=ones(N_sat,1)*mass_one_fuel+ones(N_sat,1)*sim_data.params.mass_sat_empty;
-    mass_sats=sum(Sat_mass_vec);
-    mass_total=sim_data.params.mass+mass_sats;
-    Inertia_sats=point_mass_Inertia(sat_pos,Sat_mass_vec);
-    Inertia_total=sim_data.params.Inertia+Inertia_sats;
+%     Sat_mass_vec=ones(N_sat,1)*mass_one_fuel+ones(N_sat,1)*sim_data.params.mass_sat_empty;
+%     mass_sats=sum(Sat_mass_vec);
+%     mass_total=sim_data.params.mass+mass_sats;
+%     Inertia_sats=point_mass_Inertia(sat_pos,Sat_mass_vec);
+%     Inertia_total=sim_data.params.Inertia+Inertia_sats;
 
 
     max_f_available=[0 0;0 0;0 0];
@@ -81,8 +82,8 @@ for i_par=1:N_par
     simIn(i_par) = simIn(i_par).setVariable('rotm_target',rotm_target);
     simIn(i_par) = simIn(i_par).setVariable('max_f_available',max_f_available);
     simIn(i_par) = simIn(i_par).setVariable('max_M_available',max_M_available);
-    simIn(i_par) = simIn(i_par).setVariable('mass_total',mass_total);
-    simIn(i_par) = simIn(i_par).setVariable('Inertia_total',Inertia_total);
+%     simIn(i_par) = simIn(i_par).setVariable('mass_total',mass_total);
+%     simIn(i_par) = simIn(i_par).setVariable('Inertia_total',Inertia_total);
 
 
 end
@@ -149,16 +150,16 @@ parfor i_par=1:N_par
     detumble_fac=simOut(i_par).omega.Data(end);
     T_end=T_vec(end);
 
-    res_fuels=Sat_mass_vec-int_Fs/(sim_data.params.Isp*9.81);
-    err_fuel=sum(abs(res_fuels))*(1+sum(res_fuels<0));
+%     res_fuels=Sat_mass_vec-int_Fs/(sim_data.params.Isp*9.81);
+%     err_fuel=sum(abs(res_fuels))*(1+sum(res_fuels<0));
 
     if sim_data.params.strategy==1
 
-        cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+err_fuel)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+        cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
     else
 
-        cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+err_fuel)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+        cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
     end
 

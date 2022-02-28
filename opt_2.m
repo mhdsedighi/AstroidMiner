@@ -12,6 +12,9 @@ clc
 warning('off','all')
 
 params.mass_sat_empty=15;
+mass_total=params.mass;  %%neglecting sats weight
+Inertia_total=params.Inertia;
+
 params.Isp=3000;
 params.max_f=10;
 params.mee_0=mee_0;
@@ -56,9 +59,9 @@ rot_Gains_0=[1 1 1];
 target_angles_0=[0 0 0];
 
 
-x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0 MFuel_0];
-LB=[zeros(1,N_sat) -90*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 0.1*W_0 0.7*ones(1,3) -pi/2*ones(1,3) MFuel_min];
-UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 135*ones(1,N_sat) 180*ones(1,N_sat) 10*W_0 1.3*ones(1,3) pi/2*ones(1,3) MFuel_max];
+x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
+LB=[zeros(1,N_sat) -90*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 0.1*W_0 0.7*ones(1,3) -pi/2*ones(1,3)];
+UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 135*ones(1,N_sat) 180*ones(1,N_sat) 10*W_0 1.3*ones(1,3) pi/2*ones(1,3)];
 
 % x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
 % LB=[lambdas_0 phis_0 alphas_0 betas_0 1*W_0 0.7*ones(1,3) -pi/2*ones(1,3)];
@@ -100,7 +103,7 @@ pctRunOnAll('initial_sim2')
 
 parfevalOnAll(@load_system,0,'model_5_exact');
 options = optimoptions('particleswarm','UseParallel', true, 'UseVectorized', true,'Display','iter','PlotFcn','pswplotbestf','SwarmSize',4);
-nvars=4*N_sat+5+3+3+1;
+nvars=4*N_sat+5+3+3;
 [x_opt,cost_opt,exitflag,output]=particleswarm(cost_handle_multi,nvars,LB,UB,options)
 
 end
@@ -141,7 +144,7 @@ min_dis
 int_Fs
 std_int_Fs
 sum_int_Fs
-res_fuels
+% res_fuels
 
 
 ylabel('Cost Function Value')

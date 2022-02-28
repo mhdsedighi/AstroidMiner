@@ -8,7 +8,7 @@ betas=inputArg(3*N_sat+1:4*N_sat);
 W=inputArg(4*N_sat+1:4*N_sat+5);
 rot_Gains=inputArg(4*N_sat+6:4*N_sat+8);
 target_angles=inputArg(4*N_sat+9:4*N_sat+11);
-mass_one_fuel=inputArg(end);
+% mass_one_fuel=inputArg(end);
 
 
 rotm_target = eul2rotm(target_angles);
@@ -16,11 +16,11 @@ rotm_target = eul2rotm(target_angles);
 Force_Vectors=Force_Vectors';
 Moment_Vectors=Moment_Vectors';
 
-Sat_mass_vec=ones(N_sat,1)*mass_one_fuel+ones(N_sat,1)*params.mass_sat_empty;
-mass_sats=sum(Sat_mass_vec);
-mass_total=params.mass+mass_sats;
-Inertia_sats=point_mass_Inertia(sat_pos,Sat_mass_vec);
-Inertia_total=params.Inertia+Inertia_sats;
+% Sat_mass_vec=ones(N_sat,1)*mass_one_fuel+ones(N_sat,1)*params.mass_sat_empty;
+% mass_sats=sum(Sat_mass_vec);
+% mass_total=params.mass+mass_sats;
+% Inertia_sats=point_mass_Inertia(sat_pos,Sat_mass_vec);
+% Inertia_total=params.Inertia+Inertia_sats;
 
 % % % max_f_available=[0 0;0 0;0 0];
 % % % max_M_available=[0 0;0 0;0 0];
@@ -62,8 +62,8 @@ simIn= Simulink.SimulationInput('model_5_exact');
 assignin('base','W',W);
 assignin('base','rot_Gains',rot_Gains);
 assignin('base','rotm_target',rotm_target);
-assignin('base','mass_total',mass_total);
-assignin('base','Inertia_total',Inertia_total);
+% assignin('base','mass_total',mass_total);
+% assignin('base','Inertia_total',Inertia_total);
 % assignin('base','sat_pos',sat_pos);
 
 simOut=sim(simIn);
@@ -71,7 +71,7 @@ simOut=sim(simIn);
 N_t=length(simOut.F_req_B.Time);
 T_vec=simOut.F_req_B.Time;
 
-T_end=T_vec(end);
+% T_end=T_vec(end);
 
 FM=[simOut.F_req_B.Data';simOut.M_req.Data'];
 C=[Force_Vectors;Moment_Vectors];
@@ -108,16 +108,16 @@ reach_fac=norm(simOut.R.Data(1:5));
 detumble_fac=simOut.omega.Data(end);
 T_end=T_vec(end);
 
-res_fuels=Sat_mass_vec-int_Fs/(3000*9.81);
-err_fuel=sum(abs(res_fuels))*(1+sum(res_fuels<0));
+% res_fuels=Sat_mass_vec-int_Fs/(3000*9.81);
+% err_fuel=sum(abs(res_fuels))*(1+sum(res_fuels<0));
 
 if params.strategy==1
 
-    cost=sum(int_Fs)*(1+std(int_Fs))*(1+err_fuel)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+    cost=sum(int_Fs)*(1+std(int_Fs))*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
 else
 
-    cost=sum(int_Fs)*(1+std(int_Fs))*(1+err_fuel)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+    cost=sum(int_Fs)*(1+std(int_Fs))*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
 end
 
@@ -138,8 +138,8 @@ if params.final_test
     assignin('base','int_Fs',int_Fs);
     assignin('base','sum_int_Fs',sum_int_Fs);
     assignin('base','std_int_Fs',std(int_Fs));
-    assignin('base','res_fuels',res_fuels);
-    assignin('base','sat_pos',sat_pos);
+%     assignin('base','res_fuels',res_fuels);
+%     assignin('base','sat_pos',sat_pos);
 
 end
 
