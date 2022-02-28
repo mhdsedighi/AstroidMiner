@@ -123,7 +123,11 @@ end
 
 
 if min_dis<0.3
-    cost=cost*(1+min_dis^(-2));
+    this_min_dis=min_dis;
+    if this_min_dis<0.05  %%avoiding inf
+        this_min_dis=0.05;
+    end
+    cost=cost*(1+this_min_dis^(-2));
     %         cost_array(i_par)=cost_array(i_par)*(10/(min_dis+1));
 end
 
