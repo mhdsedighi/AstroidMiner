@@ -93,10 +93,10 @@ vf=vf*1.03;
 text(vf(1),vf(2),vf(3),'$\vec{F}$','FontSize',15, 'Interpreter','latex')
 
 
-plot_line(r,v_per,0.7,'b:',2,' ',5)
+plot_line(r,v_per,0.7,'c:',2,' ',5)
 
-plot_arc(r,s,v_per,0.5,'$\beta$')
-plot_arc(r,v_per,F,0.5,'$\alpha$')
+plot_arc(r,s,v_per,0.5,'$\tau_2$')
+plot_arc(r,v_per,F,0.5,'$\tau_1$')
 
 % plot_line(r,[1 0 0],1,'r:',2,'r',5)
 
@@ -139,8 +139,8 @@ material metal
 
 
 oe_xx=oe_0;
-oe_xx(6)=deg2rad(50);
-oe_xx(3)=deg2rad(30);
+oe_xx(6)=deg2rad(70);
+oe_xx(3)=deg2rad(60);
 
 [r1,v1]=oe2rv(oe_xx,mu);
 r1=r1';
@@ -212,7 +212,7 @@ for theta = start_deg:res:end_deg % define the angle of rotation (right-handed C
 end
 
 idx=floor(count/2);
-loc_text=v_tran(idx,:)+0.1*(v_tran(idx,:)-p)./norm(v_tran(idx,:)-p);
+loc_text=v_tran(idx,:)+0.15*(v_tran(idx,:)-p)./norm(v_tran(idx,:)-p);
 
 plot3(v_tran(:,1),v_tran(:,2),v_tran(:,3),'k');
 text(loc_text(1),loc_text(2),loc_text(3),name,'FontSize',14, 'Interpreter','latex')
