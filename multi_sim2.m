@@ -17,6 +17,7 @@ N_sat=sim_data.N_sat;
 
 for i_par=1:N_par
     simIn(i_par) = Simulink.SimulationInput('model_5_exact');
+    simIn(i_par).setModelParameter('TimeOut', 120);
 end
 
 for i_par=1:N_par
@@ -97,7 +98,7 @@ simOut=parsim(simIn,'TransferBaseWorkspaceVariables','on');
 
 
 cost_array=zeros(N_par,1);
-parfor i_par=1:N_par
+for i_par=1:N_par
 
     lambdas=inputArg(i_par,1:N_sat);
     phis=inputArg(i_par,N_sat+1:2*N_sat);
@@ -155,11 +156,11 @@ parfor i_par=1:N_par
 
     if sim_data.params.strategy==1
 
-        cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+        cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
     else
 
-        cost_array(i_par)=sum(int_Fs)*(1+var(int_Fs)/1e10)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+        cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
     end
 

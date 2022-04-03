@@ -149,8 +149,8 @@ plot(T,oe(:,4)*r2d)
 ylabel('\omega (deg)')
 xlim([0 T(end)])
 xticks(xtick_time)
-% ylim([0 360])
-% yticks(yticks_360)
+ylim([0 360])
+yticks(yticks_360)
 grid
 
 % subplot(3,2,5)

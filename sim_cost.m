@@ -100,8 +100,6 @@ for i=1:N_t
 
 end
 
-int_Fs=trapz(T_vec,Uss,2);
-sum_int_Fs=sum(int_Fs);
 
 int_Fs=trapz(T_vec,Uss,2);
 reach_fac=norm(simOut.R.Data(1:5));
@@ -113,11 +111,11 @@ T_end=T_vec(end);
 
 if params.strategy==1
 
-    cost=sum(int_Fs)*(1+std(int_Fs))*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+    cost=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
 else
 
-    cost=sum(int_Fs)*(1+std(int_Fs))*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+    cost=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
 end
 
@@ -140,7 +138,7 @@ if params.final_test
     assignin('base','detumble_fac',detumble_fac);
     assignin('base','min_dis',min_dis);
     assignin('base','int_Fs',int_Fs);
-    assignin('base','sum_int_Fs',sum_int_Fs);
+    assignin('base','sum_int_Fs',sum(int_Fs));
     assignin('base','std_int_Fs',std(int_Fs));
 %     assignin('base','res_fuels',res_fuels);
 %     assignin('base','sat_pos',sat_pos);

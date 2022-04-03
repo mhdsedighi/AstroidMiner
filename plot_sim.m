@@ -1,4 +1,4 @@
-
+% close all
 XYZ=out.r.Data;
 
 
@@ -14,6 +14,23 @@ set(gca, 'xcolor', 'w', 'ycolor', 'w','zcolor', 'w') ;
 plot3(XYZ(:,1),XYZ(:,2),XYZ(:,3),'k')
 plot3(XYZ(1,1),XYZ(1,2),XYZ(1,3),'k*')
 plot3(XYZ(end,1),XYZ(end,2),XYZ(end,3),'ko')
+
+% Time=out.r.Time;
+% T_end=Time(end);
+
+% F_his=out.F_req_B.Data';
+% N=length(F_his);
+
+% idxs=[];
+% count=0;
+% for i=0:0.1:1
+%     this_t=i*T_end;
+%     arr=find(Time>=this_t);
+%     count=count+1;
+%     idxs(count)=arr(1);
+% end
+
+% quiver3(XYZ(idxs,1),XYZ(idxs,2),XYZ(idxs,3),F_his(1,idxs)',F_his(2,idxs)',F_his(3,idxs)',13,'k')
 
 
 
