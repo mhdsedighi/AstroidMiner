@@ -41,7 +41,7 @@ xlabel('time (days)')
 ylabel('\theta (deg)')
 xlim([0 T(end)])
 xticks(xtick_time)
-ylim([-180 180])
+ylim([-90 90])
 yticks(yticks_180)
 grid
 
