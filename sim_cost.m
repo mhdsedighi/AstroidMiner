@@ -92,13 +92,18 @@ for i=1:N_t
     fun=@(x)(C*x-b);
 
     [Uss(:,i),error]=lsqnonlin(fun,x0,params.LB,params.UB,params.options);
+
+        guess=Uss(:,i);
     if error>1e-2
         mark_err=mark_err+1;
+%         Uss(:,i)=zeros(N_sat,1);
     end
 
-    guess=Uss(:,i);
+
 
 end
+
+mark_err=mark_err/N_t*100;
 
 
 int_Fs=trapz(T_vec,Uss,2);
@@ -111,23 +116,27 @@ T_end=T_vec(end);
 
 if params.strategy==1
 
-    cost=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+    cost=sum(int_Fs)^0*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8);
 
 else
 
-    cost=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+    cost=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
 end
 
 
-if min_dis<0.3
-    this_min_dis=min_dis;
-    if this_min_dis<0.05  %%avoiding inf
-        this_min_dis=0.05;
-    end
-    cost=cost*(1+this_min_dis^(-2));
-    %         cost_array(i_par)=cost_array(i_par)*(10/(min_dis+1));
-end
+% % if min_dis<0.3
+% % %     this_min_dis=min_dis;
+% % %     if this_min_dis<0.05  %%avoiding inf
+% % %         this_min_dis=0.05;
+% % %     end
+% % %     cost=cost*(1+this_min_dis^(-15));
+% % %     %         cost_array(i_par)=cost_array(i_par)*(10/(min_dis+1));
+% % 
+% % cost=cost*100;
+% % end
+
+%         cost=cost*(1+min_dis);
 
 
 if params.final_test
@@ -140,6 +149,7 @@ if params.final_test
     assignin('base','int_Fs',int_Fs);
     assignin('base','sum_int_Fs',sum(int_Fs));
     assignin('base','std_int_Fs',std(int_Fs));
+    assignin('base','T_end',T_vec(end)/31536000);
 %     assignin('base','res_fuels',res_fuels);
 %     assignin('base','sat_pos',sat_pos);
 

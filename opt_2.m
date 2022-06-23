@@ -61,7 +61,7 @@ target_angles_0=[0 0 0];
 
 x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
 LB=[zeros(1,N_sat) -90*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 0.1*W_0 0.7*ones(1,3) -pi/2*ones(1,3)];
-UB=[360*ones(1,N_sat) 90*ones(1,N_sat) 135*ones(1,N_sat) 180*ones(1,N_sat) 10*W_0 1.3*ones(1,3) pi/2*ones(1,3)];
+UB=[720*ones(1,N_sat) 180*ones(1,N_sat) 135*ones(1,N_sat) 180*ones(1,N_sat) 10*W_0 1.3*ones(1,3) pi/2*ones(1,3)];
 
 % x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
 % LB=[lambdas_0 phis_0 alphas_0 betas_0 1*W_0 0.7*ones(1,3) -pi/2*ones(1,3)];
@@ -127,7 +127,7 @@ params.max_f=max_f;
 params.mee_0=mee_0;
 params.strategy=strategy;
 
-maxIter=20;
+maxIter=25;
 params.options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','MaxIterations',maxIter,'Display','none');
 params.LB=zeros(N_sat,1);
 params.UB=params.max_f*ones(N_sat,1);
@@ -144,6 +144,7 @@ min_dis
 int_Fs
 std_int_Fs
 sum_int_Fs
+T_end
 % res_fuels
 
 

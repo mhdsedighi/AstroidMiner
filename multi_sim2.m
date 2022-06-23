@@ -106,7 +106,7 @@ for i_par=1:N_par
     betas=inputArg(i_par,3*N_sat+1:4*N_sat);
 
 
-    [Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
+    [sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
     Force_Vectors=Force_Vectors';
     Moment_Vectors=Moment_Vectors';
 
@@ -118,7 +118,7 @@ for i_par=1:N_par
 
     FM=[simOut(i_par).F_req_B.Data';simOut(i_par).M_req.Data'];
     C=[Force_Vectors;Moment_Vectors];
-    maxIter=20;
+    maxIter=25;
     options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','MaxIterations',maxIter,'Display','none');
     LB=zeros(N_sat,1);
     UB=sim_data.params.max_f*ones(N_sat,1);
@@ -138,11 +138,16 @@ for i_par=1:N_par
         fun=@(x)(C*x-b);
 
         [Uss(:,i),error]=lsqnonlin(fun,x0,LB,UB,options);
-        if error>1e-2
-            mark_err=mark_err+1;
-        end
 
         guess=Uss(:,i);
+
+
+        if error>1e-2
+            mark_err=mark_err+1;
+%             Uss(:,i)=zeros(N_sat,1);
+        end
+
+        
 
     end
 
@@ -156,23 +161,34 @@ for i_par=1:N_par
 
     if sim_data.params.strategy==1
 
-        cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+%         cost_array(i_par)=sum(int_Fs)^0*(1+std(int_Fs)/1e8)^0*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+%         cost_array(i_par)=sum(int_Fs)^0.2*(1+std(int_Fs)/1e8)^0*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8);
+
+% cost_array(i_par)=(1+reach_fac)^5*(1+detumble_fac)^2;
+cost_array(i_par)=(1+T_end*3.171e-8);
 
     else
 
-        cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+        cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 
     end
 
 
-    if min_dis<0.3
-        this_min_dis=min_dis;
-        if this_min_dis<0.05  %%avoiding inf
-            this_min_dis=0.05;
-        end
-        cost_array(i_par)=cost_array(i_par)*(1+this_min_dis^(-2));
-        %         cost_array(i_par)=cost_array(i_par)*(10/(min_dis+1));
-    end
+% %     if min_dis<0.3
+% %         %         this_min_dis=min_dis;
+% %         %         if this_min_dis<0.05  %%avoiding inf
+% %         %             this_min_dis=0.05;
+% %         %         end
+% %         %         cost_array(i_par)=cost_array(i_par)*(1+this_min_dis^(-15));
+% %         %                 cost_array(i_par)=cost_array(i_par)*(10/(min_dis+1));
+% % 
+% %         cost_array(i_par)=cost_array(i_par)*100;
+% %     end
+% min_dis
+%     if min_dis
+
+%         cost_array(i_par)=cost_array(i_par)*(1+min_dis);
+%     end
 
 
     %     if sim_data.params.final_test
