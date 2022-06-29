@@ -31,16 +31,47 @@ R_stop=1e-2;
 % W_0=[1 1 1 1 1];
 % theta_0=pi;
 
+if params.strategy==1
+
 % min time
 % W_0=[15.7691   19.1673   10.3197   18.2571   10.5895]/100;
 % theta_0=5.4986;
+
+%%best
+% W_0 =[1.0000    0.3396    0.5082    0.8571    0.4656];
+% theta_0 =6.0620;
+
+% W_0=[1.0000    0.4159    0.1701    0.8477    0.4443];
+% theta_0 =6.1886;
+
+% W_0=[1.0000    0.4159    0.1701    0.8477    0.4443];
+% theta_0 =6.1886;
+
+W_0=[0.1577    0.1917    0.1032    0.1826    0.1059];
+W_0=W_0./norm(W_0);
+theta_0 =5.4986;
+
+else
 
 % % % min energy
 % W_0=[1.0000    0.2350    0.1476    0.4439    0.3023];
 % theta_0=6.0565;
 
-W_0=[1    1    1    1    1];
-theta_0=1*pi/2;
+%%best
+% W_0=[1.0000    0.4159    0.1701    0.8477    0.4443];
+% theta_0 =6.1886;
+
+% W_0=[1    1    1    1    1];
+% theta_0=1*pi/2;
+
+% W_0=[15.7691   19.1673   10.3197   18.2571   10.5895]/100;
+% theta_0=5.4986;
+
+
+W_0=[0.2038    0.0409    1.0000    0.0305    0.2375];
+theta_0 = 7.3350;
+
+end
 
 
 % W_0=[1    1    1    1    1];
@@ -56,7 +87,7 @@ min_w=0.001;
 
 x0=[W_0 theta_0];
 LB=[min_w*ones(1,5) 0];
-UB=[max_w*ones(1,5) 2*pi];
+UB=[max_w*ones(1,5) 4*pi];
 
 
 cost_handle=@(inputArg)sim_cost_path(inputArg,params);
@@ -64,7 +95,7 @@ options = optimoptions('simulannealbnd');
 % options.Display='Iter';
 options.PlotFcns={@saplotbestf,@saplotbestx };
 options.MaxIter=1e6;
-options.InitialTemperature=2000;
+options.InitialTemperature=4000;
 [x_opt,cost_opt,exitflag,output] = simulannealbnd(cost_handle,x0,LB,UB,options);
 
 % 

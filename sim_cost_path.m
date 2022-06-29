@@ -121,7 +121,7 @@ elseif params.strategy==2
     time_cost=1;
 
     %%%%
-    max_year=10;
+    max_year=3;
     T_end_year=T_end/31536000;
     if T_end_year>max_year
         time_cost=1+(T_end-max_year);

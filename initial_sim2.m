@@ -59,6 +59,7 @@ incl_0=deg2rad(5.8837);
 omega_0=deg2rad(211.43);
 RA_0=deg2rad(251.62);
 theta_0=2.3480;
+dif_theta=0.0;
 
 
 % a_0=1.1896*AU;

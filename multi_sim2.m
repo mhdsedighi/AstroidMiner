@@ -29,6 +29,7 @@ for i_par=1:N_par
     W=inputArg(i_par,4*N_sat+1:4*N_sat+5);
     rot_Gains=inputArg(i_par,4*N_sat+6:4*N_sat+8);
     target_angles=inputArg(i_par,4*N_sat+9:4*N_sat+11);
+    dif_theta=inputArg(4*N_sat+12);
 %     mass_one_fuel=inputArg(i_par,end);
 
     %%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,6 +86,7 @@ for i_par=1:N_par
     simIn(i_par) = simIn(i_par).setVariable('max_M_available',max_M_available);
 %     simIn(i_par) = simIn(i_par).setVariable('mass_total',mass_total);
 %     simIn(i_par) = simIn(i_par).setVariable('Inertia_total',Inertia_total);
+simIn(i_par) = simIn(i_par).setVariable('dif_theta',dif_theta);
 
 
 end
@@ -165,43 +167,52 @@ for i_par=1:N_par
 %         cost_array(i_par)=sum(int_Fs)^0.2*(1+std(int_Fs)/1e8)^0*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8);
 
 % cost_array(i_par)=(1+reach_fac)^5*(1+detumble_fac)^2;
-cost_array(i_par)=(1+T_end*3.171e-8);
+cost_array(i_par)=(T_end*3.171e-8)*sum(int_Fs)^0.05;
+% cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+detumble_fac)^2;
 
     else
 
-        cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+%         cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
+cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8);
+
+if (T_end*3.171e-8)>3
+cost_array(i_par)=cost_array(i_par)*100;
+end
 
     end
 
 
-% %     if min_dis<0.3
-% %         %         this_min_dis=min_dis;
-% %         %         if this_min_dis<0.05  %%avoiding inf
+%     if min_dis<0.3
+        %         this_min_dis=min_dis;
+        %         if this_min_dis<0.05  %%avoiding inf
 % %         %             this_min_dis=0.05;
 % %         %         end
 % %         %         cost_array(i_par)=cost_array(i_par)*(1+this_min_dis^(-15));
 % %         %                 cost_array(i_par)=cost_array(i_par)*(10/(min_dis+1));
 % % 
-% %         cost_array(i_par)=cost_array(i_par)*100;
-% %     end
+%         cost_array(i_par)=cost_array(i_par)*100;
+%     end
 % min_dis
 %     if min_dis
 
 %         cost_array(i_par)=cost_array(i_par)*(1+min_dis);
 %     end
 
+     cost_array(i_par)=cost_array(i_par)*(1+min_dis);
 
-    %     if sim_data.params.final_test
-    %         assignin('base','out')
-    %         assignin('base','mark_err',mark_err);
-    %         assignin('base','reach_fac',reach_fac);
-    %         assignin('base','detumble_fac',detumble_fac);
-    %         assignin('base','min_dis',min_dis);
-    %         assignin('base','int_Fs',int_Fs);
-    %         assignin('base','sum_int_Fs',sum_int_Fs);
-    %         assignin('base','var_int_Fs',var(int_Fs));
-    %         assignin('base','sat_pos',sat_pos);
-    %     end
+
+
+     if sim_data.params.final_test
+         assignin('base','out')
+         assignin('base','mark_err',mark_err);
+         assignin('base','reach_fac',reach_fac);
+         assignin('base','detumble_fac',detumble_fac);
+         assignin('base','min_dis',min_dis);
+         assignin('base','int_Fs',int_Fs);
+         assignin('base','sum_int_Fs',sum_int_Fs);
+         assignin('base','var_int_Fs',var(int_Fs));
+         assignin('base','sat_pos',sat_pos);
+     end
 
 end
 
