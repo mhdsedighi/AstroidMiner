@@ -5,14 +5,15 @@ close all
 pwpf
 
 
-test_freq=2*pi/600;
+test_freq=2*pi/6;
 Thrust_analog=1e-6;
-min_on_off_time=20;
-digital_factor=1e-5;
+min_on_off_time=0.2;
+digital_factor=5e-7;
 % Thrust_digital=digital_factor;
 
 
 t_sim=min_on_off_time*5;
+t_sim=100
 
 % Tm=2;
 % Km=5;
