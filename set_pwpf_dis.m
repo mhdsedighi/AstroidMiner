@@ -7,7 +7,7 @@ close all
 set_param('model_5/Actuation/actuators/thrusters','Commented','through')
 % set_param('model_5/Actuation/actuators/thrusters','Commented','off')
 
-t_sim=1e5;
+t_sim=1e4;
 out1=sim('model_5.slx');
 
 sample_time=1;
@@ -63,7 +63,7 @@ options = optimoptions('simulannealbnd');
 % options.Display='Iter';
 options.PlotFcns={@saplotbestf,@saplotbestx };
 options.MaxIter=1e6;
-% [x_opt,cost_opt,exitflag,output] = simulannealbnd(@cost_pwpf_dis,x0,LB,UB,options);
+[x_opt,cost_opt,exitflag,output] = simulannealbnd(@cost_pwpf_dis,x0,LB,UB,options);
 
 
 
@@ -78,7 +78,7 @@ t_sim=1e5;
 sim pwpf_real_signal
 
 
-
+On_values=Thrust_digital*scale
 
 % save pwpf_d_tune
 
