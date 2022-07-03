@@ -3,9 +3,9 @@ addpath('plotlib')
 
 T=out.r.Time./(24*3600);
 
-xtick_time=0:10:T(end);
-xtick_time(end+1)=T(end);
-yticks_360=0:45:360;
+xtick_time=0:50:T(end);
+% xtick_time(end+1)=T(end);
+yticks_360=0:90:360;
 yticks_180=-180:45:180;
 
 r2d=180/pi;
@@ -17,94 +17,139 @@ pqr=out.pqr.Data;
 oe=out.oe.Data;
 
 
-
 figure('DefaultAxesFontSize',16,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
-ha = tight_subplot(3,1,[0.017 0.035],[.12 .04],[.033 .01]);
+ttt = tiledlayout(3,2,'TileSpacing','compact');
+bgAx = axes(ttt,'XTick',[],'YTick',[],'Box','off');
+bgAx.Layout.TileSpan = [3 2];
 
-% subplot(3,1,1)
-ii=1;
-axes(ha(ii))
-plot(T,eul(:,1))
-xlabel('time (days)')
+
+end_point=T(end);
+split_point=25;
+y=eul';
+
+ax1 = axes(ttt);
+hold on
+plot(ax1,T,y(1,:))
+ax1.Layout.Tile = 1;
+ax1.Box = 'off';
+xlim(ax1,[0 end_point])
+grid minor
 ylabel('\phi (deg)')
-xticks(xtick_time)
-xlim([0 T(end)])
-ylim([-180 180])
-yticks(yticks_180)
-grid
 
-% subplot(3,1,2)
-ii=2;
-axes(ha(ii))
-plot(T,eul(:,2))
-xlabel('time (days)')
+
+ax2 = axes(ttt);
+ax2.Layout.Tile = 2;
+plot(ax2,T,y(1,:))
+ax2.Box = 'off';
+xlim(ax2,[0 split_point])
+grid minor
+
+
+
+ax1 = axes(ttt);
+ax1.Layout.Tile = 3;
+plot(ax1,T,y(2,:))
+ax1.Box = 'off';
+xlim(ax1,[0 end_point])
+grid minor
 ylabel('\theta (deg)')
-xlim([0 T(end)])
-xticks(xtick_time)
-ylim([-90 90])
-yticks(yticks_180)
-grid
 
-% subplot(3,1,3)
-ii=3;
-axes(ha(ii))
-plot(T,eul(:,3))
-xlabel('time (days)')
+
+ax2 = axes(ttt);
+ax2.Layout.Tile = 4;
+plot(ax2,T,y(2,:))
+ax2.Box = 'off';
+xlim(ax2,[0 split_point])
+grid minor
+
+
+ax1 = axes(ttt);
+ax1.Layout.Tile =5;
+plot(ax1,T,y(3,:))
+ax1.Box = 'off';
+xlim(ax1,[0 end_point])
+grid minor
 ylabel('\psi (deg)')
-xlim([0 T(end)])
-xticks(xtick_time)
-ylim([-180 180])
-yticks(yticks_180)
-grid
-
-set(ha(1:2),'XTickLabel','')
-% 
+xlabel('Time (days)')
 
 
+ax2 = axes(ttt);
+ax2.Layout.Tile = 6;
+plot(ax2,T,y(3,:))
+ax2.Box = 'off';
+xlim(ax2,[0 split_point])
+grid minor
+xlabel('Time (days) -zoomed')
 
 figure('DefaultAxesFontSize',16,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
 
-ha = tight_subplot(3,1,[0.033 0.035],[.12 .04],[.03 .01]);
+ttt = tiledlayout(3,2,'TileSpacing','compact');
+bgAx = axes(ttt,'XTick',[],'YTick',[],'Box','off');
+bgAx.Layout.TileSpan = [3 2];
 
 
-% subplot(3,1,1)
-ii=1;
-axes(ha(ii))
-plot(T,pqr(:,1))
-% xlabel('time (days)')
+end_point=T(end);
+split_point=40;
+y=pqr';
+
+ax1 = axes(ttt);
+hold on
+plot(ax1,T,y(1,:))
+ax1.Layout.Tile = 1;
+ax1.Box = 'off';
+xlim(ax1,[0 end_point])
+grid minor
 ylabel('p (rad/s)')
-xlim([0 T(end)])
-xticks(xtick_time)
-grid
 
-% subplot(3,1,2)
-ii=2;
-axes(ha(ii))
-plot(T,pqr(:,2))
-% xlabel('time (days)')
+
+ax2 = axes(ttt);
+ax2.Layout.Tile = 2;
+plot(ax2,T,y(1,:))
+ax2.Box = 'off';
+xlim(ax2,[0 split_point])
+grid minor
+
+
+
+ax1 = axes(ttt);
+ax1.Layout.Tile = 3;
+plot(ax1,T,y(2,:))
+ax1.Box = 'off';
+xlim(ax1,[0 end_point])
+grid minor
 ylabel('q (rad/s)')
-xlim([0 T(end)])
-xticks(xtick_time)
-grid
 
-% subplot(3,1,3)
-ii=3;
-axes(ha(ii))
-plot(T,pqr(:,3))
-xlabel('time (days)')
+
+ax2 = axes(ttt);
+ax2.Layout.Tile = 4;
+plot(ax2,T,y(2,:))
+ax2.Box = 'off';
+xlim(ax2,[0 split_point])
+grid minor
+
+
+ax1 = axes(ttt);
+ax1.Layout.Tile =5;
+plot(ax1,T,y(3,:))
+ax1.Box = 'off';
+xlim(ax1,[0 end_point])
+grid minor
 ylabel('r (rad/s)')
-xlim([0 T(end)])
-xticks(xtick_time)
-grid
-
-set(ha(1:2),'XTickLabel','');
+xlabel('Time (days)')
 
 
+ax2 = axes(ttt);
+ax2.Layout.Tile = 6;
+plot(ax2,T,y(3,:))
+ax2.Box = 'off';
+xlim(ax2,[0 split_point])
+grid minor
+xlabel('Time (days) -zoomed')
+figure('DefaultAxesFontSize',14,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
+% figure
 
-figure('DefaultAxesFontSize',16,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
 
-
-ha = tight_subplot(6,1,[0.017 0.035],[.12 .04],[.032 .01]);
+ha = tight_subplot(6,1,[0.017 0.035],[.12 .04],[.1 .05]);
 
 
 ii=1;
@@ -119,7 +164,7 @@ plot(T,oe(:,1)/133)
 ylabel('a (km)')
 xlim([0 T(end)])
 xticks(xtick_time)
-grid
+grid minor
 
 % subplot(3,2,2)
 ii=2;
@@ -129,7 +174,7 @@ plot(T,oe(:,2))
 ylabel('e')
 xlim([0 T(end)])
 xticks(xtick_time)
-grid
+grid minor
 
 % subplot(3,2,3)
 ii=3;
@@ -139,7 +184,7 @@ plot(T,oe(:,3)*r2d)
 ylabel('i (deg)')
 xlim([0 T(end)])
 xticks(xtick_time)
-grid
+grid minor
 
 % subplot(3,2,4)
 ii=4;
@@ -149,9 +194,9 @@ plot(T,oe(:,4)*r2d)
 ylabel('\omega (deg)')
 xlim([0 T(end)])
 xticks(xtick_time)
-ylim([0 360])
-yticks(yticks_360)
-grid
+% ylim([0 360])
+% yticks(yticks_360)
+grid minor
 
 % subplot(3,2,5)
 ii=5;
@@ -163,7 +208,7 @@ xlim([0 T(end)])
 xticks(xtick_time)
 % ylim([0 360])
 % yticks(yticks_360)
-grid
+grid minor
 
 % subplot(3,2,6)
 ii=6;
@@ -175,9 +220,9 @@ xlim([0 T(end)])
 xticks(xtick_time)
 ylim([0 360])
 yticks(yticks_360)
-grid
+grid minor
 
-set(ha(1:4),'XTickLabel','');
+set(ha(1:5),'XTickLabel','');
 
 
 
