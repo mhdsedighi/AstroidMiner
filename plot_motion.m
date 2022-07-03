@@ -18,7 +18,7 @@ oe=out.oe.Data;
 
 
 
-figure
+figure('DefaultAxesFontSize',16,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
 ha = tight_subplot(3,1,[0.017 0.035],[.12 .04],[.033 .01]);
 
 % subplot(3,1,1)
@@ -62,7 +62,7 @@ set(ha(1:2),'XTickLabel','')
 
 
 
-figure
+figure('DefaultAxesFontSize',16,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
 
 ha = tight_subplot(3,1,[0.033 0.035],[.12 .04],[.03 .01]);
 
@@ -101,10 +101,10 @@ set(ha(1:2),'XTickLabel','');
 
 
 
-figure
+figure('DefaultAxesFontSize',16,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
 
 
-ha = tight_subplot(3,2,[0.017 0.035],[.12 .04],[.032 .01]);
+ha = tight_subplot(6,1,[0.017 0.035],[.12 .04],[.032 .01]);
 
 
 ii=1;
