@@ -14,7 +14,8 @@
 
 
 
-figure
+% figure
+figure('DefaultAxesFontSize',5,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
 hold on
 axis equal
 view(25,45)
@@ -127,11 +128,34 @@ plot_line([0 0 0],[1 0 0],2,'r-','$x_b$',10)
 plot_line([0 0 0],[0 1 0],2,'g-','$y_b$',10)
 plot_line([0 0 0],[0 0 1],2,'b-','$z_b$',10)
 
+
+lambdas=lambdas-360*(lambdas-360>0);
+phis=phis-360*(phis-360>0);
+% alphas=alphas-360*(alphas-360>0);
+betas=betas-360*(betas-360>0);
+
+sat_table=[floor([1:N_sat]') round(lambdas',2) round(phis',2) round(alphas',2) round(betas',2)]
+
+
+
+for i=1:N_sat
+pp1=sat_pos(i,:)+force_vec(i,:)*1.3;
+
+% str1=num2str(i)+newline+num2str(lambdas(i))+newline+num2str(phis(i))+newline+num2str(alphas(i))+newline+num2str(betas(i));
+% str1=num2str(i)+","+num2str(lambdas(i),'%.1f')+","+num2str(phis(i),'%.1f')+","+num2str(alphas(i),'%.1f')+","+num2str(betas(i),'%.1f');
+str1=num2str(i);
+pt1=text(pp1(1),pp1(2),pp1(3),str1);
+pt1.FontSize=8;
+pt1.Color=[1.0000    0.0745    0.6510];
+end
+
+
+
 [sat_pos,UP_vec,North_vec,Right_vec]=ellip_shape_3d(params.shape.V,params.shape.F,0,90);
 plot3(sat_pos(1),sat_pos(2),sat_pos(3),'b.')
-text(sat_pos(1),sat_pos(2),1.1*sat_pos(3),'\uparrow N','FontSize',14,'Color','b')
+text(sat_pos(1),sat_pos(2),1.1*sat_pos(3),'\uparrow N','FontSize',14,'Color','b');
 
-
+axis tight
 
 function plot_line(p,dir,d,style,name,font_size)
 
@@ -143,3 +167,6 @@ p2=p+1.1*d*dir;
 text(p2(1),p2(2),p2(3),name,'FontSize',font_size, 'Interpreter','latex')
 
 end
+
+
+

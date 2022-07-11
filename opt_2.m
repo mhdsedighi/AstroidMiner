@@ -1,7 +1,7 @@
 params.final_test=0;
 close all
-mode='single'
-% mode='multi'
+% mode='single'
+mode='multi'
 strategy=1;   %%% min time
 % strategy=2;    %%% min energy
 
@@ -74,8 +74,8 @@ dif_theta=0;
 
 
 x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0 0];
-LB=[zeros(1,N_sat) -180*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 1*W_0 1*ones(1,3) -pi/2*ones(1,3) 0];
-UB=[720*ones(1,N_sat) 180*ones(1,N_sat) 135*ones(1,N_sat) 720*ones(1,N_sat) 1*W_0 1*ones(1,3) pi/2*ones(1,3) 0];
+LB=[zeros(1,N_sat) -180*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 1*W_0 0.9*ones(1,3) -pi/2*ones(1,3) 0];
+UB=[720*ones(1,N_sat) 180*ones(1,N_sat) 135*ones(1,N_sat) 720*ones(1,N_sat) 1*W_0 1.1*ones(1,3) pi/2*ones(1,3) 0];
 
 % x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
 % LB=[lambdas_0 phis_0 alphas_0 betas_0 1*W_0 0.7*ones(1,3) -pi/2*ones(1,3)];
@@ -132,7 +132,7 @@ W=x_opt(4*N_sat+1:4*N_sat+5);
 rot_Gains=x_opt(4*N_sat+6:4*N_sat+8);
 target_angles=x_opt(4*N_sat+9:4*N_sat+11);
 dif_theta_start=x_opt(4*N_sat+12);
-
+[sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
 
 params.final_test=1;
 sim_data.params.final_test=1;
@@ -153,7 +153,7 @@ end
 if strcmp(mode,'single')
 cost_opt=sim_cost(x_opt,N_sat,params);
 elseif strcmp(mode,'multi')
-cost_opt=cost_handle_multi(x_opt)
+cost_opt=sim_cost(x_opt,N_sat,params);
 end
 
 mark_err

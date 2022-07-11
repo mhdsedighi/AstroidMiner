@@ -4,6 +4,13 @@ close all
 
 % initial_sim2
 
+% load pre_set_pwpf
+
+[sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
+
+Force_Vectors=Force_Vectors';
+Moment_Vectors=Moment_Vectors';
+
 set_param('model_5/Actuation/actuators/thrusters','Commented','through')
 % set_param('model_5/Actuation/actuators/thrusters','Commented','off')
 
@@ -28,6 +35,7 @@ max_Thrust_analog=1e-8;
 digital_factor=1e-8;
 scale=order_force/max_Thrust_analog;
 
+% scale=min(scale)
 
 % t_sim=min_on_off_time*5;
 % t_sim=600;
@@ -74,12 +82,13 @@ u_off=x_opt(4)
 Thrust_digital=x_opt(5)
 u_on=h+u_off
 
-t_sim=1e5;
+
 sim pwpf_real_signal
 
 
-On_values=Thrust_digital*scale
+% On_values=Thrust_digital*scale
 
-% save pwpf_d_tune
+
+save('pwpf_d_tune.mat','Tm_d','Km_d','h','u_off','u_on','Thrust_digital','scale','sample_time','min_on_off_time')
 
 

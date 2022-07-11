@@ -146,17 +146,17 @@ for i_par=1:N_par
 
         if error>1e-2
             mark_err=mark_err+1;
-%             Uss(:,i)=zeros(N_sat,1);
+            Uss(:,i)=zeros(N_sat,1);
         end
 
         
 
     end
 
-    int_Fs=trapz(T_vec,Uss,2);
+    int_Fs=trapz(T_vec,Uss,2)./sim_data.params.mass;
     reach_fac=norm(simOut(i_par).R.Data(1:5));
     detumble_fac=simOut(i_par).omega.Data(end);
-    T_end=T_vec(end);
+    T_end=T_vec(end)*3.171e-8;
 
 %     res_fuels=Sat_mass_vec-int_Fs/(sim_data.params.Isp*9.81);
 %     err_fuel=sum(abs(res_fuels))*(1+sum(res_fuels<0));
@@ -167,16 +167,19 @@ for i_par=1:N_par
 %         cost_array(i_par)=sum(int_Fs)^0.2*(1+std(int_Fs)/1e8)^0*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8);
 
 % cost_array(i_par)=(1+reach_fac)^5*(1+detumble_fac)^2;
-cost_array(i_par)=(T_end*3.171e-8)*sum(int_Fs)^0.05;
+% cost_array(i_par)=(T_end*3.171e-8)*sum(int_Fs)^0.05*(1+std(int_Fs)/1e8)^0.01;
 % cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+detumble_fac)^2;
 
+cost_array(i_par)=sum(int_Fs)^0.1*(1+std(int_Fs)/mean(int_Fs))^0.1*(1+T_end)^10*(1+5*mark_err/N_t)^6;
     else
 
 %         cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
-cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8);
+% cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8);
 
-if (T_end*3.171e-8)>3
-cost_array(i_par)=cost_array(i_par)*100;
+cost_array(i_par)=sum(int_Fs)^1*(1+std(int_Fs)/mean(int_Fs))^0.1*(1+T_end)^0.7*(1+5*mark_err/N_t)^6;
+
+if T_end>4
+    cost_array(i_par)=cost_array(i_par)*(1+(T_end-4)^2);
 end
 
     end

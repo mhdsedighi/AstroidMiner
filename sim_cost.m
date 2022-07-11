@@ -100,7 +100,7 @@ for i=1:N_t
         guess=Uss(:,i);
     if error>1e-2
         mark_err=mark_err+1;
-%         Uss(:,i)=zeros(N_sat,1);
+        Uss(:,i)=zeros(N_sat,1);
     end
 
 
@@ -110,7 +110,7 @@ end
 mark_err=mark_err/N_t*100;
 
 
-int_Fs=trapz(T_vec,Uss,2);
+int_Fs=trapz(T_vec,Uss,2)./params.mass;
 reach_fac=norm(simOut.R.Data(1:5));
 detumble_fac=simOut.omega.Data(end);
 T_end=T_vec(end);
@@ -123,7 +123,7 @@ if params.strategy==1
 %     cost=sum(int_Fs)^0*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8);
 % cost=sum(int_Fs);
 % cost=sum(int_Fs)*(1+std(int_Fs)/1e8)^0*(1+T_end*3.171e-8);
-cost=T_end*3.171e-8*sum(int_Fs)^0.2;
+cost=T_end*3.171e-8*sum(int_Fs)^0.05;
 
 else
 

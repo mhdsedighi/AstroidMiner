@@ -22,18 +22,18 @@ for idx=1:N_sat
 end
 
 
-% min_dis=180;
-min_dis=0;
+min_dis=180;
+% min_dis=0;
 for idx=1:N_sat-1
     for j=idx+1:N_sat
         dis=norm(sat_pos(idx,:)-sat_pos(j,:));
-%         if dis<min_dis
-%             min_dis=dis;
-%         end
-
-        if dis<0.3
-            min_dis=min_dis+1;
+        if dis<min_dis
+            min_dis=dis;
         end
+
+%         if dis<0.3
+%             min_dis=min_dis+1;
+%         end
     end
 end
 

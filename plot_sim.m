@@ -1,4 +1,4 @@
-% close all
+close all
 XYZ=out.r.Data;
 
 
@@ -11,9 +11,11 @@ set(gca, 'XTick', [], 'YTick', [], 'ZTick', [])
 set(gca, 'xcolor', 'w', 'ycolor', 'w','zcolor', 'w') ;
 
 
-plot3(XYZ(:,1),XYZ(:,2),XYZ(:,3),'k')
-plot3(XYZ(1,1),XYZ(1,2),XYZ(1,3),'k*')
-plot3(XYZ(end,1),XYZ(end,2),XYZ(end,3),'ko')
+plt1=plot3(XYZ(:,1),XYZ(:,2),XYZ(:,3),'k');
+plot3(XYZ(1,1),XYZ(1,2),XYZ(1,3),'b*')
+plot3(XYZ(end,1),XYZ(end,2),XYZ(end,3),'ro')
+
+plt1.LineWidth=1.3
 
 % Time=out.r.Time;
 % T_end=Time(end);
@@ -39,8 +41,10 @@ view(25,45)
 plot3(0,0,0,'ro')
 size=1e7;
 plot_planet(size)
-plot_orbit(oe_0,'b:')
-plot_orbit(oe_f,'r:')
+plot_orbit(oe_0,'b:');
+plot_orbit(oe_f,'r:');
+
+
 
 
 

@@ -33,6 +33,8 @@ plot(ax1,T,y(1,:))
 ax1.Layout.Tile = 1;
 ax1.Box = 'off';
 xlim(ax1,[0 end_point])
+ylim([-180 180]);
+yticks(yticks_180)
 grid minor
 ylabel('\phi (deg)')
 
@@ -42,6 +44,8 @@ ax2.Layout.Tile = 2;
 plot(ax2,T,y(1,:))
 ax2.Box = 'off';
 xlim(ax2,[0 split_point])
+ylim([-180 180]);
+yticks(yticks_180)
 grid minor
 
 
@@ -51,6 +55,8 @@ ax1.Layout.Tile = 3;
 plot(ax1,T,y(2,:))
 ax1.Box = 'off';
 xlim(ax1,[0 end_point])
+ylim([-180 180]);
+yticks(yticks_180)
 grid minor
 ylabel('\theta (deg)')
 
@@ -60,6 +66,8 @@ ax2.Layout.Tile = 4;
 plot(ax2,T,y(2,:))
 ax2.Box = 'off';
 xlim(ax2,[0 split_point])
+ylim([-180 180]);
+yticks(yticks_180)
 grid minor
 
 
@@ -68,6 +76,8 @@ ax1.Layout.Tile =5;
 plot(ax1,T,y(3,:))
 ax1.Box = 'off';
 xlim(ax1,[0 end_point])
+ylim([-180 180]);
+yticks(yticks_180)
 grid minor
 ylabel('\psi (deg)')
 xlabel('Time (days)')
@@ -78,6 +88,8 @@ ax2.Layout.Tile = 6;
 plot(ax2,T,y(3,:))
 ax2.Box = 'off';
 xlim(ax2,[0 split_point])
+ylim([-180 180]);
+yticks(yticks_180)
 grid minor
 xlabel('Time (days) -zoomed')
 
@@ -206,8 +218,8 @@ xlabel('time (days)')
 ylabel('\Omega (deg)')
 xlim([0 T(end)])
 xticks(xtick_time)
-% ylim([0 360])
-% yticks(yticks_360)
+ylim([0 360])
+yticks(yticks_360)
 grid minor
 
 % subplot(3,2,6)

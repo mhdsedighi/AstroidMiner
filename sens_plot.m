@@ -1,32 +1,61 @@
 
 close all
 
-figure('DefaultAxesFontSize',16,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
+% idx1=10;
+% idx2=25;
 
+idx1=1;
+idx2=length(T_damp_arr);
+
+Y_1=T_damp_arr(idx1:idx2)/(24*3600);
+X_1=k_rot_arr(idx1:idx2);
+
+
+Y_2=sum_arr(idx1:idx2)./sum_arr(idx_base);
+Y_3=var_arr(idx1:idx2)./var_arr(idx_base);
+Y_5=cost_arr(idx1:idx2)./cost_arr(idx_base);
+Y_4=err_arr(idx1:idx2)./err_arr(idx_base);
+
+idx_base=find(Y_5==min(Y_5));
+X_1=X_1-X_1(idx_base)+1;
+
+% figure('DefaultAxesFontSize',16,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
+figure
 
 hold on
 
-yyaxis left
-plot(X_2,(Y_1-1)*100,'ks-')
-plot(X_2,(Y_2-1)*100,'r.-','MarkerSize',12)
-xlim([min(X_2)-0.1 max(X_2)+0.1])
-xticks(X_2)
-xlabel('Multiplication factor of proportional gain of detumbling')
+% yyaxis left
+plot(X_1,(Y_1./Y_1(idx_base)-1)*100,'bo-')
+plot(X_1,(Y_2-1)*100,'ks-')
+plot(X_1,(Y_3-1)*100,'r.-','MarkerSize',12)
+plot(X_1,(Y_4-1)*10,'gx-')
+plot(X_1,(Y_5-1)*100,'kd')
+
+xlim([min(X_1)-0.1 max(X_1)+0.1])
+xticks(X_1)
+xlabel('Multiplication factor of proportional gains of detumbling')
 ylabel('% of Change')
 % ss.Color='k';
 % ss.
 set(gca,'YColor','k')
 
-yyaxis right
-plot(X_2,(X_1./X_1(idx)-1)*100,'bo-')
+
+
+
+
+% yyaxis right
+
+
+
+
 
 % plot(X_2,(err_arr./err_arr(idx)-1)*100,'c.-')
 
 ylabel('% of Change')
-set(gca,'YColor','b')
+% set(gca,'YColor','b')
 
 % legend('Total Energy','Variance of Energy distrubition','Time 90% damp of tumbling','% of ill consition incidence')
-legend('Total energy (left)','Variance of fuel distrubition (left)','Time 90% damp of tumbling (right)')
+legend('detumbling time (90% damped)','Total energy','Variance of fuel distrubition','Number of ill conditions','Cost function value')
 grid minor
 % axis tight
 
