@@ -2,11 +2,11 @@
 close all
 addpath('plotlib')
 
-idx1=1;
-idx2=20;
-
 % idx1=1;
-% idx2=length(T_damp_arr);
+% idx2=20;
+
+idx1=1;
+idx2=length(T_damp_arr);
 
 
 X_1=k_rot_arr(idx1:idx2);
@@ -51,13 +51,19 @@ plot(X_1,(Y_5-1)*100,'bd','MarkerSize',12)
 % xticks(X_1)
 % xlabel('Multiplication factor of proportional gains of detumbling')
 ylabel('% of Change')
-legend('Total energy','Variance of fuel distrubition','Cost function value');
+
+xline(1,':','LineWidth',1.6)
+yline(0,':','LineWidth',1.6)
+legend('Total fuel','Variance of fuel distrubition','Cost function value','','');
 % ss.Color='k';
 % ss.
 % set(gca,'YColor','k')
 
+axis tight
 grid minor
-
+% xlim([0.28 max(X_1)])
+xlim([0.28 1.6])
+xticks([min(X_1):0.1:max(X_1)])
 
 ii=2;
 axes(ha(ii))
@@ -75,6 +81,7 @@ plot(X_1,(Y_4-1)*100,'gx-')
 % set(ha(2),'XTickLabel',[0:0.1:10]);
 % set(ha(1),'YTickLabel',[-5:1:5]);
 set(ha(1),'XTickLabel','');
+axis tight
 
 % set(gca,'YColor','b')
 % yticks([-100:20:100])
@@ -82,12 +89,16 @@ set(ha(1),'XTickLabel','');
 
 % plot(X_2,(err_arr./err_arr(idx)-1)*100,'c.-')
 % xlim([min(X_1) max(X_1)])
-% xticks([min(X_1):0.1:max(X_1)])
+xticks([min(X_1):0.1:max(X_1)])
 grid minor
 ylabel('% of Change')
 xlabel('Multiplication factor of proportional gains of detumbling')
-legend('Detumbling time (90% damped)','Number of ill conditions')
+xline(1,':','LineWidth',1.6)
+yline(0,':','LineWidth',1.6)
+legend('Detumbling time (90% damped)','Number of ill conditions','','')
 % set(gca,'YColor','b')
+% xlim([0.28 max(X_1)])
+xlim([0.28 1.6])
 
 % legend('Total Energy','Variance of Energy distrubition','Time 90% damp of tumbling','% of ill consition incidence')
 % legend('Detumbling time (90% damped)','Total energy','Variance of fuel distrubition','Number of ill conditions','Cost function value')
