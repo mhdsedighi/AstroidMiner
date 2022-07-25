@@ -1,14 +1,19 @@
+%%% run this after model_5_exact then out1=out then pwpwf_real_signal.slx
 close all
 
 addpath('plotlib')
 
 % load('run_e__8.mat');
 % load('pwpf_d_tune.mat');
-[sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
-Force_Vectors=Force_Vectors';
-Moment_Vectors=Moment_Vectors';
+% [sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
+% Force_Vectors=Force_Vectors';
+% Moment_Vectors=Moment_Vectors';
 
 %for t
+% load run_T
+% t_sim=T_end*365*24*3600;
+
+
 % t_sim=3.042410919992809e+07
 
 %for e
@@ -31,7 +36,8 @@ u_digital=outd.Udigital.Data';
 
 
 num=2
-nums=[1 2 3 10 15 25]
+nums=[1 2 3 4 5 10 12 15 20 25]
+% nums=1:25;
 
 
 
@@ -131,8 +137,8 @@ plt1.LineWidth=0.2;
 xlim([t1,t2])
 ylim([0 12.5])
 % grid
-ylabel("i="+num2str(nums(i)))
-xtick_time=[t1:100:t2];
+ylabel("{\it i=}"+num2str(nums(i)))
+xtick_time=[t1:20:t2];
 xticks(xtick_time)
 yticks([0 12]);
 box off

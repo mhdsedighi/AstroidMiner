@@ -50,6 +50,9 @@ betas_0=zeros(1,N_sat);
 if strategy==1
     W_0=[15.7691   19.1673   10.3197   18.2571   10.5895]/100;
     theta_0=5.4986;
+
+        W_0=[0.1881    0.1580    0.0834    0.2126    0.1233];
+    theta_0=2.3480+1.4885;
 elseif strategy==2
     W_0=[1.0000    0.2350    0.1476    0.4439    0.3023];
     theta_0=6.0565;
@@ -57,6 +60,9 @@ elseif strategy==2
     W_0=[15.7691   19.1673   10.3197   18.2571   10.5895]/100;
     theta_0=5.4986;
 
+    W_0=[0.1881    0.1580    0.0834    0.2126    0.1233];
+%     theta_0=2.3480+1.4885;
+theta_0=2.3480;
 %     W_0=[0.2038    0.0409    1.0000    0.0305    0.2375];
 % theta_0 = 1.0518;
 
@@ -74,8 +80,8 @@ dif_theta=0;
 
 
 x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0 0];
-LB=[zeros(1,N_sat) -180*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 1*W_0 0.9*ones(1,3) -pi/2*ones(1,3) 0];
-UB=[720*ones(1,N_sat) 180*ones(1,N_sat) 135*ones(1,N_sat) 720*ones(1,N_sat) 1*W_0 1.1*ones(1,3) pi/2*ones(1,3) 0];
+LB=[zeros(1,N_sat) -180*ones(1,N_sat) 45*ones(1,N_sat) 0*ones(1,N_sat) 0.98*W_0 0.9*ones(1,3) -pi*ones(1,3) -pi/8];
+UB=[720*ones(1,N_sat) 180*ones(1,N_sat) 135*ones(1,N_sat) 720*ones(1,N_sat) 1.02*W_0 1.1*ones(1,3) pi*ones(1,3) pi/8];
 
 % x0=[lambdas_0 phis_0 alphas_0 betas_0 W_0 rot_Gains_0 target_angles_0];
 % LB=[lambdas_0 phis_0 alphas_0 betas_0 1*W_0 0.7*ones(1,3) -pi/2*ones(1,3)];
@@ -132,6 +138,8 @@ W=x_opt(4*N_sat+1:4*N_sat+5);
 rot_Gains=x_opt(4*N_sat+6:4*N_sat+8);
 target_angles=x_opt(4*N_sat+9:4*N_sat+11);
 dif_theta_start=x_opt(4*N_sat+12);
+oe_0(6)=oe_0(6)+0;
+mee_0=oe2mp(oe_0);
 [sat_pos,Force_Vectors,Moment_Vectors,min_dis]=rigid_positioning_dis(sim_data.params,N_sat,lambdas,phis,alphas,betas);
 
 params.final_test=1;
@@ -142,7 +150,7 @@ params.max_f=max_f;
 params.mee_0=mee_0;
 params.strategy=strategy;
 
-maxIter=25;
+maxIter=50;
 params.options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','MaxIterations',maxIter,'Display','none');
 params.LB=zeros(N_sat,1);
 params.UB=params.max_f*ones(N_sat,1);

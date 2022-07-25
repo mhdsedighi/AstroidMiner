@@ -113,7 +113,7 @@ mark_err=mark_err/N_t*100;
 int_Fs=trapz(T_vec,Uss,2)./params.mass;
 reach_fac=norm(simOut.R.Data(1:5));
 detumble_fac=simOut.omega.Data(end);
-T_end=T_vec(end);
+T_end=T_vec(end)/3600/24/365;
 
 % res_fuels=Sat_mass_vec-int_Fs/(3000*9.81);
 % err_fuel=sum(abs(res_fuels))*(1+sum(res_fuels<0));
@@ -123,19 +123,29 @@ if params.strategy==1
 %     cost=sum(int_Fs)^0*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^5*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8);
 % cost=sum(int_Fs);
 % cost=sum(int_Fs)*(1+std(int_Fs)/1e8)^0*(1+T_end*3.171e-8);
-cost=T_end*3.171e-8*sum(int_Fs)^0.05;
+% cost=T_end*3.171e-8*sum(int_Fs)^0.05;
+% cost=sum(int_Fs)^0.2*(1+std(int_Fs)/mean(int_Fs))^0.1*(T_end);
+cost=sum(int_Fs)^(-2)*(T_end)^5*(1+5*mark_err)^10;
 
 else
 
 %     cost=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
-cost=sum(int_Fs);
+% cost=sum(int_Fs);
+% cost=sum(int_Fs)^1*(1+std(int_Fs)/mean(int_Fs))^0.1*(T_end)^0.7;
 
-if T_end*3.171e-8>3
-cost=cost*10;
+% cost=sum(int_Fs)*(1+mark_err)^6;
+
+cost=sum(int_Fs)*T_end^0.2*(1+std(int_Fs)/mean(int_Fs))^0.1;
+
+% if T_end>3
+% cost=cost*10;
+% end
+
 end
 
-end
-
+% if min_dis<0.3
+% cost=cost*3;
+% end
 
 % % if min_dis<0.3
 % % %     this_min_dis=min_dis;
@@ -161,7 +171,8 @@ if params.final_test
     assignin('base','int_Fs',int_Fs);
     assignin('base','sum_int_Fs',sum(int_Fs));
     assignin('base','std_int_Fs',std(int_Fs));
-    assignin('base','T_end',T_vec(end)/31536000);
+    assignin('base','avg_int_Fs',mean(int_Fs));
+    assignin('base','T_end',T_end);
 %     assignin('base','res_fuels',res_fuels);
 %     assignin('base','sat_pos',sat_pos);
 

@@ -15,7 +15,7 @@ plt1=plot3(XYZ(:,1),XYZ(:,2),XYZ(:,3),'k');
 plot3(XYZ(1,1),XYZ(1,2),XYZ(1,3),'b*')
 plot3(XYZ(end,1),XYZ(end,2),XYZ(end,3),'ro')
 
-plt1.LineWidth=1.3
+plt1.LineWidth=1.3;
 
 % Time=out.r.Time;
 % T_end=Time(end);

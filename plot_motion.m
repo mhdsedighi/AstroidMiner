@@ -101,7 +101,7 @@ bgAx.Layout.TileSpan = [3 2];
 
 
 end_point=T(end);
-split_point=40;
+split_point=20;
 y=pqr';
 
 ax1 = axes(ttt);
@@ -157,7 +157,7 @@ ax2.Box = 'off';
 xlim(ax2,[0 split_point])
 grid minor
 xlabel('Time (days) -zoomed')
-figure('DefaultAxesFontSize',14,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
+figure('DefaultAxesFontSize',16,'defaultAxesFontName','Euclid','defaultTextFontName','Euclid')
 % figure
 
 

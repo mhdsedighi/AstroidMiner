@@ -14,8 +14,8 @@ Moment_Vectors=Moment_Vectors';
 set_param('model_5/Actuation/actuators/thrusters','Commented','through')
 % set_param('model_5/Actuation/actuators/thrusters','Commented','off')
 
-t_sim=1e4;
-out1=sim('model_5.slx');
+t_sim=1e2;
+% out1=sim('model_5.slx');
 
 sample_time=1;
 min_on_off_time=0.5;
@@ -89,6 +89,6 @@ sim pwpf_real_signal
 % On_values=Thrust_digital*scale
 
 
-save('pwpf_d_tune.mat','Tm_d','Km_d','h','u_off','u_on','Thrust_digital','scale','sample_time','min_on_off_time')
+% save('pwpf_d_tune.mat','Tm_d','Km_d','h','u_off','u_on','Thrust_digital','scale','sample_time','min_on_off_time')
 
 

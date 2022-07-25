@@ -152,7 +152,7 @@ for i_par=1:N_par
         
 
     end
-
+    mark_err=mark_err/N_t;
     int_Fs=trapz(T_vec,Uss,2)./sim_data.params.mass;
     reach_fac=norm(simOut(i_par).R.Data(1:5));
     detumble_fac=simOut(i_par).omega.Data(end);
@@ -170,16 +170,24 @@ for i_par=1:N_par
 % cost_array(i_par)=(T_end*3.171e-8)*sum(int_Fs)^0.05*(1+std(int_Fs)/1e8)^0.01;
 % cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+detumble_fac)^2;
 
-cost_array(i_par)=sum(int_Fs)^0.1*(1+std(int_Fs)/mean(int_Fs))^0.1*(1+T_end)^10*(1+5*mark_err/N_t)^6;
+% cost_array(i_par)=sum(int_Fs)^0.1*(1+std(int_Fs)/mean(int_Fs))^0.1*(1+T_end)^3*(1+5*mark_err/N_t)^6;
+% cost_array(i_par)=sum(int_Fs)*(T_end)^5*(1+5*mark_err)^10;
+cost=sum(int_Fs)^(-2)*(T_end)^5*(1+5*mark_err)^10;
     else
 
 %         cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8)*(1+5*mark_err/N_t)^0*(1+reach_fac)^5*(1+detumble_fac)^2*(1+T_end*3.171e-8)^0.2;
 % cost_array(i_par)=sum(int_Fs)*(1+std(int_Fs)/1e8);
 
-cost_array(i_par)=sum(int_Fs)^1*(1+std(int_Fs)/mean(int_Fs))^0.1*(1+T_end)^0.7*(1+5*mark_err/N_t)^6;
+% cost_array(i_par)=sum(int_Fs)^1*(1+std(int_Fs)/mean(int_Fs))^0.1*(1+T_end)^0.7*(1+5*mark_err/N_t)^6;
 
-if T_end>4
-    cost_array(i_par)=cost_array(i_par)*(1+(T_end-4)^2);
+cost_array(i_par)=sum(int_Fs)*(T_end)^0.7*(1+5*mark_err/N_t)^6;
+
+% if T_end>4
+%     cost_array(i_par)=cost_array(i_par)*(1+(T_end-4)^2);
+% end
+
+if min_dis<0.3
+    cost_array(i_par)=cost_array(i_par)*3;
 end
 
     end
